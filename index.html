@@ -1,465 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRP SHOPPING | Home</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRP SHOPPING | Full System</title>
 
-    <style>
-        :root { --srp-blue: #0047AB; --srp-white: #ffffff; }
-        body { font-family: 'Inter', sans-serif; background: #f4f7f6; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Auth Styles */
-        #auth-screen { 
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%); 
-            display: flex; 
-        }
-        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        
-        /* Main UI Styles */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; z-index: 50; }
-        #product-detail-view { display: none; z-index: 100; }
-        .banner-gradient { background: linear-gradient(90deg, #0047AB 0%, #007FFF 100%); }
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        /* New Feature Views */
-        #cart-view, #profile-view, #orders-view, #address-view { 
-            display: none; position: fixed; inset: 0; background: #f4f7f6; z-index: 110; overflow-y: auto; 
-        }
-        .dark { background-color: #111827 !important; color: white !important; }
-        .dark .bg-white { background-color: #1f2937 !important; color: white !important; }
-        .dark .text-gray-600 { color: #9ca3af !important; }
-    </style>
+<style>
+:root { --srp-blue: #0047AB; }
+body { font-family: Arial; background: #f4f7f6; }
+#auth-screen { background:black; display:flex; color:white }
+.bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; }
+#product-detail-view { display:none }
+#cart-view,#profile-view,#orders-view{display:none;position:fixed;inset:0;background:#f4f7f6;z-index:100}
+.dark{background:#111827;color:white}
+</style>
 </head>
+
 <body class="pb-20">
 
-    <section id="auth-screen" class="fixed inset-0 z-[200] items-center justify-center p-4">
-        <div class="glass-card w-full max-w-md rounded-2xl p-8 text-white">
-            <div class="text-center mb-8">
-                <h1 class="text-4xl font-extrabold tracking-tighter">SRP <span class="text-blue-500">SHOPPING</span></h1>
-                <p class="text-gray-400 text-sm mt-2" id="auth-subtitle">Welcome back, please login</p>
-            </div>
-            <form id="auth-form" class="space-y-4">
-                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white" placeholder="Email" required>
-                <input type="password" id="password" class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white" placeholder="Password" required>
-                <button type="submit" id="main-submit" class="w-full py-3 rounded-lg bg-blue-600 font-bold uppercase">Sign In</button>
-            </form>
-            <div class="relative my-6 text-center text-xs text-gray-500">OR CONTINUE WITH</div>
-            <button id="google-btn" class="w-full py-3 rounded-lg bg-white text-black font-semibold flex items-center justify-center gap-3">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Sign in with Google
-            </button>
-            <p class="mt-6 text-center text-sm text-gray-400">
-                <span id="toggle-text">New here?</span> <a href="#" id="toggle-auth" class="text-blue-400 font-bold ml-1">Create Account</a>
-            </p>
-        </div>
-    </section>
+<!-- ================= AUTH ================= -->
+<section id="auth-screen" class="fixed inset-0 items-center justify-center">
+<div class="bg-gray-900 p-8 rounded-xl w-80 text-white">
 
-    <div id="main-storefront" style="display:none;">
-        <header class="sticky top-0 bg-[#0047AB] text-white p-3 z-50 shadow-md">
-            <div class="flex justify-between items-center mb-3">
-                <button onclick="handleLogoTap()" class="text-xl font-bold tracking-tighter">SRP SHOPPING</button>
-                <div class="flex items-center gap-3">
-                    <button class="text-[10px] opacity-80">Privacy Policy</button>
-                    <div class="bg-white/20 px-3 py-1 rounded-full flex items-center gap-2 text-sm">
-                        <i class="fas fa-wallet text-yellow-400"></i> ₹<span id="header-wallet">450</span>
-                    </div>
-                </div>
-            </div>
-            <div class="relative mb-2">
-                <input type="text" id="search-input" onkeyup="searchProducts()" placeholder="Search products..." class="w-full py-2 px-4 rounded text-black outline-none">
-            </div>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar py-1 text-xs whitespace-nowrap border-t border-white/20">
-                <button onclick="filterCategory('all')" class="font-bold">All</button>
-                <button onclick="filterCategory('Electronics')">Electronics</button>
-                <button onclick="filterCategory('Fashion')">Fashion</button>
-                <button onclick="filterCategory('Mobiles')">Mobiles</button>
-            </div>
-        </header>
+<h2 class="text-xl mb-4 text-center">SRP LOGIN</h2>
 
-        <main class="p-3">
-            <section class="banner-gradient rounded-xl p-6 text-white mb-6 shadow-lg flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-black italic">SRP EXCLUSIVE</h2>
-                    <p class="text-sm opacity-90">MEGA SALE: UP TO 70% OFF</p>
-                </div>
-                <i class="fas fa-shopping-bag text-5xl opacity-20"></i>
-            </section>
+<input id="email" placeholder="Email" class="w-full p-2 mb-2 text-black">
+<input id="password" type="password" placeholder="Password" class="w-full p-2 mb-2 text-black">
 
-            <div id="product-grid" class="grid grid-cols-2 gap-3"></div>
-        </main>
-    </div>
+<button onclick="handleAuth()" class="w-full bg-blue-600 p-2 mb-2">Login / Signup</button>
+<button onclick="googleLogin()" class="w-full bg-red-500 p-2">Google Login</button>
 
-    <div id="cart-view">
-        <nav class="p-4 bg-white border-b flex items-center justify-between sticky top-0">
-            <div class="flex items-center gap-4">
-                <button onclick="closeCart()" class="fas fa-arrow-left text-xl"></button>
-                <span class="font-bold">My Shopping Cart</span>
-            </div>
-        </nav>
-        <div id="cart-items-container" class="p-4 space-y-4">
-            </div>
-        <div class="p-4 bg-white border-t sticky bottom-0">
-            <div class="flex justify-between items-center mb-4">
-                <span class="font-bold">Total Amount:</span>
-                <span class="text-xl font-black text-blue-700">₹<span id="cart-grand-total">0</span></span>
-            </div>
-            <button onclick="processCheckout()" class="w-full py-4 bg-orange-500 text-white rounded-xl font-bold uppercase shadow-lg">Checkout Now</button>
-        </div>
-    </div>
+</div>
+</section>
 
-    <div id="profile-view">
-        <nav class="p-4 bg-white border-b flex items-center gap-4 sticky top-0">
-            <button onclick="closeProfile()" class="fas fa-arrow-left text-xl"></button>
-            <span class="font-bold">My Account</span>
-        </nav>
-        <div class="p-4 space-y-4">
-            <div class="bg-blue-800 p-6 rounded-2xl text-white shadow-xl">
-                <p class="text-xs opacity-70 uppercase">SRP Wallet Balance</p>
-                <h2 class="text-3xl font-black">₹<span id="profile-wallet-balance">450</span></h2>
-                <button onclick="addWalletMoney()" class="mt-4 text-xs bg-white/20 px-4 py-2 rounded-full font-bold">RECHARGE WALLET</button>
-            </div>
+<!-- ================= MAIN ================= -->
+<div id="main-storefront" style="display:none">
 
-            <div class="grid grid-cols-1 gap-2">
-                <button onclick="openOrders()" class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm">
-                    <span class="font-medium"><i class="fas fa-box-open mr-3 text-blue-500"></i> My Orders</span>
-                    <i class="fas fa-chevron-right text-gray-300"></i>
-                </button>
-                <button onclick="openAddressBook()" class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm">
-                    <span class="font-medium"><i class="fas fa-map-marker-alt mr-3 text-red-500"></i> Address Book</span>
-                    <i class="fas fa-chevron-right text-gray-300"></i>
-                </button>
-                <button onclick="toggleDarkMode()" class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm">
-                    <span class="font-medium"><i class="fas fa-moon mr-3 text-purple-500"></i> Day / Night Mode</span>
-                    <div id="theme-indicator" class="w-10 h-5 bg-gray-200 rounded-full relative">
-                        <div class="w-4 h-4 bg-white rounded-full absolute top-0.5 left-0.5 transition-all"></div>
-                    </div>
-                </button>
-                <button onclick="signOutUser()" class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm text-red-500 font-bold">
-                    <span><i class="fas fa-sign-out-alt mr-3"></i> Logout</span>
-                </button>
-            </div>
-        </div>
-    </div>
+<header class="bg-blue-800 text-white p-3">
+SRP SHOPPING
+<button onclick="signOutUser()" class="float-right">Logout</button>
+</header>
 
-    <div id="orders-view">
-        <nav class="p-4 bg-white border-b flex items-center gap-4 sticky top-0">
-            <button onclick="closeOrders()" class="fas fa-arrow-left text-xl"></button>
-            <span class="font-bold">Track Orders</span>
-        </nav>
-        <div id="orders-list" class="p-4 space-y-4">
-            </div>
-    </div>
+<div class="p-3">
+<h2>Products</h2>
+<div id="product-grid"></div>
+</div>
 
-    <div id="product-detail-view" class="fixed inset-0 bg-white overflow-y-auto">
-        <nav class="p-4 flex items-center gap-4 border-b sticky top-0 bg-white">
-            <button onclick="closeDetail()" class="fas fa-arrow-left text-xl"></button>
-            <span class="font-bold truncate" id="detail-title-top">Product Details</span>
-        </nav>
-        <div class="flex overflow-x-auto no-scrollbar h-72 bg-gray-50 border-b">
-            <img id="detail-img-1" class="w-full h-full object-contain flex-shrink-0">
-            <img id="detail-img-2" class="w-full h-full object-contain flex-shrink-0">
-        </div>
-        <div class="p-4">
-            <h2 id="detail-name" class="text-xl font-bold"></h2>
-            <div class="text-green-700 font-bold my-2">4.5 ★ <span class="text-gray-400 font-normal text-sm ml-2">(1,240 Ratings)</span></div>
-            <div class="flex items-center gap-2 text-2xl mb-4">
-                <span id="detail-discount" class="text-red-600 font-light"></span>
-                <span class="font-bold">₹<span id="detail-price"></span></span>
-                <span id="detail-mrp" class="text-sm line-through text-gray-400"></span>
-            </div>
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div><label class="text-xs font-bold block mb-1">Color</label>
-                    <div class="flex gap-2"><div class="w-6 h-6 rounded-full bg-black border"></div><div class="w-6 h-6 rounded-full bg-blue-500 border"></div></div>
-                </div>
-                <div><label class="text-xs font-bold block mb-1">Quantity</label>
-                    <select id="detail-qty" class="w-full p-1 border rounded text-sm"><option>1</option><option>2</option><option>3</option></select>
-                </div>
-            </div>
-            <p class="text-sm text-gray-500 mb-6"><i class="fas fa-truck mr-2"></i>Delivery: 7 to 15 days</p>
-            <div class="flex flex-col gap-2">
-                <button id="add-to-cart-action" class="w-full py-3 bg-yellow-400 rounded-full font-bold">Add to Cart</button>
-                <button class="w-full py-3 bg-orange-500 text-white rounded-full font-bold">Buy Now</button>
-            </div>
-            <div class="mt-8">
-                <h3 class="font-bold border-b pb-2 mb-2">Description</h3>
-                <p id="detail-desc" class="text-sm text-gray-600 leading-relaxed"></p>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <nav class="bottom-nav h-16 flex items-center justify-around">
-        <button onclick="location.reload()" class="flex flex-col items-center text-blue-700"><i class="fas fa-home"></i><span class="text-[10px] font-bold">Home</span></button>
-        <button onclick="openProfile()" class="flex flex-col items-center text-gray-400"><i class="fas fa-user"></i><span class="text-[10px]">Account</span></button>
-        <button onclick="openProfile()" class="flex flex-col items-center text-gray-400"><i class="fas fa-wallet"></i><span class="text-[10px]">Wallet</span></button>
-        <button onclick="alert('Seller Section Opening...')" class="flex flex-col items-center text-gray-400"><i class="fas fa-store"></i><span class="text-[10px]">Seller</span></button>
-        <button onclick="openCart()" class="flex flex-col items-center text-gray-400"><i class="fas fa-shopping-cart"></i><span class="text-[10px]">Cart</span></button>
-    </nav>
+<!-- ================= CART ================= -->
+<div id="cart-view">
+<h2>Cart</h2>
+<div id="cart-items-container"></div>
+<button onclick="processCheckout()">Checkout</button>
+</div>
 
-    <script>
-        // 1. SUPABASE CONFIGURATION
-        const SB_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
-        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+<!-- ================= PROFILE ================= -->
+<div id="profile-view">
+<h2>Profile</h2>
+<button onclick="openOrders()">Orders</button>
+</div>
 
-        const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
+<!-- ================= ORDERS ================= -->
+<div id="orders-view">
+<h2>Orders</h2>
+<div id="orders-list"></div>
+</div>
 
-        // 2. Auth State Management
-        let currentUser = null;
+<script>
 
-        async function checkAuthState() {
-            const { data: { session } } = await supabase.auth.getSession();
-            handleAuthChange(session?.user || null);
-        }
+// ===== SUPABASE =====
+const supabase = window.supabase.createClient(
+"https://cmxlfxqtrguuzpqdgcxv.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+);
 
-        supabase.auth.onAuthStateChange((_event, session) => {
-            handleAuthChange(session?.user || null);
-        });
+// ===== AUTH =====
+async function handleAuth(){
+const email=emailEl().value;
+const password=passEl().value;
 
-        function handleAuthChange(user) {
-            currentUser = user;
-            if (user) {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('main-storefront').style.display = 'block';
-            } else {
-                document.getElementById('auth-screen').style.display = 'flex';
-                document.getElementById('main-storefront').style.display = 'none';
-            }
-        }
+let {error}=await supabase.auth.signInWithPassword({email,password});
+if(error){
+await supabase.auth.signUp({email,password});
+}
+}
 
-        // 3. Auth Actions
-        let isLoginMode = true;
-        document.getElementById('toggle-auth').onclick = (e) => {
-            e.preventDefault();
-            isLoginMode = !isLoginMode;
-            document.getElementById('main-submit').innerText = isLoginMode ? 'Sign In' : 'Create Account';
-            document.getElementById('auth-subtitle').innerText = isLoginMode ? 'Welcome back, please login' : 'Start your journey';
-            document.getElementById('toggle-text').innerText = isLoginMode ? "New here?" : "Joined before?";
-            document.getElementById('toggle-auth').innerText = isLoginMode ? 'Create Account' : 'Sign In';
-        };
+async function googleLogin(){
+await supabase.auth.signInWithOAuth({provider:"google"});
+}
 
-        document.getElementById('auth-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+async function signOutUser(){
+await supabase.auth.signOut();
+}
 
-            try {
-                if (isLoginMode) {
-                    const { error } = await supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                } else {
-                    const { error } = await supabase.auth.signUp({ email, password });
-                    if (error) throw error;
-                    alert("Verification email sent!");
-                }
-            } catch (err) { alert(err.message); }
-        };
+function emailEl(){return document.getElementById("email")}
+function passEl(){return document.getElementById("password")}
 
-        document.getElementById('google-btn').onclick = async () => {
-            const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-            if (error) alert(error.message);
-        };
+// ===== AUTH STATE =====
+supabase.auth.onAuthStateChange((e,session)=>{
+if(session){
+authHide();
+}else{
+authShow();
+}
+});
 
-        async function signOutUser() {
-            await supabase.auth.signOut();
-        }
+function authHide(){
+document.getElementById("auth-screen").style.display="none";
+document.getElementById("main-storefront").style.display="block";
+}
 
-        // 4. Admin Redirect Logic
-        function handleLogoTap() {
-            if (currentUser && ADMIN_EMAILS.includes(currentUser.email)) {
-                const pin = prompt("Admin Security PIN:");
-                if (pin === "1234") window.location.href = "admin.html";
-            } else { location.reload(); }
-        }
+function authShow(){
+document.getElementById("auth-screen").style.display="flex";
+document.getElementById("main-storefront").style.display="none";
+}
 
-        // 5. Product Data & Display
-        const products = Array.from({ length: 20 }, (_, i) => ({
-            id: i,
-            name: `SRP Premium Product ${i + 1}`,
-            cat: i % 2 === 0 ? 'Electronics' : 'Fashion',
-            price: 499 + (i * 100), mrp: 999 + (i * 100),
-            img: `https://picsum.photos/400/400?random=${i}`,
-            desc: "This is a premium product from SRP SHOPPING. Produced with high quality materials for long-lasting durability and style. "
-        }));
+// ===== PRODUCTS =====
+const products=Array.from({length:10},(_,i)=>({
+id:i,name:"Product "+i,price:100+i*50
+}));
 
-        function renderProducts(list) {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = list.map(p => `
-                <div onclick="openDetail(${p.id})" class="bg-white p-2 rounded shadow-sm border border-gray-100">
-                    <img src="${p.img}" class="w-full h-36 object-contain mb-2">
-                    <h3 class="text-xs font-medium truncate">${p.name}</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="text-sm font-bold">₹${p.price}</span>
-                        <span class="text-[8px] line-through text-gray-400">₹${p.mrp}</span>
-                    </div>
-                    <p class="text-[10px] text-green-600 font-bold">50% OFF</p>
-                </div>
-            `).join('');
-        }
+function renderProducts(){
+const grid=document.getElementById("product-grid");
+grid.innerHTML=products.map(p=>`
+<div onclick="addToCart(${p.id})" style="border:1px solid;padding:10px;margin:5px">
+${p.name}<br>₹${p.price}
+</div>
+`).join("");
+}
 
-        function openDetail(id) {
-            const p = products[id];
-            document.getElementById('detail-name').innerText = p.name;
-            document.getElementById('detail-price').innerText = p.price;
-            document.getElementById('detail-mrp').innerText = `₹${p.mrp}`;
-            document.getElementById('detail-discount').innerText = "-50%";
-            document.getElementById('detail-desc').innerText = p.desc;
-            document.getElementById('detail-img-1').src = p.img;
-            document.getElementById('detail-img-2').src = p.img;
-            document.getElementById('product-detail-view').style.display = 'block';
+// ===== CART =====
+let cart=[];
 
-            document.getElementById('add-to-cart-action').onclick = () => {
-                addToCart(p, parseInt(document.getElementById('detail-qty').value));
-            };
-        }
+function addToCart(id){
+const p=products[id];
+cart.push(p);
+alert("Added");
+}
 
-        function closeDetail() { document.getElementById('product-detail-view').style.display = 'none'; }
-        
-        function filterCategory(cat) {
-            if(cat === 'all') renderProducts(products);
-            else renderProducts(products.filter(p => p.cat === cat));
-        }
+function processCheckout(){
+alert("Order placed");
+}
 
-        function searchProducts() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            renderProducts(products.filter(p => p.name.toLowerCase().includes(query)));
-        }
+// ===== ORDERS =====
+function openOrders(){
+document.getElementById("orders-view").style.display="block";
+}
 
-        // --- FEATURES LOGIC (Cart, Wallet, Orders) ---
+// ===== INIT =====
+renderProducts();
 
-        let cart = JSON.parse(localStorage.getItem('srp_cart')) || [];
-        let orders = JSON.parse(localStorage.getItem('srp_orders')) || [];
-        let walletBalance = 450;
+</script>
 
-        function addToCart(product, qty) {
-            const existing = cart.find(item => item.id === product.id);
-            if(existing) existing.qty += qty;
-            else cart.push({...product, qty});
-            
-            saveCart();
-            alert("Product added to SRP Cart!");
-            closeDetail();
-        }
-
-        function saveCart() {
-            localStorage.setItem('srp_cart', JSON.stringify(cart));
-            renderCart();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items-container');
-            let total = 0;
-            if(cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-20 text-gray-400">Cart is empty</div>`;
-            } else {
-                container.innerHTML = cart.map((item, index) => {
-                    total += (item.price * item.qty);
-                    return `
-                    <div class="flex items-center gap-4 bg-white p-3 rounded-xl border">
-                        <img src="${item.img}" class="w-16 h-16 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h4 class="text-sm font-bold truncate">${item.name}</h4>
-                            <p class="text-blue-600 font-bold text-sm">₹${item.price} x ${item.qty}</p>
-                        </div>
-                        <button onclick="removeFromCart(${index})" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>
-                    </div>`;
-                }).join('');
-            }
-            document.getElementById('cart-grand-total').innerText = total;
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            saveCart();
-        }
-
-        function openCart() { renderCart(); document.getElementById('cart-view').style.display = 'block'; }
-        function closeCart() { document.getElementById('cart-view').style.display = 'none'; }
-
-        function processCheckout() {
-            const total = parseInt(document.getElementById('cart-grand-total').innerText);
-            if(total === 0) return alert("Cart is empty");
-            
-            if(walletBalance >= total) {
-                walletBalance -= total;
-                const newOrder = {
-                    id: 'SRP' + Math.floor(Math.random() * 1000000),
-                    date: new Date().toLocaleDateString(),
-                    total: total,
-                    status: 'Processing',
-                    trackId: 'IN' + Math.floor(Math.random() * 99999999) + 'IN'
-                };
-                orders.push(newOrder);
-                localStorage.setItem('srp_orders', JSON.stringify(orders));
-                
-                cart = [];
-                saveCart();
-                updateWalletUI();
-                alert("Order Placed using SRP Wallet!");
-                closeCart();
-            } else {
-                alert("Insufficient Wallet Balance! Please recharge.");
-            }
-        }
-
-        function updateWalletUI() {
-            document.getElementById('header-wallet').innerText = walletBalance;
-            document.getElementById('profile-wallet-balance').innerText = walletBalance;
-        }
-
-        function addWalletMoney() {
-            const amt = prompt("Enter amount to recharge:");
-            if(amt && !isNaN(amt)) {
-                walletBalance += parseInt(amt);
-                updateWalletUI();
-            }
-        }
-
-        function openProfile() { document.getElementById('profile-view').style.display = 'block'; }
-        function closeProfile() { document.getElementById('profile-view').style.display = 'none'; }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark');
-            const dot = document.querySelector('#theme-indicator div');
-            if(document.body.classList.contains('dark')) {
-                dot.style.transform = 'translateX(20px)';
-                document.getElementById('theme-indicator').classList.replace('bg-gray-200', 'bg-blue-600');
-            } else {
-                dot.style.transform = 'translateX(0)';
-                document.getElementById('theme-indicator').classList.replace('bg-blue-600', 'bg-gray-200');
-            }
-        }
-
-        function openOrders() {
-            const container = document.getElementById('orders-list');
-            document.getElementById('orders-view').style.display = 'block';
-            if(orders.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 text-gray-400">No orders placed yet.</div>`;
-            } else {
-                container.innerHTML = orders.map(o => `
-                    <div class="bg-white p-4 rounded-xl border shadow-sm">
-                        <div class="flex justify-between border-b pb-2 mb-2">
-                            <span class="text-xs font-bold">Order ID: ${o.id}</span>
-                            <span class="text-xs text-blue-600 font-bold">${o.status}</span>
-                        </div>
-                        <p class="text-sm">Total: ₹${o.total}</p>
-                        <p class="text-[10px] text-gray-400">Placed on: ${o.date}</p>
-                        <div class="mt-3 flex gap-2">
-                            <a href="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackitem.aspx?txtTrkNo=${o.trackId}" class="text-[10px] bg-gray-100 px-3 py-1 rounded-lg font-bold">Track India Post</a>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-        function closeOrders() { document.getElementById('orders-view').style.display = 'none'; }
-        function openAddressBook() { alert("Address Book: Under Encryption Setup..."); }
-
-        // Initial Load
-        renderProducts(products);
-        checkAuthState();
-    </script>
 </body>
-  </html>
+</html>
