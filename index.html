@@ -3,357 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SRP SHOPPING | v2.0</title>
+    <title>SRP SHOPPING | Global Marketplace</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* Bento Grid Product Cards */
-.product-card {
-    background: #ffffff;
-    border-radius: 28px;
-    padding: 12px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid #f0f0f0;
-}
-
-.product-card:active {
-    transform: scale(0.95);
-    background: #f9f9f9;
-}
-
-.product-image-container {
-    width: 100%;
-    aspect-ratio: 1/1;
-    background: #f4f4f5;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-}
-
-.badge-new {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #000;
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 100px;
-    font-size: 8px;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-/* Glassmorphism Slide-Up Sheet */
-.sheet {
-    position: fixed;
-    bottom: -100%;
-    left: 0;
-    width: 100%;
-    height: 85vh;
-    background: white;
-    border-top-left-radius: 35px;
-    border-top-right-radius: 35px;
-    z-index: 1000;
-    transition: bottom 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-    box-shadow: 0 -20px 40px rgba(0,0,0,0.1);
-    padding: 20px;
-}
-
-.sheet.active { bottom: 0; }
-
-.sheet-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px);
-    display: none;
-    z-index: 999;
-}
-
-.sheet-handle {
-    width: 40px;
-    height: 5px;
-    background: #e5e5e5;
-    border-radius: 10px;
-    margin: 0 auto 20px;
-}
-
-        :root { 
-            --accent: #000000; /* Minimalist Black */
-            --bg-light: #fdfdfd;
-            --card-radius: 24px;
+        :root {
+            --srp-blue: #0052FF;
+            --srp-light-blue: #EBF2FF;
+            --srp-white: #FFFFFF;
+            --srp-text: #1A202C;
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg-light); 
-            color: #1a1a1a;
-            -webkit-font-smoothing: antialiased;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F7FAFC;
+            color: var(--srp-text);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* The "Invisible" Auth Screen */
-        #auth-screen {
-            background: #ffffff;
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        /* --- AUTHENTICATION STYLES --- */
+        .auth-container {
+            background: linear-gradient(135deg, var(--srp-blue) 0%, #003099 100%);
         }
 
-        .input-minimal {
-            background: #f4f4f5;
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        .input-minimal:focus {
-            background: #ffffff;
-            border-color: #000000;
-            box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+        .input-field {
+            border: 2px solid #EDF2F7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn-black {
-            background: #000000;
-            color: #ffffff;
-            transition: transform 0.2s active;
+        .input-field:focus {
+            border-color: var(--srp-blue);
+            background-color: var(--srp-white);
+            box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1);
         }
 
-        .btn-black:active { transform: scale(0.96); }
-
-        /* Modern Bottom Nav */
-        .nav-blur {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-top: 0.5px solid rgba(0,0,0,0.08);
+        /* --- NAVIGATION STYLES --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--srp-white);
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            z-index: 1000;
+            box-shadow: 0 -10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
-        /* Skeleton Loading Animation */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s infinite;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #718096;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
         }
 
-        @keyframes skeleton-loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .nav-item.active {
+            color: var(--srp-blue);
         }
 
-        /* Soft Cards */
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .banner-carousel {
+            background: linear-gradient(90deg, #0052FF 0%, #00C2FF 100%);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
         .product-card {
-            background: #ffffff;
-            transition: transform 0.3s ease;
+            background: var(--srp-white);
+            border: 1px solid #EDF2F7;
+            border-radius: 1.25rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        /* Dark Mode */
-        .dark { background: #000000; color: #ffffff; }
-        .dark .input-minimal { background: #1c1c1e; color: #ffffff; }
-        .dark .nav-blur { background: rgba(0,0,0,0.8); border-top-color: rgba(255,255,255,0.1); }
-        .dark .bg-white { background: #1c1c1e !important; }
+
+        .product-card:active {
+            transform: scale(0.96);
+        }
+
+        .category-pill {
+            padding: 8px 18px;
+            background: var(--srp-white);
+            border: 1.5px solid #E2E8F0;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-pill.active {
+            background: var(--srp-blue);
+            color: var(--srp-white);
+            border-color: var(--srp-blue);
+        }
+
+        /* --- MODALS & SHEETS --- */
+        .slide-up-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 90vh;
+            background: var(--srp-white);
+            border-radius: 2.5rem 2.5rem 0 0;
+            z-index: 2000;
+            transition: bottom 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+            overflow-y: auto;
+        }
+
+        .slide-up-sheet.active {
+            bottom: 0;
+        }
+
+        .sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            z-index: 1999;
+        }
+
+        /* Utils */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="pb-24">
 
-    <section id="auth-screen" class="fixed inset-0 z-[500] flex flex-col items-center justify-center px-8">
-        <div class="w-full max-w-sm">
-            <div class="mb-12">
-                <h1 class="text-4xl font-black tracking-tight text-black flex items-center gap-2">
-                    SRP <span class="w-2 h-2 bg-black rounded-full mt-3"></span>
-                </h1>
-                <p id="auth-sub" class="text-gray-400 font-medium mt-2">Elevated shopping experience.</p>
+    <section id="auth-screen" class="fixed inset-0 z-[5000] auth-container flex items-center justify-center p-6">
+        <div class="glass-card w-full max-w-md p-8 md:p-12">
+            <div class="text-center mb-10">
+                <div class="inline-block p-4 rounded-3xl bg-blue-50 mb-4">
+                    <i class="fas fa-shopping-bag text-4xl text-blue-600"></i>
+                </div>
+                <h1 class="text-3xl font-black tracking-tighter text-gray-900">SRP <span class="text-blue-600">SHOPPING</span></h1>
+                <p id="auth-message" class="text-gray-500 font-medium mt-2">Sign in to start shopping</p>
             </div>
 
-            <form id="auth-logic" class="space-y-4">
+            <form id="auth-form" class="space-y-5">
                 <div class="space-y-1">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Email</label>
-                    <input type="email" id="email" required class="w-full input-minimal px-5 py-4 rounded-2xl outline-none text-sm font-medium" placeholder="name@domain.com">
+                    <label class="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Email Address</label>
+                    <input type="email" id="email" required class="w-full input-field px-5 py-4 rounded-2xl outline-none font-semibold text-gray-700" placeholder="example@srp.com">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Password</label>
-                    <input type="password" id="password" required class="w-full input-minimal px-5 py-4 rounded-2xl outline-none text-sm font-medium" placeholder="••••••••">
+                    <label class="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Password</label>
+                    <input type="password" id="password" required class="w-full input-field px-5 py-4 rounded-2xl outline-none font-semibold text-gray-700" placeholder="••••••••">
                 </div>
 
-                <button type="submit" class="w-full btn-black py-4 rounded-2xl font-bold text-sm shadow-xl shadow-black/10 mt-4">
-                    Continue
+                <button type="submit" id="auth-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-4 rounded-2xl shadow-xl shadow-blue-200 transition-all active:scale-95">
+                    Sign In
                 </button>
             </form>
 
-            <div class="mt-8">
-                <button onclick="googleAuth()" class="w-full py-4 border border-gray-100 rounded-2xl flex items-center justify-center gap-3 text-sm font-bold hover:bg-gray-50 transition-all">
-                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
-                    Sign in with Google
-                </button>
+            <div class="relative flex py-6 items-center">
+                <div class="flex-grow border-t border-gray-100"></div>
+                <span class="flex-shrink mx-4 text-gray-400 text-[10px] font-bold uppercase tracking-widest">Secure Access</span>
+                <div class="flex-grow border-t border-gray-100"></div>
             </div>
 
-            <p class="mt-10 text-center text-xs text-gray-400 font-medium">
-                New to SRP? <button onclick="toggleMode()" id="toggle-link" class="text-black font-black underline underline-offset-4">Create Account</button>
+            <button onclick="signInWithGoogle()" class="w-full bg-white border-2 border-gray-100 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-gray-50 transition-all">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20">
+                Continue with Google
+            </button>
+
+            <p class="mt-8 text-center text-sm font-semibold text-gray-500">
+                New user? <button onclick="toggleAuthMode()" id="toggle-auth" class="text-blue-600 font-black hover:underline">Create Account</button>
             </p>
         </div>
     </section>
 
-    <div id="app" class="hidden">
-        <header class="p-6 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-40">
-            <div>
-                <span class="text-[10px] font-black uppercase text-gray-400 tracking-tighter block">Welcome to</span>
-                <h2 class="text-xl font-black tracking-tight">SRP SHOPPING</h2>
+    <div id="main-app" class="hidden">
+        <header class="sticky top-0 bg-white z-[100] border-b border-gray-100 px-4 py-3">
+            <div class="flex items-center justify-between mb-3">
+                <button onclick="handleLogoAction()" class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-xl">
+                        <i class="fas fa-shopping-cart text-white text-xs"></i>
+                    </div>
+                    <span class="text-xl font-black tracking-tighter">SRP <span class="text-blue-600">SHOPPING</span></span>
+                </button>
+
+                <div class="flex items-center gap-3">
+                    <button class="text-xs font-bold text-gray-400 hover:text-blue-600">Privacy Policy</button>
+                    <div class="bg-blue-50 px-4 py-2 rounded-xl flex items-center gap-2 border border-blue-100">
+                        <i class="fas fa-wallet text-blue-600"></i>
+                        <span class="font-black text-blue-700">₹<span id="wallet-balance">450.00</span></span>
+                    </div>
+                </div>
             </div>
-            <div onclick="openProfile()" class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm cursor-pointer">
-                <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=000&color=fff" class="w-full h-full object-cover">
+
+            <div class="relative group">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="product-search" onkeyup="filterProducts()" placeholder="Search smartphones, accessories..." class="w-full bg-gray-100 border-none px-12 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all text-sm font-medium">
+            </div>
+
+            <div class="flex gap-3 overflow-x-auto no-scrollbar mt-4 pb-1">
+                <div onclick="setCategory('all')" class="category-pill active">All Products</div>
+                <div onclick="setCategory('Mobiles')" class="category-pill">Smartphones</div>
+                <div onclick="setCategory('Electronics')" class="category-pill">Electronics</div>
+                <div onclick="setCategory('Fashion')" class="category-pill">Fashion</div>
+                <div onclick="setCategory('Accessories')" class="category-pill">Gadgets</div>
+                <div onclick="setCategory('Home')" class="category-pill">Lifestyle</div>
             </div>
         </header>
 
-        <main class="px-6">
-            <div class="relative mb-8">
-                <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                <input type="text" placeholder="Search curated products..." class="w-full input-minimal pl-12 pr-5 py-4 rounded-2xl text-sm font-medium">
-            </div>
+        <main class="p-4 space-y-6">
+            <section class="banner-carousel p-8 text-white shadow-2xl shadow-blue-200">
+                <div class="relative z-10 max-w-[70%]">
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Exclusive SRP Offer</span>
+                    <h2 class="text-3xl font-black italic mt-3 leading-none">UP TO 70% DISCOUNT</h2>
+                    <p class="text-sm mt-2 font-medium opacity-90">Shop the world's most premium brands at factory prices.</p>
+                    <button class="mt-5 bg-white text-blue-600 px-6 py-2.5 rounded-xl font-black text-xs uppercase shadow-lg">Grab Offer Now</button>
+                </div>
+                <i class="fas fa-bolt absolute -right-6 -bottom-6 text-9xl opacity-10"></i>
+                <i class="fas fa-shopping-bag absolute right-10 top-1/2 -translate-y-1/2 text-7xl opacity-20 rotate-12"></i>
+            </section>
 
-            <div class="flex gap-3 overflow-x-auto no-scrollbar mb-8">
-                <button class="px-6 py-2.5 bg-black text-white rounded-full text-[11px] font-black uppercase tracking-wider">All</button>
-                <button class="px-6 py-2.5 bg-gray-100 text-gray-500 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-gray-200">Fashion</button>
-                <button class="px-6 py-2.5 bg-gray-100 text-gray-500 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-gray-200">Tech</button>
-                <button class="px-6 py-2.5 bg-gray-100 text-gray-500 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-gray-200">Living</button>
-            </div>
-
-            <div class="product-card" onclick="openProduct(1)">
-    <div class="product-image-container">
-        <span class="badge-new">New</span>
-        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300" class="w-full h-full object-cover">
-    </div>
-    <div class="mt-4 px-2">
-        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-tighter">Nike</h3>
-        <p class="text-sm font-extrabold text-black">Air Max 270 v2</p>
-        <div class="flex justify-between items-center mt-2">
-            <span class="text-md font-black">$120.00</span>
-            <button class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-plus text-[10px]"></i>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div class="product-card" onclick="openProduct(2)">
-    <div class="product-image-container">
-        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300" class="w-full h-full object-cover">
-    </div>
-    <div class="mt-4 px-2">
-        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-tighter">Lifestyle</h3>
-        <p class="text-sm font-extrabold text-black">Minimalist Watch</p>
-        <div class="flex justify-between items-center mt-2">
-            <span class="text-md font-black">$85.00</span>
-            <button class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-plus text-[10px]"></i>
-            </button>
-        </div>
-    </div>
-</div>
-
+            <div id="product-grid" class="grid grid-cols-2 gap-4">
+                </div>
         </main>
 
-        <nav class="fixed bottom-0 left-0 w-full h-20 nav-blur flex items-center justify-around px-4 z-[100]">
-            <button class="flex flex-col items-center gap-1 text-black">
-                <i class="fa-solid fa-house-chimney text-lg"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Home</span>
+        <nav class="bottom-nav">
+            <button onclick="navigate('home')" class="nav-item active">
+                <i class="fas fa-house"></i>
+                <span>Home</span>
             </button>
-            <button onclick="openCart()" class="flex flex-col items-center gap-1 text-gray-400 relative">
-                <i class="fa-solid fa-bag-shopping text-lg"></i>
-                <div class="absolute -top-1 -right-1 w-4 h-4 bg-black text-white text-[8px] flex items-center justify-center rounded-full font-black">2</div>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Bag</span>
+            <button onclick="navigate('account')" class="nav-item">
+                <i class="fas fa-circle-user"></i>
+                <span>Account</span>
             </button>
-            <button onclick="openProfile()" class="flex flex-col items-center gap-1 text-gray-400">
-                <i class="fa-solid fa-wallet text-lg"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Wallet</span>
+            <button onclick="navigate('wallet')" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Wallet</span>
             </button>
-            <button class="flex flex-col items-center gap-1 text-gray-400">
-                <i class="fa-solid fa-gear text-lg"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">Settings</span>
+            <button onclick="navigate('seller')" class="nav-item">
+                <i class="fas fa-store"></i>
+                <span>Seller</span>
+            </button>
+            <button onclick="navigate('cart')" class="nav-item">
+                <div class="relative">
+                    <i class="fas fa-cart-shopping"></i>
+                    <span id="cart-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full hidden"></span>
+                </div>
+                <span>Cart</span>
+            </button>
+            <button onclick="navigate('ai')" class="nav-item">
+                <div class="bg-blue-600 text-white p-2 rounded-xl -mt-2 shadow-lg shadow-blue-200">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span>SRP AI</span>
             </button>
         </nav>
     </div>
 
+    <div id="sheet-overlay" class="sheet-overlay" onclick="closeSheet()"></div>
+    <div id="product-sheet" class="slide-up-sheet">
+        </div>
+
     <script>
-        const SB_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
-        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+        // --- CONFIGURATION ---
+        const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let isLogin = true;
+        const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
 
-        function toggleMode() {
-            isLogin = !isLogin;
-            document.getElementById('auth-sub').innerText = isLogin ? "Elevated shopping experience." : "Join the inner circle.";
-            document.querySelector('#auth-logic button').innerText = isLogin ? "Continue" : "Register";
-            document.getElementById('toggle-link').innerText = isLogin ? "Create Account" : "Sign In";
+        // --- AUTH LOGIC ---
+        let isSignUp = false;
+
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('auth-btn').innerText = isSignUp ? 'Create Account' : 'Sign In';
+            document.getElementById('auth-message').innerText = isSignUp ? 'Join the SRP Community' : 'Sign in to start shopping';
+            document.getElementById('toggle-auth').innerText = isSignUp ? 'Sign In' : 'Create Account';
         }
 
-        document.getElementById('auth-logic').onsubmit = async (e) => {
+        async function signInWithGoogle() {
+            const { error } = await _supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin }
+            });
+            if (error) alert(error.message);
+        }
+
+        document.getElementById('auth-form').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const btn = document.getElementById('auth-btn');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
 
             try {
-                if (isLogin) {
-                    const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (isSignUp) {
+                    const { error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
+                    alert("Account created! Check your email for verification.");
                 } else {
-                    const { error } = await supabase.auth.signUp({ email, password });
+                    const { error } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-                    alert("Verification link sent!");
                 }
-            } catch (err) { alert(err.message); }
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = isSignUp ? 'Create Account' : 'Sign In';
+            }
         };
 
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('auth-screen').style.opacity = '0';
-                document.getElementById('auth-screen').style.pointerEvents = 'none';
-                document.getElementById('app').classList.remove('hidden');
-                document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${session.user.email}&background=000&color=fff`;
+        _supabase.auth.onAuthStateChange((event, session) => {
+            const user = session?.user || null;
+            if (user) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                initStorefront(user);
             } else {
-                document.getElementById('auth-screen').style.opacity = '1';
-                document.getElementById('auth-screen').style.pointerEvents = 'auto';
-                document.getElementById('app').classList.add('hidden');
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
             }
         });
-        function openCart() {
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById('cart-sheet').classList.add('active');
-}
 
-function closeAllSheets() {
-    document.getElementById('overlay').style.display = 'none';
-    document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active'));
-}
+        // --- CORE FUNCTIONS ---
+        function handleLogoAction() {
+            const user = _supabase.auth.getUser();
+            _supabase.auth.getSession().then(({data}) => {
+                const email = data.session?.user?.email;
+                if (ADMIN_EMAILS.includes(email)) {
+                    const pin = prompt("Enter Admin Security PIN:");
+                    if (pin === "1234") window.location.href = "admin.html";
+                } else {
+                    window.location.reload();
+                }
+            });
+        }
 
-// Add a simple "Pull to Refresh" feel or soft vibrations if on mobile
-function openProduct(id) {
-    if (window.navigator.vibrate) window.navigator.vibrate(10);
-    console.log("Opening product:", id);
-    // Future: Part 3 Product Details
-}
+        function initStorefront(user) {
+            console.log("Storefront Loaded for:", user.email);
+            // Products will be loaded in Part 2
+        }
 
-        <div id="overlay" class="sheet-overlay" onclick="closeAllSheets()"></div>
+        function closeSheet() {
+            document.getElementById('product-sheet').classList.remove('active');
+            document.getElementById('sheet-overlay').style.display = 'none';
+        }
 
-<div id="cart-sheet" class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="flex justify-between items-center mb-8">
-        <h2 class="text-2xl font-black italic">YOUR BAG</h2>
-        <button onclick="closeAllSheets()" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    
-    <div id="cart-items" class="space-y-6 overflow-y-auto h-[50vh]">
-        <p class="text-center text-gray-400 mt-20 font-medium">Your bag is empty.</p>
-    </div>
-
-    <div class="absolute bottom-10 left-0 w-full px-6">
-        <div class="flex justify-between mb-4">
-            <span class="font-bold text-gray-400">Total</span>
-            <span class="font-black text-xl">$0.00</span>
-        </div>
-        <button class="w-full btn-black py-5 rounded-3xl font-black text-sm uppercase tracking-widest shadow-2xl">Checkout Now</button>
-    </div>
-</div>
-
+        function navigate(page) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            console.log("Navigating to:", page);
+            // Sub-page logic in Part 2
+        }
     </script>
 </body>
 </html>
