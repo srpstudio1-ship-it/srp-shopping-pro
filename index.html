@@ -149,6 +149,14 @@
             z-index: 1999;
         }
 
+        .sheet-handle {
+            width: 40px;
+            height: 5px;
+            background: #E2E8F0;
+            border-radius: 10px;
+            margin: 15px auto;
+        }
+
         /* Utils */
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
@@ -195,85 +203,6 @@
                 New user? <button onclick="toggleAuthMode()" id="toggle-auth" class="text-blue-600 font-black hover:underline">Create Account</button>
             </p>
         </div>
-        <div id="wallet-sheet" class="slide-up-sheet">
-    <div class="sheet-handle"></div>
-    <div class="p-8">
-        <div class="bg-blue-600 rounded-3xl p-8 text-white shadow-2xl shadow-blue-200 relative overflow-hidden mb-8">
-            <div class="relative z-10">
-                <p class="text-[10px] font-black uppercase tracking-[3px] opacity-80">Total Balance</p>
-                <h2 class="text-4xl font-black mt-2">₹<span id="wallet-display">450.00</span></h2>
-                <div class="flex gap-4 mt-8">
-                    <button class="bg-white text-blue-600 px-6 py-3 rounded-2xl font-black text-xs uppercase shadow-lg">+ Add Money</button>
-                    <button class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase border border-blue-400">Withdraw</button>
-                </div>
-            </div>
-            <i class="fas fa-wallet absolute -right-4 -bottom-4 text-9xl opacity-10 rotate-12"></i>
-        </div>
-
-        <h3 class="text-lg font-black italic mb-4 text-gray-800">Recent Transactions</h3>
-        <div id="transaction-list" class="space-y-4">
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center"><i class="fas fa-arrow-down text-xs"></i></div>
-                    <div><p class="text-sm font-black">Refund: Order #8821</p><p class="text-[10px] text-gray-400 font-bold">24 MAR 2026</p></div>
-                </div>
-                <span class="font-black text-green-600">+₹120.00</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="ai-sheet" class="slide-up-sheet">
-    <div class="sheet-handle"></div>
-    <div class="p-6 flex flex-col h-full">
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg"><i class="fas fa-robot text-xl"></i></div>
-            <div>
-                <h2 class="text-xl font-black italic">SRP INTELLIGENCE</h2>
-                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Active & Learning</p>
-            </div>
-        </div>
-        
-        <div id="ai-chat-box" class="flex-grow overflow-y-auto space-y-4 pb-48 no-scrollbar">
-            <div class="bg-blue-50 p-4 rounded-2xl rounded-tl-none mr-12 text-sm font-semibold text-blue-800">
-                Hello! I am your SRP AI. Ask me to find products, track orders, or check your wallet balance.
-            </div>
-        </div>
-
-        <div class="absolute bottom-10 left-0 w-full px-6">
-            <div class="relative">
-                <input type="text" id="ai-input" placeholder="Ask SRP AI..." class="w-full bg-gray-100 border-2 border-gray-50 px-6 py-4 rounded-2xl outline-none focus:border-blue-600 font-bold transition-all">
-                <button onclick="askAI()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 text-white rounded-xl shadow-lg"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="seller-sheet" class="slide-up-sheet">
-    <div class="sheet-handle"></div>
-    <div class="p-8">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-black italic">SELLER HUB</h2>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase">+ New Product</button>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Total Sales</p>
-                <h4 class="text-xl font-black italic">₹42,800</h4>
-            </div>
-            <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Active Orders</p>
-                <h4 class="text-xl font-black italic">12</h4>
-            </div>
-        </div>
-
-        <h3 class="text-md font-black italic mb-4">Inventory Management</h3>
-        <div id="seller-inventory" class="space-y-4">
-            </div>
-    </div>
-</div>
-
     </section>
 
     <div id="main-app" class="hidden">
@@ -290,7 +219,7 @@
                     <button class="text-xs font-bold text-gray-400 hover:text-blue-600">Privacy Policy</button>
                     <div class="bg-blue-50 px-4 py-2 rounded-xl flex items-center gap-2 border border-blue-100">
                         <i class="fas fa-wallet text-blue-600"></i>
-                        <span class="font-black text-blue-700">₹<span id="wallet-balance">450.00</span></span>
+                        <span class="font-black text-blue-700">₹<span id="wallet-balance-top">450.00</span></span>
                     </div>
                 </div>
             </div>
@@ -319,70 +248,9 @@
                     <button class="mt-5 bg-white text-blue-600 px-6 py-2.5 rounded-xl font-black text-xs uppercase shadow-lg">Grab Offer Now</button>
                 </div>
                 <i class="fas fa-bolt absolute -right-6 -bottom-6 text-9xl opacity-10"></i>
-                <i class="fas fa-shopping-bag absolute right-10 top-1/2 -translate-y-1/2 text-7xl opacity-20 rotate-12"></i>
             </section>
 
-            <div id="product-grid" class="grid grid-cols-2 gap-4">
-                </div>
-            <div class="sheet-handle"></div>
-<div class="p-6">
-    <div id="p-slider" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-4 h-80 rounded-3xl">
-        </div>
-    
-    <div class="mt-6 space-y-4">
-        <div class="flex justify-between items-start">
-            <h2 id="p-name" class="text-2xl font-extrabold text-gray-900 leading-tight w-3/4">Product Name</h2>
-            <div class="flex flex-col items-end">
-                <div class="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-black">Official Seller</div>
-                <span id="p-seller" class="text-[9px] text-gray-400 mt-1 font-bold"></span>
-            </div>
-        </div>
-
-        <div class="flex items-baseline gap-3">
-            <span class="text-xs font-bold text-red-500 uppercase tracking-widest" id="p-disc-pct">-15%</span>
-            <span class="text-3xl font-black text-gray-900" id="p-price">₹0</span>
-            <span class="text-sm font-bold text-gray-400 line-through" id="p-mrp">MRP ₹0</span>
-        </div>
-
-        <p class="text-[11px] font-bold text-green-600 bg-green-50 inline-block px-3 py-1 rounded-full border border-green-100 italic">
-            <i class="fas fa-truck-fast mr-2"></i> Delivery in 7 to 15 days
-        </p>
-
-        <div class="space-y-2">
-            <p class="text-xs font-black uppercase text-gray-400">Select Color</p>
-            <div id="p-colors" class="flex gap-3 overflow-x-auto no-scrollbar"></div>
-        </div>
-
-        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-100">
-            <span class="text-sm font-black text-gray-700">Quantity</span>
-            <div class="flex items-center gap-6">
-                <button onclick="changeQty(-1)" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center"><i class="fas fa-minus text-xs"></i></button>
-                <span id="p-qty" class="font-black">1</span>
-                <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center"><i class="fas fa-plus text-xs"></i></button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mt-8">
-            <button onclick="addToCart()" class="py-5 rounded-2xl bg-gray-100 text-gray-900 font-black text-sm uppercase tracking-widest active:scale-95 transition-all">Add to Cart</button>
-            <button onclick="buyNow()" class="py-5 rounded-2xl bg-blue-600 text-white font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 active:scale-95 transition-all">Buy Now</button>
-        </div>
-
-        <div class="border-t border-gray-100 pt-8 mt-8">
-            <h3 class="text-lg font-black italic">Customer Reviews</h3>
-            <div class="flex items-center gap-4 mt-4">
-                <div class="flex text-yellow-400"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
-                <span id="p-rating-text" class="text-sm font-bold text-gray-600">4.8 out of 5</span>
-            </div>
-            <p id="p-total-reviews" class="text-[10px] font-bold text-gray-400 uppercase mt-1">2,400 global ratings</p>
-        </div>
-
-        <div class="border-t border-gray-100 pt-8 pb-32">
-            <h3 class="text-lg font-black italic mb-4">Product Description</h3>
-            <p id="p-desc" class="text-sm text-gray-600 leading-relaxed font-medium"></p>
-        </div>
-    </div>
-</div>
-
+            <div id="product-grid" class="grid grid-cols-2 gap-4"></div>
         </main>
 
         <nav class="bottom-nav">
@@ -418,234 +286,167 @@
         </nav>
     </div>
 
-    <div id="sheet-overlay" class="sheet-overlay" onclick="closeSheet()"></div>
+    <div id="sheet-overlay" class="sheet-overlay" onclick="closeAllSheets()"></div>
+
     <div id="product-sheet" class="slide-up-sheet">
+        <div class="sheet-handle"></div>
+        <div class="p-6">
+            <div id="p-slider" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-4 h-80 rounded-3xl"></div>
+            <div class="mt-6 space-y-4">
+                <div class="flex justify-between items-start">
+                    <h2 id="p-name" class="text-2xl font-extrabold text-gray-900 leading-tight w-3/4"></h2>
+                    <div class="flex flex-col items-end">
+                        <div class="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-black">Official Seller</div>
+                        <span id="p-seller" class="text-[9px] text-gray-400 mt-1 font-bold"></span>
+                    </div>
+                </div>
+                <div class="flex items-baseline gap-3">
+                    <span class="text-xs font-bold text-red-500 uppercase tracking-widest" id="p-disc-pct"></span>
+                    <span class="text-3xl font-black text-gray-900" id="p-price"></span>
+                    <span class="text-sm font-bold text-gray-400 line-through" id="p-mrp"></span>
+                </div>
+                <p class="text-[11px] font-bold text-green-600 bg-green-50 inline-block px-3 py-1 rounded-full border border-green-100 italic">
+                    <i class="fas fa-truck-fast mr-2"></i> Delivery in 7 to 15 days
+                </p>
+                <div class="space-y-2">
+                    <p class="text-xs font-black uppercase text-gray-400">Select Color</p>
+                    <div id="p-colors" class="flex gap-3 overflow-x-auto no-scrollbar"></div>
+                </div>
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                    <span class="text-sm font-black text-gray-700">Quantity</span>
+                    <div class="flex items-center gap-6">
+                        <button onclick="changeQty(-1)" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center"><i class="fas fa-minus text-xs"></i></button>
+                        <span id="p-qty" class="font-black">1</span>
+                        <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center"><i class="fas fa-plus text-xs"></i></button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-8">
+                    <button class="py-5 rounded-2xl bg-gray-100 text-gray-900 font-black text-sm uppercase tracking-widest active:scale-95">Add to Cart</button>
+                    <button class="py-5 rounded-2xl bg-blue-600 text-white font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 active:scale-95">Buy Now</button>
+                </div>
+                <div class="border-t border-gray-100 pt-8 mt-8">
+                    <h3 class="text-lg font-black italic">Customer Reviews</h3>
+                    <div class="flex items-center gap-4 mt-4">
+                        <div class="flex text-yellow-400"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
+                        <span id="p-rating-text" class="text-sm font-bold text-gray-600"></span>
+                    </div>
+                    <p id="p-total-reviews" class="text-[10px] font-bold text-gray-400 uppercase mt-1"></p>
+                </div>
+                <div class="border-t border-gray-100 pt-8 pb-32">
+                    <h3 class="text-lg font-black italic mb-4">Product Description</h3>
+                    <p id="p-desc" class="text-sm text-gray-600 leading-relaxed font-medium"></p>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div id="wallet-sheet" class="slide-up-sheet">
+        <div class="sheet-handle"></div>
+        <div class="p-8">
+            <div class="bg-blue-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden mb-8">
+                <p class="text-[10px] font-black uppercase tracking-[3px] opacity-80">Total Balance</p>
+                <h2 class="text-4xl font-black mt-2">₹<span id="wallet-display">450.00</span></h2>
+                <div class="flex gap-4 mt-8">
+                    <button class="bg-white text-blue-600 px-6 py-3 rounded-2xl font-black text-xs uppercase shadow-lg">+ Add Money</button>
+                    <button class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase border border-blue-400">Withdraw</button>
+                </div>
+            </div>
+            <h3 class="text-lg font-black italic mb-4">Recent Transactions</h3>
+            <div id="transaction-list" class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center"><i class="fas fa-arrow-down"></i></div>
+                        <div><p class="text-sm font-black">Refund: Order #8821</p><p class="text-[10px] text-gray-400 font-bold">24 MAR 2026</p></div>
+                    </div>
+                    <span class="font-black text-green-600">+₹120.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-sheet" class="slide-up-sheet">
+        <div class="sheet-handle"></div>
+        <div class="p-6 flex flex-col h-full">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg"><i class="fas fa-robot text-xl"></i></div>
+                <div><h2 class="text-xl font-black italic">SRP AI</h2><p class="text-[10px] font-bold text-blue-600 uppercase">Active</p></div>
+            </div>
+            <div id="ai-chat-box" class="flex-grow overflow-y-auto space-y-4 pb-48 no-scrollbar">
+                <div class="bg-blue-50 p-4 rounded-2xl mr-12 text-sm font-semibold text-blue-800">Hello! Ask me anything about SRP SHOPPING.</div>
+            </div>
+            <div class="absolute bottom-10 left-0 w-full px-6">
+                <div class="relative">
+                    <input type="text" id="ai-input" placeholder="Ask SRP AI..." class="w-full bg-gray-100 border-2 px-6 py-4 rounded-2xl font-bold">
+                    <button onclick="askAI()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 text-white rounded-xl"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="seller-sheet" class="slide-up-sheet">
+        <div class="sheet-handle"></div>
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black italic">SELLER HUB</h2>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase">+ New Product</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-gray-50 p-5 rounded-3xl border">
+                    <p class="text-[10px] font-black text-gray-400 uppercase">Sales</p>
+                    <h4 class="text-xl font-black">₹42,800</h4>
+                </div>
+                <div class="bg-gray-50 p-5 rounded-3xl border">
+                    <p class="text-[10px] font-black text-gray-400 uppercase">Orders</p>
+                    <h4 class="text-xl font-black">12</h4>
+                </div>
+            </div>
+            <h3 class="text-md font-black mb-4">Inventory</h3>
+            <div id="seller-inventory" class="space-y-4"></div>
+        </div>
+    </div>
 
     <script>
-        // --- NAVIGATION LOGIC ---
-function navigate(page) {
-    // Reset all nav items
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    
-    // Close any open sheets before opening a new one
-    closeSheet();
-
-    // Map the button click to its specific sheet
-    const navButtons = document.querySelectorAll('.nav-item');
-    
-    if (page === 'home') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        navButtons[0].classList.add('active');
-    } else if (page === 'wallet') {
-        openSheet('wallet-sheet');
-        navButtons[2].classList.add('active');
-    } else if (page === 'ai') {
-        openSheet('ai-sheet');
-        navButtons[5].classList.add('active');
-    } else if (page === 'seller') {
-        openSheet('seller-sheet');
-        loadSellerInventory();
-        navButtons[3].classList.add('active');
-    }
-}
-
-function openSheet(id) {
-    document.getElementById(id).classList.add('active');
-    document.getElementById('sheet-overlay').style.display = 'block';
-}
-
-function closeSheet() {
-    document.querySelectorAll('.slide-up-sheet').forEach(s => s.classList.remove('active'));
-    document.getElementById('sheet-overlay').style.display = 'none';
-}
-
-// --- AI ENGINE ---
-function askAI() {
-    const input = document.getElementById('ai-input');
-    const chatBox = document.getElementById('ai-chat-box');
-    if (!input.value) return;
-
-    // User Message
-    chatBox.innerHTML += `
-        <div class="bg-gray-100 p-4 rounded-2xl rounded-tr-none ml-12 text-sm font-semibold text-gray-800">
-            ${input.value}
-        </div>
-    `;
-
-    const query = input.value.toLowerCase();
-    input.value = "";
-
-    // AI Simulated Intelligence
-    setTimeout(() => {
-        let response = "I'm not sure about that. Try asking about a specific product like 'iPhone' or 'Shoes'.";
-        
-        if (query.includes("iphone") || query.includes("mobile")) {
-            response = "I found 3 premium smartphones for you. The iPhone 15 Pro is currently our best seller.";
-        } else if (query.includes("balance") || query.includes("wallet")) {
-            response = "Your current SRP Wallet balance is ₹450.00.";
-        } else if (query.includes("discount")) {
-            response = "We have an ongoing sale! You can get up to 70% off on Nike and Sony products.";
-        }
-
-        chatBox.innerHTML += `
-            <div class="bg-blue-600 p-4 rounded-2xl rounded-tl-none mr-12 text-sm font-semibold text-white shadow-lg shadow-blue-100">
-                ${response}
-            </div>
-        `;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }, 800);
-}
-
-// --- SELLER LOGIC ---
-function loadSellerInventory() {
-    const container = document.getElementById('seller-inventory');
-    // Filter products where the seller is the admin email
-    const myProducts = PRODUCTS.filter(p => p.seller === "Srpstudio1@gmail.com").slice(0, 3);
-    
-    container.innerHTML = myProducts.map(p => `
-        <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
-            <div class="flex items-center gap-3">
-                <img src="${p.images[0]}" class="w-12 h-12 rounded-xl object-cover">
-                <div>
-                    <p class="text-xs font-black">${p.name}</p>
-                    <p class="text-[9px] font-bold text-gray-400">Stock: 42 Units</p>
-                </div>
-            </div>
-            <div class="text-right">
-                <p class="text-xs font-black text-blue-600">₹${p.price.toLocaleString()}</p>
-                <button class="text-[10px] font-black text-red-500 uppercase mt-1">Edit</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-        const PRODUCTS = [
-    { id: 1, name: "iPhone 15 Pro - Titanium Blue", seller: "Srpstudio1@gmail.com", price: 129900, mrp: 134900, images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?w=500", "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500"], category: "Mobiles", rating: 4.8, reviews: 1240, colors: ["Titanium Blue", "Natural", "Black"], desc: "Experience the power of Titanium. The A17 Pro chip is a monster for gaming..." },
-    { id: 2, name: "Sony WH-1000XM5 ANC", seller: "Srpstudio1@gmail.com", price: 29990, mrp: 34990, images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500"], category: "Electronics", rating: 4.9, reviews: 850, colors: ["Silver", "Midnight Black"], desc: "Industry-leading noise cancellation. Two processors control 8 microphones..." },
-    { id: 3, name: "MacBook Air M3 - 13 inch", seller: "Srpstudio1@gmail.com", price: 114900, mrp: 119900, images: ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500"], category: "Electronics", rating: 4.7, reviews: 320, colors: ["Midnight", "Starlight", "Space Grey"], desc: "Strikingly thin and fast so you can work, play or create anything — anywhere." },
-    { id: 4, name: "Samsung Galaxy S24 Ultra", seller: "Srpstudio1@gmail.com", price: 129999, mrp: 139999, images: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500"], category: "Mobiles", rating: 4.8, reviews: 2100, colors: ["Titanium Gray", "Violet"], desc: "Welcome to the era of mobile AI. With S24 Ultra, you can unleash whole new levels of creativity." },
-    { id: 5, name: "Nike Air Jordan 1 Retro", seller: "Srpstudio1@gmail.com", price: 15995, mrp: 18000, images: ["https://images.unsplash.com/photo-1584735175315-9d5df23860e6?w=500"], category: "Fashion", rating: 4.9, reviews: 5400, colors: ["Chicago", "Royal Blue"], desc: "The sneaker that started it all. High-end leather and iconic design." },
-    { id: 6, name: "Dell UltraSharp 27 Monitor", seller: "Srpstudio1@gmail.com", price: 45000, mrp: 52000, images: ["https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500"], category: "Electronics", rating: 4.6, reviews: 120, colors: ["Platinum Silver"], desc: "4K resolution with amazing color depth. Perfect for professional creators." },
-    { id: 7, name: "Sony Alpha a7 IV", seller: "Srpstudio1@gmail.com", price: 210000, mrp: 240000, images: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500"], category: "Electronics", rating: 4.9, reviews: 89, colors: ["Black"], desc: "A true hybrid camera. 33MP sensor and 4K 60p video recording." },
-    { id: 8, name: "Logitech MX Master 3S", seller: "Srpstudio1@gmail.com", price: 9500, mrp: 10995, images: ["https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500"], category: "Accessories", rating: 4.8, reviews: 3200, colors: ["Graphite", "Pale Grey"], desc: "The ultimate productivity mouse. Ultra-quiet clicking and 8K DPI tracking." },
-    { id: 9, name: "Mechanical Keyboard GMMK 2", seller: "Srpstudio1@gmail.com", price: 12000, mrp: 15000, images: ["https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500"], category: "Accessories", rating: 4.5, reviews: 450, colors: ["White", "Black"], desc: "Hot-swappable switches and premium aluminum top frame." },
-    { id: 10, name: "PlayStation 5 Console", seller: "Srpstudio1@gmail.com", price: 54990, mrp: 54990, images: ["https://images.unsplash.com/photo-1606813907291-d86ebb9c74ad?w=500"], category: "Electronics", rating: 4.9, reviews: 12000, colors: ["White"], desc: "Lightning fast loading with an ultra-high speed SSD." },
-    { id: 11, name: "Apple Watch Ultra 2", seller: "Srpstudio1@gmail.com", price: 89900, mrp: 89900, images: ["https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=500"], category: "Accessories", rating: 4.7, reviews: 500, colors: ["Orange", "Blue", "White"], desc: "The most rugged and capable Apple Watch ever." },
-    { id: 12, name: "Ray-Ban Wayfarer Classic", seller: "Srpstudio1@gmail.com", price: 10500, mrp: 12000, images: ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500"], category: "Fashion", rating: 4.4, reviews: 320, colors: ["Black", "Tortoise"], desc: "Iconic sunglasses that defined a generation." },
-    { id: 13, name: "GoPro HERO12 Black", seller: "Srpstudio1@gmail.com", price: 45000, mrp: 48000, images: ["https://images.unsplash.com/photo-1565849906461-0ee440501d61?w=500"], category: "Electronics", rating: 4.6, reviews: 210, colors: ["Black"], desc: "Unbelievable image quality with HyperSmooth 6.0 stabilization." },
-    { id: 14, name: "Bose QuietComfort Ultra", seller: "Srpstudio1@gmail.com", price: 35900, mrp: 39900, images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"], category: "Electronics", rating: 4.8, reviews: 900, colors: ["Black", "White Smoke"], desc: "World-class noise cancellation and breakthrough spatial audio." },
-    { id: 15, name: "Yeti Rambler 30oz Tumbler", seller: "Srpstudio1@gmail.com", price: 4500, mrp: 5000, images: ["https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=500"], category: "Home", rating: 4.9, reviews: 15000, colors: ["Navy Blue", "Seafoam"], desc: "Double-wall vacuum insulation to keep your drink hot or cold." },
-    { id: 16, name: "Nintendo Switch OLED", seller: "Srpstudio1@gmail.com", price: 32000, mrp: 35000, images: ["https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=500"], category: "Electronics", rating: 4.8, reviews: 8000, colors: ["Neon Red/Blue", "White"], desc: "Vibrant 7-inch OLED screen and wide adjustable stand." },
-    { id: 17, name: "Hydro Flask 32oz Wide", seller: "Srpstudio1@gmail.com", price: 3800, mrp: 4200, images: ["https://images.unsplash.com/photo-1602143303410-7199d123ad6c?w=500"], category: "Home", rating: 4.7, reviews: 2100, colors: ["Laguna", "Snapper"], desc: "Keeps beverages cold for up to 24 hours." },
-    { id: 18, name: "Asus ROG Zephyrus G14", seller: "Srpstudio1@gmail.com", price: 145000, mrp: 160000, images: ["https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500"], category: "Electronics", rating: 4.7, reviews: 150, colors: ["Moonlight White"], desc: "Powerful Ryzen 9 processor and RTX 40-series graphics." },
-    { id: 19, name: "KitchenAid Artisan Mixer", seller: "Srpstudio1@gmail.com", price: 42000, mrp: 48000, images: ["https://images.unsplash.com/photo-1594385208974-2e75f9d8ad48?w=500"], category: "Home", rating: 4.9, reviews: 3200, colors: ["Empire Red", "Aqua Sky"], desc: "The legendary mixer for all your culinary adventures." },
-    { id: 20, name: "Dyson V15 Detect Vacuum", seller: "Srpstudio1@gmail.com", price: 65000, mrp: 72000, images: ["https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500"], category: "Home", rating: 4.8, reviews: 900, colors: ["Yellow/Nickel"], desc: "The most powerful, intelligent cordless vacuum with laser illumination." }
-];
-        let currentProduct = null;
-let currentQty = 1;
-
-function initStorefront() {
-    loadProducts(PRODUCTS);
-}
-
-function loadProducts(data) {
-    const grid = document.getElementById('product-grid');
-    grid.innerHTML = data.map(p => `
-        <div class="product-card p-3" onclick="openProduct(${p.id})">
-            <div class="w-full aspect-square rounded-2xl overflow-hidden bg-gray-50 relative">
-                <img src="${p.images[0]}" class="w-full h-full object-cover">
-                <div class="absolute bottom-2 right-2 bg-white/90 px-2 py-1 rounded-lg text-[10px] font-black italic shadow-sm">
-                    ${p.rating} <i class="fas fa-star text-yellow-400"></i>
-                </div>
-            </div>
-            <div class="mt-3 px-1">
-                <p class="text-[10px] font-black uppercase text-blue-600 tracking-tighter">${p.category}</p>
-                <h3 class="text-xs font-extrabold text-gray-800 line-clamp-1">${p.name}</h3>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-sm font-black text-gray-900">₹${p.price.toLocaleString()}</span>
-                    <button class="w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function openProduct(id) {
-    const p = PRODUCTS.find(item => item.id === id);
-    currentProduct = p;
-    currentQty = 1;
-    
-    // Set text content
-    document.getElementById('p-name').innerText = p.name;
-    document.getElementById('p-price').innerText = `₹${p.price.toLocaleString()}`;
-    document.getElementById('p-mrp').innerText = `MRP ₹${p.mrp.toLocaleString()}`;
-    document.getElementById('p-disc-pct').innerText = `-${Math.round((p.mrp-p.price)/p.mrp*100)}%`;
-    document.getElementById('p-desc').innerText = p.desc;
-    document.getElementById('p-seller').innerText = p.seller;
-    document.getElementById('p-qty').innerText = "1";
-    document.getElementById('p-rating-text').innerText = `${p.rating} out of 5`;
-    document.getElementById('p-total-reviews').innerText = `${p.reviews.toLocaleString()} global ratings`;
-
-    // Inject Slider Images
-    const slider = document.getElementById('p-slider');
-    slider.innerHTML = p.images.map(img => `<img src="${img}" class="h-full w-full object-cover snap-center flex-shrink-0">`).join('');
-
-    // Inject Colors
-    const colorContainer = document.getElementById('p-colors');
-    colorContainer.innerHTML = p.colors.map(c => `
-        <div class="px-5 py-3 rounded-xl border-2 border-gray-100 font-bold text-xs whitespace-nowrap active:border-blue-600 active:text-blue-600 transition-all cursor-pointer">
-            ${c}
-        </div>
-    `).join('');
-
-    // Show Sheet
-    document.getElementById('product-sheet').classList.add('active');
-    document.getElementById('sheet-overlay').style.display = 'block';
-}
-
-function changeQty(amt) {
-    currentQty = Math.max(1, currentQty + amt);
-    document.getElementById('p-qty').innerText = currentQty;
-}
-
-function filterProducts() {
-    const query = document.getElementById('product-search').value.toLowerCase();
-    const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-    loadProducts(filtered);
-}
-
-function setCategory(cat) {
-    document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    if(cat === 'all') return loadProducts(PRODUCTS);
-    const filtered = PRODUCTS.filter(p => p.category === cat);
-    loadProducts(filtered);
-}
-
-
-        // --- CONFIGURATION ---
-        const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SB_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
         const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
+        const PRODUCTS = [
+            { id: 1, name: "iPhone 15 Pro - Titanium Blue", seller: "Srpstudio1@gmail.com", price: 129900, mrp: 134900, images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?w=500", "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500"], category: "Mobiles", rating: 4.8, reviews: 1240, colors: ["Blue", "Natural"], desc: "Titanium design, A17 Pro chip, Action button. The most powerful iPhone ever." },
+            { id: 2, name: "Sony WH-1000XM5 ANC", seller: "Srpstudio1@gmail.com", price: 29990, mrp: 34990, images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500"], category: "Electronics", rating: 4.9, reviews: 850, colors: ["Silver", "Black"], desc: "Industry-leading noise cancellation. Exceptional sound quality." },
+            { id: 3, name: "MacBook Air M3 - 13 inch", seller: "Srpstudio1@gmail.com", price: 114900, mrp: 119900, images: ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500"], category: "Electronics", rating: 4.7, reviews: 320, colors: ["Midnight", "Starlight"], desc: "The M3 chip brings even greater capabilities to the superportable MacBook Air." },
+            { id: 4, name: "Samsung Galaxy S24 Ultra", seller: "Srpstudio1@gmail.com", price: 129999, mrp: 139999, images: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500"], category: "Mobiles", rating: 4.8, reviews: 2100, colors: ["Gray", "Violet"], desc: "The ultimate AI smartphone. S-Pen included. 200MP camera." },
+            { id: 5, name: "Nike Air Jordan 1 Retro", seller: "Srpstudio1@gmail.com", price: 15995, mrp: 18000, images: ["https://images.unsplash.com/photo-1584735175315-9d5df23860e6?w=500"], category: "Fashion", rating: 4.9, reviews: 5400, colors: ["Chicago", "Royal"], desc: "Iconic design, premium materials, and legendary comfort." },
+            { id: 6, name: "Dell UltraSharp 27 Monitor", seller: "Srpstudio1@gmail.com", price: 45000, mrp: 52000, images: ["https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500"], category: "Electronics", rating: 4.6, reviews: 120, colors: ["Silver"], desc: "Brilliant 4K color. Infinite contrast. The best for design." },
+            { id: 7, name: "Sony Alpha a7 IV", seller: "Srpstudio1@gmail.com", price: 210000, mrp: 240000, images: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500"], category: "Electronics", rating: 4.9, reviews: 89, colors: ["Black"], desc: "Advanced hybrid camera. 33MP Full-frame sensor." },
+            { id: 8, name: "Logitech MX Master 3S", seller: "Srpstudio1@gmail.com", price: 9500, mrp: 10995, images: ["https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500"], category: "Accessories", rating: 4.8, reviews: 3200, colors: ["Graphite"], desc: "Ergonomic productivity mouse with MagSpeed scrolling." },
+            { id: 9, name: "Mechanical Keyboard GMMK 2", seller: "Srpstudio1@gmail.com", price: 12000, mrp: 15000, images: ["https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500"], category: "Accessories", rating: 4.5, reviews: 450, colors: ["White"], desc: "Full customizable RGB mechanical keyboard." },
+            { id: 10, name: "PlayStation 5 Console", seller: "Srpstudio1@gmail.com", price: 54990, mrp: 54990, images: ["https://images.unsplash.com/photo-1606813907291-d86ebb9c74ad?w=500"], category: "Electronics", rating: 4.9, reviews: 12000, colors: ["White"], desc: "The future of gaming. 4K 120Hz support." },
+            { id: 11, name: "Apple Watch Ultra 2", seller: "Srpstudio1@gmail.com", price: 89900, mrp: 89900, images: ["https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=500"], category: "Accessories", rating: 4.7, reviews: 500, colors: ["Orange"], desc: "Rugged. Capable. Built for extreme athletes." },
+            { id: 12, name: "Ray-Ban Wayfarer Classic", seller: "Srpstudio1@gmail.com", price: 10500, mrp: 12000, images: ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500"], category: "Fashion", rating: 4.4, reviews: 320, colors: ["Black"], desc: "The original style icon since 1952." },
+            { id: 13, name: "GoPro HERO12 Black", seller: "Srpstudio1@gmail.com", price: 45000, mrp: 48000, images: ["https://images.unsplash.com/photo-1565849906461-0ee440501d61?w=500"], category: "Electronics", rating: 4.6, reviews: 210, colors: ["Black"], desc: "Best-in-class image quality with HDR video." },
+            { id: 14, name: "Bose QuietComfort Ultra", seller: "Srpstudio1@gmail.com", price: 35900, mrp: 39900, images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"], category: "Electronics", rating: 4.8, reviews: 900, colors: ["White"], desc: "Breakthrough spatial audio. World-class quiet." },
+            { id: 15, name: "Yeti Rambler 30oz Tumbler", seller: "Srpstudio1@gmail.com", price: 4500, mrp: 5000, images: ["https://images.unsplash.com/photo-1574634534894-89d7576c8259?w=500"], category: "Home", rating: 4.9, reviews: 15000, colors: ["Navy"], desc: "Double-wall vacuum insulation. Dishwasher safe." },
+            { id: 16, name: "Nintendo Switch OLED", seller: "Srpstudio1@gmail.com", price: 32000, mrp: 35000, images: ["https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=500"], category: "Electronics", rating: 4.8, reviews: 8000, colors: ["Neon"], desc: "Vibrant 7-inch OLED screen." },
+            { id: 17, name: "Hydro Flask 32oz Wide", seller: "Srpstudio1@gmail.com", price: 3800, mrp: 4200, images: ["https://images.unsplash.com/photo-1602143303410-7199d123ad6c?w=500"], category: "Home", rating: 4.7, reviews: 2100, colors: ["Laguna"], desc: "Stainless steel insulated water bottle." },
+            { id: 18, name: "Asus ROG Zephyrus G14", seller: "Srpstudio1@gmail.com", price: 145000, mrp: 160000, images: ["https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500"], category: "Electronics", rating: 4.7, reviews: 150, colors: ["White"], desc: "Powerful 14-inch gaming laptop." },
+            { id: 19, name: "KitchenAid Artisan Mixer", seller: "Srpstudio1@gmail.com", price: 42000, mrp: 48000, images: ["https://images.unsplash.com/photo-1594385208974-2e75f9d8ad48?w=500"], category: "Home", rating: 4.9, reviews: 3200, colors: ["Red"], desc: "Iconic design for professional baking." },
+            { id: 20, name: "Dyson V15 Detect Vacuum", seller: "Srpstudio1@gmail.com", price: 65000, mrp: 72000, images: ["https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500"], category: "Home", rating: 4.8, reviews: 900, colors: ["Yellow"], desc: "Laser detects hidden dust. Intelligent suction." }
+        ];
 
-        // --- AUTH LOGIC ---
         let isSignUp = false;
+        let currentProduct = null;
+        let currentQty = 1;
 
+        // AUTH
         function toggleAuthMode() {
             isSignUp = !isSignUp;
             document.getElementById('auth-btn').innerText = isSignUp ? 'Create Account' : 'Sign In';
-            document.getElementById('auth-message').innerText = isSignUp ? 'Join the SRP Community' : 'Sign in to start shopping';
             document.getElementById('toggle-auth').innerText = isSignUp ? 'Sign In' : 'Create Account';
         }
 
         async function signInWithGoogle() {
-            const { error } = await _supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: window.location.origin }
-            });
+            const { error } = await _supabase.auth.signInWithOAuth({ provider: 'google' });
             if (error) alert(error.message);
         }
 
@@ -653,70 +454,95 @@ function setCategory(cat) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const btn = document.getElementById('auth-btn');
-            
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-
             try {
-                if (isSignUp) {
-                    const { error } = await _supabase.auth.signUp({ email, password });
-                    if (error) throw error;
-                    alert("Account created! Check your email for verification.");
-                } else {
-                    const { error } = await _supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                }
-            } catch (err) {
-                alert(err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = isSignUp ? 'Create Account' : 'Sign In';
-            }
+                if (isSignUp) { await _supabase.auth.signUp({ email, password }); alert("Verification sent!"); }
+                else { const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) throw error; }
+            } catch (err) { alert(err.message); }
         };
 
         _supabase.auth.onAuthStateChange((event, session) => {
-            const user = session?.user || null;
-            if (user) {
+            if (session) {
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                initStorefront(user);
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('main-app').classList.add('hidden');
+                loadProducts(PRODUCTS);
             }
         });
 
-        // --- CORE FUNCTIONS ---
-        function handleLogoAction() {
-            const user = _supabase.auth.getUser();
-            _supabase.auth.getSession().then(({data}) => {
-                const email = data.session?.user?.email;
-                if (ADMIN_EMAILS.includes(email)) {
-                    const pin = prompt("Enter Admin Security PIN:");
-                    if (pin === "1234") window.location.href = "admin.html";
-                } else {
-                    window.location.reload();
-                }
-            });
+        // CORE UI
+        function loadProducts(data) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = data.map(p => `
+                <div class="product-card p-3" onclick="openProduct(${p.id})">
+                    <img src="${p.images[0]}" class="w-full aspect-square object-cover rounded-2xl">
+                    <div class="mt-2"><p class="text-xs font-black line-clamp-1">${p.name}</p>
+                    <p class="text-blue-600 font-black text-sm">₹${p.price.toLocaleString()}</p></div>
+                </div>`).join('');
         }
 
-        function initStorefront(user) {
-            console.log("Storefront Loaded for:", user.email);
-            // Products will be loaded in Part 2
-        }
-
-        function closeSheet() {
-            document.getElementById('product-sheet').classList.remove('active');
-            document.getElementById('sheet-overlay').style.display = 'none';
+        function openProduct(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            currentProduct = p; currentQty = 1;
+            document.getElementById('p-name').innerText = p.name;
+            document.getElementById('p-price').innerText = `₹${p.price.toLocaleString()}`;
+            document.getElementById('p-mrp').innerText = `MRP ₹${p.mrp.toLocaleString()}`;
+            document.getElementById('p-disc-pct').innerText = `-${Math.round((p.mrp-p.price)/p.mrp*100)}%`;
+            document.getElementById('p-desc').innerText = p.desc;
+            document.getElementById('p-seller').innerText = p.seller;
+            document.getElementById('p-rating-text').innerText = `${p.rating}/5`;
+            document.getElementById('p-total-reviews').innerText = `${p.reviews} reviews`;
+            document.getElementById('p-slider').innerHTML = p.images.map(img => `<img src="${img}" class="w-full h-full object-cover snap-center flex-shrink-0">`).join('');
+            document.getElementById('p-colors').innerHTML = p.colors.map(c => `<div class="px-4 py-2 border rounded-xl text-xs font-bold">${c}</div>`).join('');
+            openSheet('product-sheet');
         }
 
         function navigate(page) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            console.log("Navigating to:", page);
-            // Sub-page logic in Part 2
+            closeAllSheets();
+            if (page === 'home') { window.scrollTo(0,0); document.querySelectorAll('.nav-item')[0].classList.add('active'); }
+            if (page === 'wallet') { openSheet('wallet-sheet'); document.querySelectorAll('.nav-item')[2].classList.add('active'); }
+            if (page === 'ai') { openSheet('ai-sheet'); document.querySelectorAll('.nav-item')[5].classList.add('active'); }
+            if (page === 'seller') { openSheet('seller-sheet'); loadSellerInv(); document.querySelectorAll('.nav-item')[3].classList.add('active'); }
         }
+
+        function openSheet(id) { document.getElementById(id).classList.add('active'); document.getElementById('sheet-overlay').style.display = 'block'; }
+        function closeAllSheets() { document.querySelectorAll('.slide-up-sheet').forEach(s => s.classList.remove('active')); document.getElementById('sheet-overlay').style.display = 'none'; }
+        
+        function handleLogoAction() {
+            _supabase.auth.getSession().then(({data}) => {
+                if (ADMIN_EMAILS.includes(data.session?.user?.email)) { 
+                    const pin = prompt("Admin Pin:"); if(pin === "1234") alert("Admin Panel Access Granted"); 
+                } else { window.location.reload(); }
+            });
+        }
+
+        function askAI() {
+            const i = document.getElementById('ai-input');
+            const b = document.getElementById('ai-chat-box');
+            b.innerHTML += `<div class="bg-gray-100 p-4 rounded-2xl ml-12 text-sm font-bold">${i.value}</div>`;
+            setTimeout(() => { b.innerHTML += `<div class="bg-blue-600 text-white p-4 rounded-2xl mr-12 text-sm font-bold">SRP AI: Checking details for you...</div>`; b.scrollTop = b.scrollHeight; }, 600);
+            i.value = "";
+        }
+
+        function loadSellerInv() {
+            const items = PRODUCTS.filter(p => p.seller === "Srpstudio1@gmail.com").slice(0,3);
+            document.getElementById('seller-inventory').innerHTML = items.map(p => `
+                <div class="p-4 border rounded-2xl flex justify-between">
+                    <p class="text-xs font-bold">${p.name}</p><p class="text-blue-600 font-black">Active</p>
+                </div>`).join('');
+        }
+
+        function filterProducts() {
+            const q = document.getElementById('product-search').value.toLowerCase();
+            loadProducts(PRODUCTS.filter(p => p.name.toLowerCase().includes(q)));
+        }
+
+        function setCategory(c) {
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            loadProducts(c === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === c));
+        }
+
+        function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('p-qty').innerText = currentQty; }
     </script>
 </body>
 </html>
