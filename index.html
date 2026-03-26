@@ -3,144 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SRP Auth System</title>
+<title>SRP SHOPPING | Full System</title>
 
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{
-    font-family: Arial;
-    background:#0f172a;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.box{
-    background:#1e293b;
-    padding:30px;
-    border-radius:12px;
-    width:320px;
-    text-align:center;
-}
-
-input{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border:none;
-    border-radius:6px;
-}
-
-button{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.login{background:#22c55e;}
-.signup{background:#3b82f6;}
-.google{background:#ef4444;}
-.logout{background:#f59e0b;}
-
-#user{
-    margin-top:15px;
-    font-size:14px;
-}
+body{font-family:Arial;background:#f4f7f6}
+#auth-screen{background:black;color:white;display:flex}
+.glass{background:rgba(255,255,255,0.05);padding:20px;border-radius:15px}
 </style>
 </head>
 
-<body>
+<body class="pb-20">
 
-<div class="box">
-    <h2>SRP LOGIN</h2>
+<!-- ================= AUTH SCREEN ================= -->
+<section id="auth-screen" class="fixed inset-0 items-center justify-center">
+<div class="glass w-80">
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+<h2 class="text-2xl font-bold mb-4 text-center">SRP LOGIN</h2>
 
-    <button class="login" onclick="login()">Login</button>
-    <button class="signup" onclick="signup()">Create Account</button>
+<input id="email" type="email" placeholder="Email" class="w-full p-2 mb-2 text-black">
+<input id="password" type="password" placeholder="Password" class="w-full p-2 mb-2 text-black">
 
-    <button class="google" onclick="googleLogin()">Login with Google</button>
+<button onclick="login()" class="w-full bg-green-500 p-2 mb-2">Login</button>
+<button onclick="signup()" class="w-full bg-blue-500 p-2 mb-2">Create Account</button>
 
-    <button class="logout" onclick="logout()">Logout</button>
+<button onclick="googleLogin()" class="w-full bg-red-500 p-2 mb-2">Google Login</button>
 
-    <div id="user"></div>
+<!-- 🔥 EXTRA PANEL -->
+<div class="mt-4 border-t pt-3">
+<button onclick="quickLogin()" class="w-full bg-green-700 p-2 mb-1">Quick Login</button>
+<button onclick="quickSignup()" class="w-full bg-blue-700 p-2 mb-1">Quick Signup</button>
+<button onclick="quickLogout()" class="w-full bg-yellow-500 p-2">Quick Logout</button>
+
+<p id="quick-user" class="text-xs text-center mt-2"></p>
+</div>
+
+</div>
+</section>
+
+<!-- ================= MAIN APP ================= -->
+<div id="app" style="display:none;padding:20px">
+
+<h1 class="text-2xl font-bold mb-4">Welcome to SRP SHOPPING</h1>
+
+<button onclick="logout()" class="bg-red-500 text-white p-2 mb-4">Logout</button>
+
+<div id="user-info"></div>
+
+<hr class="my-4">
+
+<h2 class="text-xl font-bold mb-2">Products</h2>
+<div id="products"></div>
+
 </div>
 
 <script>
-// 🔥 PUT YOUR CORRECT VALUES HERE
+
+// ===== SUPABASE CONFIG =====
 const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-const SUPABASE_KEY = "PASTE_YOUR_ANON_KEY_HERE";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// SIGNUP
+// ===== AUTH SYSTEM =====
+
 async function signup(){
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+const email=emailEl().value;
+const password=passEl().value;
 
-    const { error } = await client.auth.signUp({
-        email,
-        password
-    });
-
-    if(error){
-        alert(error.message);
-    } else {
-        alert("Account created! Check email if confirmation enabled.");
-    }
+const {error}=await supabase.auth.signUp({email,password});
+if(error) alert(error.message);
+else alert("Signup success!");
 }
 
-// LOGIN
 async function login(){
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+const email=emailEl().value;
+const password=passEl().value;
 
-    const { error } = await client.auth.signInWithPassword({
-        email,
-        password
-    });
-
-    if(error){
-        alert(error.message);
-    } else {
-        alert("Login successful!");
-        getUser();
-    }
+const {error}=await supabase.auth.signInWithPassword({email,password});
+if(error) alert(error.message);
 }
 
-// GOOGLE LOGIN
 async function googleLogin(){
-    await client.auth.signInWithOAuth({
-        provider: "google"
-    });
+await supabase.auth.signInWithOAuth({provider:"google"});
 }
 
-// LOGOUT
 async function logout(){
-    await client.auth.signOut();
-    document.getElementById("user").innerText = "Logged out";
+await supabase.auth.signOut();
 }
 
-// GET USER
-async function getUser(){
-    const { data } = await client.auth.getUser();
+function emailEl(){return document.getElementById("email")}
+function passEl(){return document.getElementById("password")}
 
-    if(data.user){
-        document.getElementById("user").innerText =
-            "Logged in as: " + data.user.email;
-    }
+// ===== QUICK SYSTEM =====
+
+async function quickSignup(){
+const {error}=await supabase.auth.signUp({
+email:emailEl().value,
+password:passEl().value
+});
+if(error) alert(error.message);
+else alert("Quick signup done");
 }
 
-// AUTO LOGIN CHECK
-getUser();
+async function quickLogin(){
+const {error}=await supabase.auth.signInWithPassword({
+email:emailEl().value,
+password:passEl().value
+});
+if(error) alert(error.message);
+else showQuickUser();
+}
+
+async function quickLogout(){
+await supabase.auth.signOut();
+document.getElementById("quick-user").innerText="Logged out";
+}
+
+async function showQuickUser(){
+const {data}=await supabase.auth.getUser();
+if(data.user){
+document.getElementById("quick-user").innerText="User: "+data.user.email;
+}
+}
+
+// ===== AUTH STATE =====
+
+supabase.auth.onAuthStateChange((event,session)=>{
+if(session){
+document.getElementById("auth-screen").style.display="none";
+document.getElementById("app").style.display="block";
+loadUser();
+}else{
+document.getElementById("auth-screen").style.display="flex";
+document.getElementById("app").style.display="none";
+}
+});
+
+// ===== USER =====
+
+async function loadUser(){
+const {data}=await supabase.auth.getUser();
+if(data.user){
+document.getElementById("user-info").innerText="Logged in as: "+data.user.email;
+}
+}
+
+// ===== PRODUCTS =====
+
+const products=[
+{name:"Phone",price:10000},
+{name:"Shirt",price:999},
+{name:"Shoes",price:1999}
+];
+
+function loadProducts(){
+const div=document.getElementById("products");
+div.innerHTML=products.map(p=>`
+<div style="border:1px solid #ccc;padding:10px;margin:5px">
+<b>${p.name}</b><br>₹${p.price}
+</div>
+`).join("");
+}
+
+loadProducts();
+showQuickUser();
 
 </script>
 
