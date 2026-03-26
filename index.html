@@ -305,6 +305,93 @@
             </button>
         </nav>
     </div>
+    <div id="account-drawer" class="drawer">
+        <div class="p-6 pb-32">
+            <div class="flex items-center gap-4 mb-8">
+                <div id="user-avatar" class="w-16 h-16 rounded-2xl bg-zinc-800 border border-yellow-500 flex items-center justify-center text-2xl text-yellow-500">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h3 id="user-display-name" class="premium-font text-lg text-white">SRP Member</h3>
+                    <p id="user-display-id" class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">ID: Loading...</p>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="bg-zinc-900/50 rounded-3xl p-5 border border-zinc-800">
+                    <h4 class="text-[10px] font-black uppercase text-yellow-500 tracking-widest mb-4">Shopping History</h4>
+                    <div id="order-list" class="space-y-4">
+                        <p class="text-xs text-zinc-500 italic text-center py-4">No recent orders found.</p>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-900/50 rounded-3xl p-5 border border-zinc-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-[10px] font-black uppercase text-yellow-500 tracking-widest">Address Book</h4>
+                        <button onclick="openAddressForm()" class="text-xs font-bold text-white">+ Add</button>
+                    </div>
+                    <div id="address-list" class="space-y-3"></div>
+                </div>
+
+                <div class="bg-zinc-900/50 rounded-3xl p-5 border border-zinc-800">
+                    <h4 class="text-[10px] font-black uppercase text-yellow-500 tracking-widest mb-4">Security</h4>
+                    <button onclick="changePassword()" class="w-full text-left py-3 border-b border-zinc-800 flex justify-between items-center">
+                        <span class="text-xs font-bold text-white">Change Password</span>
+                        <i class="fas fa-chevron-right text-[10px] text-zinc-600"></i>
+                    </button>
+                    <button onclick="handleLogout()" class="w-full text-left py-3 flex justify-between items-center text-red-500">
+                        <span class="text-xs font-bold">Secure Logout</span>
+                        <i class="fas fa-sign-out-alt text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cart-drawer" class="drawer">
+        <div class="p-6 h-full flex flex-col">
+            <h2 class="premium-font text-2xl mb-6">Your Bag</h2>
+            <div id="cart-items" class="flex-grow overflow-y-auto space-y-4 no-scrollbar">
+                </div>
+            
+            <div class="mt-6 pt-6 border-t border-zinc-800 space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="coupon-input" placeholder="PROMO CODE" class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-[10px] font-black tracking-widest outline-none">
+                    <button onclick="applyCoupon()" class="bg-zinc-800 px-6 rounded-xl text-[10px] font-black uppercase">Apply</button>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-zinc-500">Subtotal</span>
+                        <span id="cart-subtotal">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-zinc-500">GST (18%)</span>
+                        <span id="cart-gst">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-black text-yellow-500">
+                        <span>Total</span>
+                        <span id="cart-total">₹0</span>
+                    </div>
+                </div>
+                
+                <button onclick="processCheckout()" class="w-full btn-gold py-5 rounded-2xl font-black text-xs uppercase tracking-widest">
+                    Pay with Razorpay / Wallet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="address-modal" class="drawer !h-auto !bottom-[-100%] transition-all duration-500 p-8">
+        <h3 class="premium-font text-xl mb-6">New Address</h3>
+        <div class="space-y-4">
+            <input type="text" id="addr-name" placeholder="Full Name" class="w-full gold-input px-5 py-4 rounded-xl text-sm">
+            <input type="text" id="addr-phone" placeholder="Phone Number" class="w-full gold-input px-5 py-4 rounded-xl text-sm">
+            <input type="text" id="addr-pincode" placeholder="Pincode" class="w-full gold-input px-5 py-4 rounded-xl text-sm">
+            <textarea id="addr-full" placeholder="House No, Building, Area, Colony" class="w-full gold-input px-5 py-4 rounded-xl text-sm h-32"></textarea>
+            <button onclick="saveAddress()" class="w-full btn-gold py-4 rounded-xl text-xs">Save Address</button>
+        </div>
+    </div>
 
     <div id="global-overlay" class="overlay" onclick="closeAllDrawers()"></div>
 
@@ -516,6 +603,179 @@
             `;
             openDrawer('product-drawer');
         }
+        // --- PART 2: ACCOUNT, WALLET & CART ENGINE ---
+        let CART = [];
+        let USER_ADDRESSES = JSON.parse(localStorage.getItem('srp_addresses')) || [];
+        let WALLET_BALANCE = 450.00;
+        let CURRENT_DISCOUNT = 0;
+
+        // --- SESSION MANAGEMENT ---
+        async function fetchUserProfile() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (user) {
+                document.getElementById('user-display-name').innerText = user.email.split('@')[0].toUpperCase();
+                document.getElementById('user-display-id').innerText = `ID: SRP-${user.id.substring(0, 8).toUpperCase()}`;
+                renderAddresses();
+                loadTheme();
+            }
+        }
+
+        // --- THEME ENGINE ---
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('srp_theme', isLight ? 'light' : 'dark');
+            const icon = document.querySelector('.fa-moon, .fa-sun');
+            icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function loadTheme() {
+            if(localStorage.getItem('srp_theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        }
+
+        // --- CART SYSTEM ---
+        function addToCart() {
+            // Get currently viewed product from detail drawer (global variable set during openProduct)
+            const product = PRODUCTS.find(p => p.name === document.querySelector('#product-detail-content h2').innerText);
+            const existing = CART.find(item => item.id === product.id);
+            
+            if(existing) {
+                existing.qty++;
+            } else {
+                CART.push({...product, qty: 1});
+            }
+            
+            updateCartUI();
+            alert("Added to Bag!");
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const count = document.getElementById('cart-count');
+            count.innerText = CART.reduce((a, b) => a + b.qty, 0);
+
+            if(CART.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 text-zinc-600"><i class="fas fa-shopping-bag text-5xl mb-4"></i><p class="text-sm font-bold uppercase tracking-widest">Your bag is empty</p></div>`;
+            } else {
+                container.innerHTML = CART.map((item, idx) => `
+                    <div class="flex gap-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
+                        <img src="${item.img}" class="w-20 h-20 object-cover rounded-xl">
+                        <div class="flex-grow">
+                            <h4 class="text-xs font-black text-white line-clamp-1">${item.name}</h4>
+                            <p class="text-yellow-500 font-black text-sm mt-1">₹${item.price.toLocaleString()}</p>
+                            <div class="flex items-center gap-4 mt-3">
+                                <div class="flex items-center bg-black rounded-lg border border-zinc-800">
+                                    <button onclick="changeQty(${idx}, -1)" class="px-3 py-1 text-zinc-500">-</button>
+                                    <span class="text-[10px] font-black w-4 text-center">${item.qty}</span>
+                                    <button onclick="changeQty(${idx}, 1)" class="px-3 py-1 text-zinc-500">+</button>
+                                </div>
+                                <button onclick="removeFromCart(${idx})" class="text-[10px] font-black text-red-500 uppercase">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            calculateTotal();
+        }
+
+        function changeQty(idx, delta) {
+            CART[idx].qty += delta;
+            if(CART[idx].qty < 1) CART.splice(idx, 1);
+            updateCartUI();
+        }
+
+        function removeFromCart(idx) {
+            CART.splice(idx, 1);
+            updateCartUI();
+        }
+
+        function calculateTotal() {
+            const subtotal = CART.reduce((a, b) => a + (b.price * b.qty), 0);
+            const gst = subtotal * 0.18;
+            const total = (subtotal + gst) - CURRENT_DISCOUNT;
+            
+            document.getElementById('cart-subtotal').innerText = `₹${subtotal.toLocaleString()}`;
+            document.getElementById('cart-gst').innerText = `₹${gst.toLocaleString()}`;
+            document.getElementById('cart-total').innerText = `₹${Math.max(0, total).toLocaleString()}`;
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-input').value.toUpperCase();
+            if(code === "SRP50") {
+                CURRENT_DISCOUNT = 500;
+                alert("Coupon Applied: ₹500 Discounted!");
+            } else if(code === "FESTIVE100") {
+                CURRENT_DISCOUNT = 1000;
+                alert("Festival Coupon Applied: ₹1000 Discounted!");
+            } else {
+                alert("Invalid Coupon Code");
+                CURRENT_DISCOUNT = 0;
+            }
+            calculateTotal();
+        }
+
+        // --- ADDRESS ENGINE ---
+        function openAddressForm() {
+            document.getElementById('address-modal').style.bottom = '0';
+        }
+
+        function saveAddress() {
+            const addr = {
+                name: document.getElementById('addr-name').value,
+                phone: document.getElementById('addr-phone').value,
+                pincode: document.getElementById('addr-pincode').value,
+                full: document.getElementById('addr-full').value
+            };
+            USER_ADDRESSES.push(addr);
+            localStorage.setItem('srp_addresses', JSON.stringify(USER_ADDRESSES));
+            renderAddresses();
+            document.getElementById('address-modal').style.bottom = '-100%';
+        }
+
+        function renderAddresses() {
+            const list = document.getElementById('address-list');
+            list.innerHTML = USER_ADDRESSES.map((a, i) => `
+                <div class="p-4 bg-black rounded-xl border border-zinc-800 relative group">
+                    <p class="text-xs font-black text-white">${a.name}</p>
+                    <p class="text-[10px] text-zinc-500 mt-1">${a.full}, ${a.pincode}</p>
+                    <p class="text-[9px] font-bold text-yellow-500 mt-1">${a.phone}</p>
+                    <button onclick="deleteAddress(${i})" class="absolute top-4 right-4 text-zinc-700 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function deleteAddress(i) {
+            USER_ADDRESSES.splice(i, 1);
+            localStorage.setItem('srp_addresses', JSON.stringify(USER_ADDRESSES));
+            renderAddresses();
+        }
+
+        // --- CHECKOUT LOGIC ---
+        function processCheckout() {
+            if(CART.length === 0) return alert("Your bag is empty!");
+            if(USER_ADDRESSES.length === 0) return alert("Please add an address first!");
+            
+            const total = parseInt(document.getElementById('cart-total').innerText.replace(/[^0-9]/g, ''));
+            
+            if(confirm(`Proceed to pay ₹${total.toLocaleString()}?`)) {
+                // Razorpay Payment Link provided in prompt
+                window.location.href = "https://rzp.io/rzp/juTBnc4Q";
+            }
+        }
+
+        async function handleLogout() {
+            await _supabase.auth.signOut();
+            window.location.reload();
+        }
+
+        // Extend Part 1 init
+        const originalInit = initMarketplace;
+        initMarketplace = function() {
+            originalInit();
+            fetchUserProfile();
+            updateCartUI();
+        };
 
         // --- 5. SYSTEM FUNCTIONS ---
         function openDrawer(id) {
