@@ -567,94 +567,6 @@
             }
         ];
 
-        // RENDER FUNCTIONS
-        function renderItems(filter = 'all') {
-            const container = document.getElementById('product-container');
-            const data = filter === 'all' ? DB : DB.filter(p => p.cat === filter);
-            
-            container.innerHTML = data.map(p => `
-                <div class="card" onclick="openDetail(${p.id})">
-                    <div class="seller-badge">${SELLER}</div>
-                    <div class="img-holder">
-                        <img src="${p.images[0]}" loading="lazy">
-                    </div>
-                    <div class="info-panel">
-                        <div class="name-tag">${p.name}</div>
-                        <div class="price-row">
-                            <span class="price-now">₹${p.price}</span>
-                            <span class="price-old">₹${p.mrp}</span>
-                        </div>
-                        <div class="discount-per">${Math.round((p.mrp-p.price)/p.mrp*100)}% off</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openDetail(id) {
-            const p = DB.find(x => x.id === id);
-            document.getElementById('det-name').innerText = p.name;
-            document.getElementById('det-price').innerText = p.price;
-            document.getElementById('det-mrp').innerText = p.mrp;
-            document.getElementById('det-disc').innerText = `-${Math.round((p.mrp-p.price)/p.mrp*100)}%`;
-            document.getElementById('det-desc').innerText = p.desc;
-            
-            const slider = document.getElementById('image-slider');
-            slider.innerHTML = p.images.map(img => `<img src="${img}" class="slide-img">`).join('');
-            
-            document.getElementById('detail-overlay').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeDetail() {
-            document.getElementById('detail-overlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // INIT UI COMPONENTS
-        const CATS = [
-            {id:'all',l:'All',i:'fa-border-all'},
-            {id:'elec',l:'Electronics',i:'fa-laptop'},
-            {id:'gadg',l:'Gadgets',i:'fa-mobile-screen'},
-            {id:'fash',l:'Fashion',i:'fa-shirt'},
-            {id:'home',l:'Home',i:'fa-couch'}
-        ];
-
-        document.getElementById('category-list').innerHTML = CATS.map(c => `
-            <div class="cat-card ${c.id==='all'?'active':''}" onclick="setCat(this, '${c.id}')">
-                <div class="cat-icon-box"><i class="fas ${c.i}"></i></div>
-                <div class="cat-text">${c.l}</div>
-            </div>
-        `).join('');
-
-        function setCat(el, id) {
-            document.querySelectorAll('.cat-card').forEach(x => x.classList.remove('active'));
-            el.classList.add('active');
-            renderItems(id);
-        }
-
-        // ADMIN LOGIC
-        document.getElementById('brand-action').onclick = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if(user && ADMINS.includes(user.email)) {
-                document.getElementById('admin-panel').style.display = 'flex';
-            } else {
-                location.reload();
-            }
-        };
-
-        function checkAdmin() {
-            if(document.getElementById('admin-pin').value === "9999") {
-                location.href = "admin_dashboard.html";
-            } else {
-                alert("ACCESS DENIED");
-            }
-        }
-
-        // FINAL EXECUTION
-        window.onload = () => {
-            renderItems();
-            document.getElementById('balance-val').innerText = "1,250.00";
-        };
                 /* ================================================================
         SECTION: EXTENDED CORE LOGIC & STATE MANAGEMENT
         ================================================================
@@ -874,6 +786,14 @@
             }
         `;
         document.head.appendChild(style);
+
+        // FINAL EXECUTION
+        window.onload = () => {
+            renderItems();
+            document.getElementById('balance-val').innerText = "1,250.00";
+        };
+                                                        // Animation Keyframes Injection
+        
 
     </script>
     
