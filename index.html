@@ -535,6 +535,136 @@ createApp({
         window.open('https://rzp.io/rzp/juTBnc4Q', '_blank');
         // On Success, update walletBalance
     };
+/* PART 3: CORE LOGIC & DATASET 
+   Integrating Supabase, Razorpay, and India Post
+*/
+
+const { createApp, ref, onMounted, computed, watch } = Vue;
+
+createApp({
+    setup() {
+        // --- DATABASE CONNECTION ---
+        const SUPABASE_URL = 'https://cmxlfxqtrguuzpqdgcxv.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Your provided Key
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- STATE MANAGEMENT ---
+        const user = ref(null);
+        const view = ref('home');
+        const adminTab = ref('orders');
+        const walletBalance = ref(750);
+        const selectedProduct = ref(null);
+        const searchQuery = ref('');
+        const isSeller = ref(false);
+        const showUploadModal = ref(false);
+        const cart = ref([]);
+        const wishlist = ref([]);
+        const darkMode = ref(localStorage.getItem('theme') === 'dark');
+
+        // --- SELLER & ADMIN DATA ---
+        const sellerReg = ref({ aadhar: '', pan: '', gst: '' });
+        const sellerData = ref({ earnings: 0, pendingPayouts: 0 });
+        const newProd = ref({ name: '', mrp: 0, price: 0, category: 'Electronics', desc: '', image: null });
+
+        // --- AUTHENTICATION ---
+        const isAdmin = computed(() => {
+            if (!user.value) return false;
+            const admins = ['Srpstudio1@gmail.com', 'subhashrajpurohit10@gmail.com'];
+            return admins.includes(user.value.email);
+        });
+
+        // --- REAL PRODUCT DATASET (20+ ITEMS) ---
+        const products = ref([
+            { id: 101, name: "SRP Pro Bass Wireless Headphones", price: 1299, mrp: 2999, discount: 56, category: "Electronics", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800", rating: 4.8, reviews: 1240 },
+            { id: 102, name: "Smart Vision 4K LED TV 43 inch", price: 24999, mrp: 45000, discount: 44, category: "Electronics", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800", rating: 4.5, reviews: 890 },
+            { id: 103, name: "Luxury Italian Leather Sofa Set", price: 55000, mrp: 85000, discount: 35, category: "Home Decor", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800", rating: 4.9, reviews: 230 },
+            { id: 104, name: "SRP Gaming Mechanical Keyboard", price: 3499, mrp: 6999, discount: 50, category: "Gadgets", image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=800", rating: 4.7, reviews: 3400 },
+            { id: 105, name: "Organic Cotton Men's T-Shirt Pack of 3", price: 999, mrp: 2499, discount: 60, category: "Fashion", image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800", rating: 4.2, reviews: 156 },
+            { id: 106, name: "Stainless Steel Smart Water Bottle", price: 1499, mrp: 1999, discount: 25, category: "Gadgets", image: "https://images.unsplash.com/photo-1602143303410-7199581de072?w=800", rating: 4.4, reviews: 88 },
+            { id: 107, name: "Professional DSLR Camera 24.2MP", price: 42000, mrp: 55000, discount: 23, category: "Electronics", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800", rating: 4.9, reviews: 450 },
+            { id: 108, name: "SRP Air Purifier HEPA Filter", price: 8500, mrp: 15000, discount: 43, category: "Home Decor", image: "https://images.unsplash.com/photo-1585771724684-2626ef7a8963?w=800", rating: 4.6, reviews: 120 },
+            { id: 109, name: "Vintage Wall Clock Large 24 inch", price: 1200, mrp: 3000, discount: 60, category: "Home Decor", image: "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=800", rating: 4.1, reviews: 67 },
+            { id: 110, name: "Wireless Bluetooth Earbuds G2", price: 799, mrp: 2999, discount: 73, category: "Electronics", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800", rating: 4.3, reviews: 9000 },
+            { id: 111, name: "Men's Classic Analog Watch", price: 2500, mrp: 5000, discount: 50, category: "Fashion", image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800", rating: 4.7, reviews: 124 },
+            { id: 112, name: "Ergonomic Office Chair", price: 7999, mrp: 15999, discount: 50, category: "Home Decor", image: "https://images.unsplash.com/photo-1505798577917-a65157d3320a?w=800", rating: 4.8, reviews: 560 },
+            { id: 113, name: "Multi-functional Blender & Grinder", price: 3200, mrp: 5500, discount: 42, category: "Electronics", image: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=800", rating: 4.5, reviews: 210 },
+            { id: 114, name: "Yoga Mat Non-Slip 6mm", price: 599, mrp: 1299, discount: 54, category: "Beauty", image: "https://images.unsplash.com/photo-1592178036209-6a490a74c760?w=800", rating: 4.6, reviews: 890 },
+            { id: 115, name: "Designer Leather Handbag Blue", price: 4500, mrp: 9999, discount: 55, category: "Fashion", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800", rating: 4.9, reviews: 45 },
+            { id: 116, name: "Professional Hair Dryer 2000W", price: 1800, mrp: 3500, discount: 48, category: "Beauty", image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800", rating: 4.3, reviews: 110 },
+            { id: 117, name: "Electric Coffee Maker Pro", price: 2900, mrp: 6000, discount: 52, category: "Electronics", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800", rating: 4.4, reviews: 780 },
+            { id: 118, name: "Casual Sneakers White Men's", price: 1200, mrp: 2999, discount: 60, category: "Fashion", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800", rating: 4.2, reviews: 540 },
+            { id: 119, name: "Smart LED Desk Lamp", price: 899, mrp: 1999, discount: 55, category: "Gadgets", image: "https://images.unsplash.com/photo-1534073828943-f801091bb18c?w=800", rating: 4.5, reviews: 320 },
+            { id: 120, name: "Action Camera 4K Ultra HD", price: 5500, mrp: 12000, discount: 54, category: "Electronics", image: "https://images.unsplash.com/photo-1526170315870-ef6d82f58396?w=800", rating: 4.7, reviews: 1100 }
+        ]);
+
+        // --- CART & WALLET LOGIC ---
+        const addToCart = (prod) => {
+            cart.value.push({...prod, qty: 1});
+            alert(`${prod.name} added to cart!`);
+        };
+
+        const checkout = async () => {
+            if (walletBalance.value < totalCartPrice.value) {
+                alert("Insufficient Wallet Balance! Please Recharge.");
+                window.open('https://rzp.io/rzp/juTBnc4Q', '_blank');
+                return;
+            }
+            // Proceed with logic...
+            walletBalance.value -= totalCartPrice.value;
+            alert("Order Placed Successfully!");
+            cart.value = [];
+        };
+
+        const totalCartPrice = computed(() => {
+            return cart.value.reduce((acc, item) => acc + item.price, 0);
+        });
+
+        // --- DARK MODE TOGGLE ---
+        watch(darkMode, (val) => {
+            if (val) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // --- SELLER ACTIONS ---
+        const registerAsSeller = async () => {
+            if (!sellerReg.value.aadhar || !sellerReg.value.pan) {
+                alert("Please provide Govt. ID details.");
+                return;
+            }
+            // In a real app: await supabase.from('sellers').insert(...)
+            isSeller.value = true;
+            alert("Seller account pending approval by SRP Admin.");
+        };
+
+        // --- ADMIN ACTIONS ---
+        const allOrders = ref([
+            { id: 'SRP-9921', userName: 'Rajesh Kumar', amount: 2999, status: 'Shipped', sellerName: 'Srp Gadgets', trackingId: 'RD123456789IN' },
+            { id: 'SRP-9922', userName: 'Anjali Sharma', amount: 1499, status: 'Processing', sellerName: 'Elite Store', trackingId: '' }
+        ]);
+
+        const approveSeller = (id) => {
+            alert(`Seller ${id} approved successfully!`);
+        };
+
+        // --- INITIALIZATION ---
+        onMounted(() => {
+            lucide.createIcons();
+            // Initialize India Post Widget if needed
+        });
+
+        return {
+            user, view, adminTab, walletBalance, selectedProduct, searchQuery,
+            isSeller, showUploadModal, cart, wishlist, darkMode,
+            sellerReg, sellerData, newProd, products, allOrders,
+            isAdmin, addToCart, checkout, totalCartPrice, registerAsSeller, approveSeller
+        };
+    }
+}).mount('#app');
 
 
 </script>
