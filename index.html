@@ -4,249 +4,322 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SRP SHOPPING | Premium Marketplace</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+
     <style>
         :root {
-            --srp-blue: #004aad;
-            --srp-light-blue: #007bff;
-            --srp-soft-blue: #e7f0ff;
-            --srp-white: #ffffff;
-            --srp-bg: #f0f2f5;
-            --srp-text: #1c1e21;
-            --srp-gray: #65676b;
-            --srp-danger: #ff4757;
-            --srp-success: #2ed573;
-            --srp-warning: #ffa502;
-            --srp-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            --nav-height: 70px;
-            --top-height: 125px;
-            --radius-main: 18px;
-            --srp-gradient: linear-gradient(135deg, #004aad, #00d4ff);
+            --primary: #0052cc;
+            --primary-light: #4c8bf5;
+            --accent: #ff4757;
+            --bg-light: #f8faff;
+            --card-bg: #ffffff;
+            --text-main: #1a1d23;
+            --text-muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px rgba(0, 82, 204, 0.1);
+            --gradient: linear-gradient(135deg, #0052cc 0%, #00a3ff 100%);
         }
 
-        /* --- GLOBAL RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { display: none; }
-        body { background-color: var(--srp-bg); color: var(--srp-text); padding-top: var(--top-height); padding-bottom: calc(var(--nav-height) + 30px); overflow-x: hidden; line-height: 1.6; }
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* --- AUTH SYSTEM UI --- */
-        #auth-overlay {
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for Bottom Nav */
+        }
+
+        /* --- MODERN LOGIN ENGINE --- */
+        #auth-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--srp-white); z-index: 99999; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; transition: 0.5s ease-in-out;
+            background: var(--gradient); z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 25px; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .auth-container { width: 100%; max-width: 420px; text-align: center; animation: fadeIn 0.6s ease; }
-        .auth-logo { font-size: 3.5rem; color: var(--srp-blue); margin-bottom: 10px; }
-        .auth-title { font-size: 1.8rem; font-weight: 800; color: var(--srp-blue); margin-bottom: 30px; }
-        
-        .auth-input-group { position: relative; margin-bottom: 18px; }
-        .auth-input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--srp-gray); }
-        .auth-input { width: 100%; padding: 16px 15px 16px 45px; border-radius: 12px; border: 1.5px solid #eee; font-size: 0.95rem; outline: none; transition: 0.3s; }
-        .auth-input:focus { border-color: var(--srp-blue); background: var(--srp-soft-blue); }
+        .auth-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            width: 100%; max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            text-align: center;
+        }
 
-        .btn-auth { width: 100%; padding: 16px; background: var(--srp-blue); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,74,173,0.3); }
-        .btn-google { width: 100%; padding: 14px; background: white; color: #555; border: 1.5px solid #ddd; border-radius: 12px; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+        .auth-logo-circle {
+            width: 80px; height: 80px; background: white;
+            border-radius: 22px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-lg);
+        }
 
-        /* --- HEADER ARCHITECTURE --- */
-        .top-nav { position: fixed; top: 0; width: 100%; background: var(--srp-white); z-index: 2000; box-shadow: var(--srp-shadow); padding: 15px 20px; transition: 0.3s; }
-        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .brand-logo { font-size: 1.5rem; font-weight: 800; color: var(--srp-blue); display: flex; align-items: center; gap: 8px; }
-        .wallet-pill { background: var(--srp-gradient); color: white; padding: 7px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .auth-logo-circle i { font-size: 2.5rem; color: var(--primary); }
 
-        .search-wrapper { position: relative; width: 100%; }
-        .search-input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 14px; border: 1px solid #e1e1e1; background: #f8f9fa; font-size: 0.9rem; outline: none; }
-        .search-icon-abs { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--srp-gray); }
+        .auth-input-wrapper {
+            position: relative; margin-bottom: 15px;
+        }
 
-        /* --- CATEGORY SYSTEM --- */
-        .cat-container { display: flex; overflow-x: auto; padding: 20px 10px; gap: 18px; scrollbar-width: none; }
-        .cat-card { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .cat-icon-box { width: 68px; height: 68px; background: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--srp-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 2.5px solid transparent; transition: 0.3s; }
-        .cat-card.active .cat-icon-box { background: var(--srp-blue); color: white; border-color: var(--srp-soft-blue); transform: translateY(-5px); }
-        .cat-text { font-size: 0.75rem; font-weight: 700; color: var(--srp-text); }
+        .auth-input-wrapper i {
+            position: absolute; left: 18px; top: 50%;
+            transform: translateY(-50%); color: var(--text-muted);
+        }
 
-        /* --- HERO BANNER --- */
-        .hero-banner { width: 92%; margin: 10px auto 25px auto; background: var(--srp-gradient); border-radius: 25px; padding: 30px; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 12px 30px rgba(0, 74, 173, 0.35); position: relative; overflow: hidden; }
-        .hero-banner::after { content: ''; position: absolute; top: -50%; right: -20%; width: 250px; height: 250px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .auth-field {
+            width: 100%; padding: 16px 16px 16px 50px;
+            border-radius: 15px; border: 1px solid rgba(0,0,0,0.05);
+            background: white; font-size: 1rem; outline: none;
+            transition: 0.3s;
+        }
 
-        /* --- PRODUCT GRID --- */
-        .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
-        .card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; border: 1px solid rgba(0,0,0,0.02); }
-        .img-holder { width: 100%; aspect-ratio: 1/1; background: #fff; position: relative; padding: 15px; }
-        .img-holder img { width: 100%; height: 100%; object-fit: contain; }
-        .info-panel { padding: 12px; }
-        .name-tag { font-size: 0.85rem; font-weight: 600; height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 8px; color: #333; }
-        .price-now { font-weight: 800; color: var(--srp-blue); font-size: 1.1rem; }
-        .price-old { font-size: 0.8rem; text-decoration: line-through; color: var(--srp-gray); margin-left: 5px; }
-        .discount-tag { background: var(--srp-success); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .auth-field:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0,82,204,0.1); }
 
-        /* --- FOOTER NAVIGATION --- */
-        .footer-nav { position: fixed; bottom: 0; width: 100%; height: var(--nav-height); background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #f0f0f0; z-index: 2000; box-shadow: 0 -5px 20px rgba(0,0,0,0.03); }
-        .foot-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #bbb; font-weight: 600; font-size: 0.65rem; transition: 0.3s; }
-        .foot-item i { font-size: 1.4rem; margin-bottom: 4px; }
-        .foot-item.active { color: var(--srp-blue); }
-        .ai-fab { background: var(--srp-blue); width: 60px; height: 60px; border-radius: 50%; margin-top: -35px; border: 5px solid white; color: white !important; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0, 74, 173, 0.4); }
+        .btn-primary {
+            width: 100%; padding: 16px; border: none;
+            border-radius: 15px; background: var(--primary);
+            color: white; font-weight: 700; font-size: 1.1rem;
+            box-shadow: 0 8px 20px rgba(0,82,204,0.3);
+            cursor: pointer; transition: 0.3s;
+        }
 
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-google {
+            width: 100%; padding: 14px; margin-top: 15px;
+            background: white; border: 1px solid #ddd;
+            border-radius: 15px; display: flex; align-items: center;
+            justify-content: center; gap: 10px; font-weight: 600;
+            color: #444; cursor: pointer;
+        }
+
+        /* --- HOME APP INTERFACE --- */
+        .app-header {
+            position: sticky; top: 0; background: var(--glass);
+            backdrop-filter: blur(15px); padding: 15px 20px;
+            z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+
+        .wallet-chip {
+            background: var(--primary-light); color: white;
+            padding: 8px 16px; border-radius: 50px; font-weight: 700;
+            font-size: 0.85rem; display: flex; align-items: center; gap: 8px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%; padding: 14px 15px 14px 45px;
+            border-radius: 16px; border: none; background: #edf2f7;
+            font-size: 0.95rem; outline: none;
+        }
+
+        .search-container i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        /* --- CATEGORIES & GRID --- */
+        .cat-row {
+            display: flex; overflow-x: auto; padding: 20px; gap: 15px;
+            scrollbar-width: none;
+        }
+
+        .cat-btn {
+            flex: 0 0 auto; padding: 10px 20px; background: white;
+            border-radius: 12px; font-weight: 600; font-size: 0.85rem;
+            box-shadow: var(--shadow-sm); transition: 0.3s;
+        }
+
+        .cat-btn.active { background: var(--primary); color: white; }
+
+        .product-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 15px; padding: 0 15px;
+        }
+
+        .p-card {
+            background: white; border-radius: 24px; padding: 12px;
+            box-shadow: var(--shadow-sm); position: relative;
+            animation: fadeInUp 0.5s ease backwards;
+        }
+
+        .p-img-box {
+            width: 100%; aspect-ratio: 1/1; background: #f1f5f9;
+            border-radius: 18px; margin-bottom: 10px; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .p-img-box img { width: 85%; object-fit: contain; }
+
+        .p-name { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 5px; height: 38px; overflow: hidden; }
+        .p-price { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .p-mrp { font-size: 0.75rem; text-decoration: line-through; color: var(--text-muted); margin-left: 5px; }
+
+        /* --- NAVIGATION --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 75px;
+            background: white; display: flex; justify-content: space-around;
+            align-items: center; border-top: 1px solid #eee; z-index: 5000;
+        }
+
+        .nav-item { color: #cbd5e1; text-align: center; flex: 1; transition: 0.3s; }
+        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 0.65rem; font-weight: 700; }
+        .nav-item.active { color: var(--primary); }
+
+        .nav-ai-btn {
+            width: 60px; height: 60px; background: var(--gradient);
+            border-radius: 50%; color: white; display: flex;
+            align-items: center; justify-content: center;
+            margin-top: -45px; border: 6px solid var(--bg-light);
+            box-shadow: 0 10px 20px rgba(0,82,204,0.3);
+        }
+
+        /* Notifications */
+        .toast {
+            position: fixed; top: 20px; right: 20px; padding: 15px 25px;
+            background: #1e293b; color: white; border-radius: 12px;
+            font-size: 0.9rem; z-index: 20000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="auth-overlay">
-        <div class="auth-container" id="login-box">
-            <div class="auth-logo"><i class="fas fa-shopping-bag"></i></div>
-            <h2 class="auth-title">Welcome to SRP</h2>
-            <div class="auth-input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="auth-email" class="auth-input" placeholder="Email Address">
-            </div>
-            <div class="auth-input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="auth-pass" class="auth-input" placeholder="Password">
-            </div>
-            <button class="btn-auth" onclick="processAuth('login')">SIGN IN</button>
-            <button class="btn-google" onclick="showToast('Google login coming soon...')">
-                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="20"> Continue with Google
-            </button>
-            <p style="margin-top: 25px; color: var(--srp-gray); font-size: 0.9rem;">
-                Don't have an account? <span style="color: var(--srp-blue); font-weight: 700;" onclick="toggleAuthMode()">Sign Up</span>
-            </p>
-        </div>
+    <section id="auth-screen">
+        <div class="auth-card animate__animated animate__zoomIn">
+            <div class="auth-logo-circle"><i class="fas fa-shopping-bag"></i></div>
+            <h2 style="font-weight: 800; margin-bottom: 5px;">SRP SHOPPING</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Premium Marketplace by Srpstudio1</p>
 
-        <div class="auth-container" id="signup-box" style="display: none;">
-            <div class="auth-logo"><i class="fas fa-user-plus"></i></div>
-            <h2 class="auth-title">Create Account</h2>
-            <div class="auth-input-group"><i class="fas fa-user"></i><input type="text" id="reg-name" class="auth-input" placeholder="Full Name"></div>
-            <div class="auth-input-group"><i class="fas fa-envelope"></i><input type="email" id="reg-email" class="auth-input" placeholder="Email Address"></div>
-            <div class="auth-input-group"><i class="fas fa-lock"></i><input type="password" id="reg-pass" class="auth-input" placeholder="Create Password"></div>
-            <button class="btn-auth" onclick="processAuth('signup')">CREATE ACCOUNT</button>
-            <p style="margin-top: 25px; color: var(--srp-gray); font-size: 0.9rem;" onclick="toggleAuthMode()">
-                Already have an account? <span style="color: var(--srp-blue); font-weight: 700;">Login</span>
-            </p>
+            <div id="login-form">
+                <div class="auth-input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="login-email" class="auth-field" placeholder="Email Address">
+                </div>
+                <div class="auth-input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-pass" class="auth-field" placeholder="Password">
+                </div>
+                <button class="btn-primary" onclick="handleAuth()">SIGN IN</button>
+                <button class="btn-google" onclick="notify('Connecting to Google...')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="20"> Sign in with Google
+                </button>
+                <p style="margin-top: 20px; font-size: 0.85rem;" onclick="toggleAuth()">New here? <b style="color: var(--primary)">Create Account</b></p>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <header class="top-nav">
-        <div class="top-row">
-            <div class="brand-logo"><i class="fas fa-shopping-bag"></i> SRP SHOPPING</div>
-            <div class="wallet-pill"><i class="fas fa-wallet"></i> ₹<span id="wall-bal">1,250.00</span></div>
+    <header class="app-header">
+        <div class="header-top">
+            <div class="brand">SRP SHOPPING</div>
+            <div class="wallet-chip"><i class="fas fa-wallet"></i> ₹<span id="bal">1,250.00</span></div>
         </div>
-        <div class="search-wrapper">
-            <i class="fas fa-search search-icon-abs"></i>
-            <input type="text" class="search-input" id="search-bar" oninput="app.search()" placeholder="Search products, brands...">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="liveSearch" placeholder="Search brands, items, electronics..." onkeyup="app.search()">
         </div>
     </header>
 
-    <div class="cat-container" id="cat-render"></div>
-
-    <div class="hero-banner">
-        <div>
-            <h2 style="font-size: 1.6rem; font-weight: 800;">BIG SALE LIVE</h2>
-            <p style="font-size: 0.85rem; opacity: 0.9;">Exclusive offers by Srpstudio1</p>
-            <button style="margin-top:15px; padding: 8px 20px; border-radius: 50px; border:none; background:white; color:var(--srp-blue); font-weight:700; font-size:0.8rem;">SHOP NOW</button>
-        </div>
-        <img src="https://cdn-icons-png.flaticon.com/512/3081/3081986.png" width="100">
+    <div class="cat-row" id="categories">
+        <div class="cat-btn active" onclick="app.filter('all', this)">All</div>
+        <div class="cat-btn" onclick="app.filter('electronics', this)">Electronics</div>
+        <div class="cat-btn" onclick="app.filter('fashion', this)">Fashion</div>
+        <div class="cat-btn" onclick="app.filter('home', this)">Home Decor</div>
     </div>
 
-    <div style="padding: 0 20px 15px; font-weight: 800; font-size: 1.1rem; color: #222;">New Arrivals</div>
-    <main class="main-grid" id="product-render"></main>
+    <main class="product-grid" id="productGrid"></main>
 
-    <nav class="footer-nav">
-        <a href="#" class="foot-item active"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="foot-item"><i class="fas fa-heart"></i><span>Wishlist</span></a>
-        <a href="#" class="foot-item ai-fab"><i class="fas fa-robot"></i></a>
-        <a href="#" class="foot-item"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
-        <a href="#" class="foot-item"><i class="fas fa-user"></i><span>Profile</span></a>
+    <nav class="bottom-nav">
+        <div class="nav-item active"><i class="fas fa-house"></i><span>Home</span></div>
+        <div class="nav-item"><i class="fas fa-heart"></i><span>Saved</span></div>
+        <div class="nav-ai-btn"><i class="fas fa-robot"></i></div>
+        <div class="nav-item"><i class="fas fa-shopping-cart"></i><span>Cart</span></div>
+        <div class="nav-item"><i class="fas fa-user"></i><span>Profile</span></div>
     </nav>
 
+    <div id="toast" class="toast"></div>
+
     <script>
-        /* SRP SHOPPING CORE ENGINE v4.0 */
+        // CORE DATABASE
         const DB = [
-            { id: 1, name: "SRP Pro Bass Headphones", price: 2499, mrp: 4999, img: "https://m.media-amazon.com/images/I/61f496A7LcL._SL1500_.jpg", cat: "elec" },
-            { id: 2, name: "SRP Ultra 4K Smart TV", price: 22500, mrp: 35000, img: "https://m.media-amazon.com/images/I/71fV9H2u8FL._SL1500_.jpg", cat: "elec" },
-            { id: 3, name: "SRP RGB Gaming Keyboard", price: 3800, mrp: 7500, img: "https://m.media-amazon.com/images/I/71Miv62KdtL._SL1500_.jpg", cat: "gadg" },
-            { id: 4, name: "SRP Premium Cotton Hoodie", price: 1299, mrp: 2999, img: "https://m.media-amazon.com/images/I/71YyP9fDqAL._UX679_.jpg", cat: "fash" },
-            { id: 5, name: "SRP Smart Watch Gen-2", price: 2999, mrp: 5999, img: "https://m.media-amazon.com/images/I/61ZjlBOp+rL._SL1500_.jpg", cat: "gadg" },
-            { id: 6, name: "SRP Portable Blender", price: 1800, mrp: 3500, img: "https://m.media-amazon.com/images/I/71Lh56eM7FL._SL1500_.jpg", cat: "home" }
+            { id: 1, name: "SRP BassPro Headphones", price: 2999, mrp: 5999, cat: "electronics", img: "https://m.media-amazon.com/images/I/61f496A7LcL._SL1500_.jpg" },
+            { id: 2, name: "SRP 4K Smart OLED TV", price: 45000, mrp: 65000, cat: "electronics", img: "https://m.media-amazon.com/images/I/71fV9H2u8FL._SL1500_.jpg" },
+            { id: 3, name: "Premium Cotton Oversized Hoodie", price: 1499, mrp: 2999, cat: "fashion", img: "https://m.media-amazon.com/images/I/71YyP9fDqAL._UX679_.jpg" },
+            { id: 4, name: "SRP Mechanical Gaming KB", price: 3499, mrp: 6999, cat: "electronics", img: "https://m.media-amazon.com/images/I/71Miv62KdtL._SL1500_.jpg" },
+            { id: 5, name: "Modern Minimalist Vase", price: 899, mrp: 1899, cat: "home", img: "https://m.media-amazon.com/images/I/61y8B68u6DL._SL1500_.jpg" }
         ];
 
         const app = {
-            activeCat: 'all',
+            currentFilter: 'all',
             init() {
-                const isLogged = localStorage.getItem('srp_auth');
-                if(isLogged) document.getElementById('auth-overlay').style.display = 'none';
-                this.renderCats();
-                this.renderProducts();
+                // Check local session
+                if(localStorage.getItem('srp_session')) {
+                    document.getElementById('auth-screen').style.transform = 'translateY(-100%)';
+                }
+                this.render();
             },
-            renderCats() {
-                const cats = [
-                    {id:'all', n:'All', i:'fa-grid-2'},
-                    {id:'elec', n:'Electronics', i:'fa-bolt'},
-                    {id:'fash', n:'Fashion', i:'fa-shirt'},
-                    {id:'gadg', n:'Gadgets', i:'fa-microchip'},
-                    {id:'home', n:'Home', i:'fa-house'}
-                ];
-                document.getElementById('cat-render').innerHTML = cats.map(c => `
-                    <div class="cat-card ${this.activeCat === c.id ? 'active' : ''}" onclick="app.filter('${c.id}')">
-                        <div class="cat-icon-box"><i class="fas ${c.i}"></i></div>
-                        <span class="cat-text">${c.n}</span>
-                    </div>
-                `).join('');
-            },
-            renderProducts() {
-                const query = document.getElementById('search-bar').value.toLowerCase();
-                const filtered = DB.filter(p => (this.activeCat === 'all' || p.cat === this.activeCat) && p.name.toLowerCase().includes(query));
+            render() {
+                const container = document.getElementById('productGrid');
+                const query = document.getElementById('liveSearch').value.toLowerCase();
                 
-                document.getElementById('product-render').innerHTML = filtered.map(p => `
-                    <div class="card" onclick="showToast('Feature coming soon!')">
-                        <div class="img-holder"><img src="${p.img}"></div>
-                        <div class="info-panel">
-                            <span class="discount-tag">${Math.round((p.mrp-p.price)/p.mrp*100)}% OFF</span>
-                            <div class="name-tag">${p.name}</div>
-                            <div class="price-row">
-                                <span class="price-now">₹${p.price.toLocaleString()}</span>
-                                <span class="price-old">₹${p.mrp.toLocaleString()}</span>
-                            </div>
-                        </div>
+                const filtered = DB.filter(p => {
+                    const matchesCat = this.currentFilter === 'all' || p.cat === this.currentFilter;
+                    const matchesSearch = p.name.toLowerCase().includes(query);
+                    return matchesCat && matchesSearch;
+                });
+
+                container.innerHTML = filtered.map((p, index) => `
+                    <div class="p-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="p-img-box"><img src="${p.img}"></div>
+                        <div class="p-name">${p.name}</div>
+                        <div class="p-price">₹${p.price.toLocaleString()} <span class="p-mrp">₹${p.mrp.toLocaleString()}</span></div>
+                        <button style="width:100%; border:none; background:var(--bg-light); padding:10px; border-radius:12px; margin-top:10px; font-weight:700; color:var(--primary); font-size:0.8rem;">Add to Cart</button>
                     </div>
                 `).join('');
             },
-            filter(id) { this.activeCat = id; this.renderCats(); this.renderProducts(); },
-            search() { this.renderProducts(); }
+            filter(cat, el) {
+                this.currentFilter = cat;
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                el.classList.add('active');
+                this.render();
+            },
+            search() { this.render(); }
         };
 
-        function processAuth(type) {
-            const email = type === 'login' ? document.getElementById('auth-email').value : document.getElementById('reg-email').value;
-            if(email.includes('@')) {
-                localStorage.setItem('srp_auth', 'true');
-                document.getElementById('auth-overlay').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('auth-overlay').style.display = 'none';
-                    showToast("Access Granted. Welcome!");
-                }, 500);
+        function handleAuth() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            if(email && pass.length >= 4) {
+                localStorage.setItem('srp_session', email);
+                document.getElementById('auth-screen').style.transform = 'translateY(-100%)';
+                notify("Welcome to SRP Studio Dashboard");
             } else {
-                alert("Enter a valid email address");
+                notify("Please check your credentials");
             }
         }
 
-        function toggleAuthMode() {
-            const login = document.getElementById('login-box');
-            const signup = document.getElementById('signup-box');
-            if(login.style.display === 'none') { login.style.display = 'block'; signup.style.display = 'none'; }
-            else { login.style.display = 'none'; signup.style.display = 'block'; }
-        }
-
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.style.cssText = "position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#333; color:white; padding:12px 25px; border-radius:50px; z-index:10000; font-size:13px; font-weight:600; box-shadow:0 5px 15px rgba(0,0,0,0.2);";
-            t.innerHTML = `<i class="fas fa-info-circle" style="color:var(--srp-light-blue); margin-right:8px;"></i> ${msg}`;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
+        function notify(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
         window.onload = () => app.init();
