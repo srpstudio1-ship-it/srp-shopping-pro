@@ -3,147 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SRP SHOPPING</title>
+<title>SRP SHOPPING PRO</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
-
-/* ================= GLOBAL ================= */
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
-body{background:#f5f7fb}
+body{background:#eef2f7}
 
-/* ================= HEADER ================= */
+/* HEADER */
 .header{
 position:fixed;top:0;width:100%;background:white;
-display:flex;justify-content:space-between;align-items:center;
-padding:10px 15px;box-shadow:0 4px 10px rgba(0,0,0,0.1);
-z-index:1000;
+display:flex;align-items:center;gap:10px;
+padding:10px;z-index:1000;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
-
 .logo{font-weight:800;color:#004aad;cursor:pointer}
+.search input{padding:8px;border-radius:10px;border:1px solid #ccc;width:100%}
+.wallet{font-size:13px;color:#004aad;font-weight:600}
 
-.search{flex:1;margin:0 10px}
-.search input{
-width:100%;padding:8px;border-radius:10px;border:1px solid #ccc;
-}
-
-.top-actions{display:flex;gap:10px;align-items:center}
-.wallet{color:#004aad;font-weight:600}
-.btn{cursor:pointer;font-size:13px}
-
-/* ================= BOTTOM NAV ================= */
+/* NAV */
 .nav{
 position:fixed;bottom:0;width:100%;background:white;
-display:flex;justify-content:space-around;
-padding:10px;border-top:1px solid #ddd;
+display:flex;justify-content:space-around;padding:10px;
+border-top:1px solid #ddd;
 }
 
-.nav div{cursor:pointer;font-size:12px}
-
-/* ================= LOGIN ================= */
+/* LOGIN */
 #loginPage{
 height:100vh;display:flex;align-items:center;justify-content:center;
 background:linear-gradient(135deg,#004aad,#00d4ff);
-color:white;
 }
-
-.login-box{
+.box{
 background:rgba(255,255,255,0.1);
-padding:20px;border-radius:20px;width:300px;
+padding:20px;border-radius:20px;
 backdrop-filter:blur(10px);
+width:300px;color:white;
 }
-
-input{
-width:100%;padding:10px;margin:5px 0;border-radius:10px;border:none;
+input,button{
+width:100%;padding:10px;margin-top:8px;border-radius:10px;border:none;
 }
+button{background:#004aad;color:white;font-weight:600}
 
-button{
-width:100%;padding:10px;margin-top:10px;
-border:none;border-radius:10px;
-background:#004aad;color:white;font-weight:600;
-cursor:pointer;
-}
-
-/* ================= HOME ================= */
+/* HOME */
 #homePage{display:none;padding-top:70px;padding-bottom:70px}
 
 .banner{
-margin:10px;background:#004aad;color:white;
-padding:20px;border-radius:15px;
+margin:10px;padding:20px;border-radius:15px;color:white;
+background:linear-gradient(135deg,#004aad,#00d4ff);
 }
 
+/* CATEGORY */
+.cats{display:flex;gap:8px;padding:10px;overflow:auto}
+.cat{background:white;padding:6px 10px;border-radius:10px;cursor:pointer}
+.cat.active{background:#004aad;color:white}
+
+/* GRID */
 .grid{
 display:grid;grid-template-columns:repeat(2,1fr);
 gap:10px;padding:10px;
 }
 
 .card{
-background:white;padding:10px;border-radius:10px;
-cursor:pointer;
+background:white;padding:10px;border-radius:12px;
+transition:0.3s;cursor:pointer;
 }
-
+.card:hover{transform:scale(1.05)}
 .card img{width:100%;height:120px;object-fit:contain}
-
 .price{color:#004aad;font-weight:700}
 
-/* ================= OVERLAY ================= */
+/* DETAIL */
 #detail{
 position:fixed;top:0;left:0;width:100%;height:100%;
 background:white;display:none;overflow:auto;z-index:2000;
 padding:15px;
 }
 
-/* ================= TOAST ================= */
+/* CART BADGE */
+.badge{
+background:red;color:white;border-radius:50%;
+padding:2px 6px;font-size:10px;margin-left:3px;
+}
+
+/* TOAST */
 .toast{
 position:fixed;bottom:80px;left:50%;
 transform:translateX(-50%);
 background:black;color:white;padding:10px 20px;border-radius:20px;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="loginPage">
-<div class="login-box">
+<div class="box">
 <h2>SRP SHOPPING</h2>
-
 <input id="name" placeholder="Full Name">
 <input id="email" placeholder="Email">
 <input id="pass" type="password" placeholder="Password">
-
 <button onclick="signup()">Signup</button>
 <button onclick="login()">Login</button>
-<button onclick="googleLogin()">Login with Google</button>
-
+<button onclick="googleLogin()">Google Login</button>
 </div>
 </div>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 <div id="homePage">
 
 <div class="header">
-<div class="logo" onclick="reload()">SRP SHOPPING</div>
-
-<div class="search">
-<input id="search" placeholder="Search">
+<div class="logo" onclick="reload()">SRP</div>
+<div class="search"><input id="search" placeholder="Search"></div>
+<div class="wallet">₹<span id="wallet">500</span></div>
 </div>
 
-<div class="top-actions">
-<div class="wallet">₹<span id="wallet">0</span></div>
-<div class="btn" onclick="logout()">Logout</div>
-</div>
-</div>
+<div class="banner">🔥 Big Sale</div>
+<div class="banner">⚡ Trending Deals</div>
+<div class="banner">🎯 Top Picks</div>
 
-<div class="banner">🔥 Mega Sale</div>
-<div class="banner">⚡ 50% OFF</div>
-<div class="banner">🎯 Best Deals</div>
-
+<div class="cats" id="cats"></div>
 <div class="grid" id="grid"></div>
 
 </div>
@@ -154,63 +135,46 @@ background:black;color:white;padding:10px 20px;border-radius:20px;
 <!-- NAV -->
 <div class="nav">
 <div onclick="showHome()">Home</div>
-<div onclick="alert('Profile')">Profile</div>
-<div onclick="alert('Wallet')">Wallet</div>
-<div onclick="alert('Seller')">Seller</div>
-<div onclick="alert('Cart')">Cart</div>
-<div onclick="alert('AI')">AI</div>
+<div>Profile</div>
+<div>Wallet</div>
+<div>Seller</div>
+<div onclick="showCart()">Cart <span id="cartCount" class="badge">0</span></div>
+<div>AI</div>
 </div>
 
 <script>
 
-/* ================= SUPABASE ================= */
+/* SUPABASE */
 const supabase = window.supabase.createClient(
 "https://cmxlfxqtrguuzpqdgcxv.supabase.co",
 "YOUR_SUPABASE_ANON_KEY"
 );
 
-/* ================= PRODUCTS ================= */
-const products = [
-{id:1,name:"iPhone 13",price:52000,img:"https://m.media-amazon.com/images/I/61-r9zOKBCL._SX679_.jpg"},
-{id:2,name:"Laptop",price:65000,img:"https://m.media-amazon.com/images/I/71jG+e7roXL._SX679_.jpg"},
-{id:3,name:"Headphones",price:1999,img:"https://m.media-amazon.com/images/I/61CGHv6kmWL._SX679_.jpg"},
-{id:4,name:"Shoes",price:2499,img:"https://m.media-amazon.com/images/I/61utX8kBDlL._UX695_.jpg"},
-{id:5,name:"Watch",price:2999,img:"https://m.media-amazon.com/images/I/61ZjlBOp+rL._SX679_.jpg"},
-{id:6,name:"Keyboard",price:1200,img:"https://m.media-amazon.com/images/I/71Miv62KdtL._SX679_.jpg"},
-{id:7,name:"Mouse",price:800,img:"https://m.media-amazon.com/images/I/61LtuGzXeaL._SX679_.jpg"},
-{id:8,name:"TV",price:30000,img:"https://m.media-amazon.com/images/I/71fV9H2u8FL._SX679_.jpg"},
-{id:9,name:"Bag",price:1500,img:"https://m.media-amazon.com/images/I/71QKQ9mwV7L._UY695_.jpg"},
-{id:10,name:"Speaker",price:3500,img:"https://m.media-amazon.com/images/I/81W3rF4c3ML._SX679_.jpg"},
-{id:11,name:"Tablet",price:18000,img:"https://m.media-amazon.com/images/I/61NGnpjoRDL._SX679_.jpg"},
-{id:12,name:"Camera",price:45000,img:"https://m.media-amazon.com/images/I/71dEY4Neo3L._SX679_.jpg"},
-{id:13,name:"Drone",price:25000,img:"https://m.media-amazon.com/images/I/71k6Z+K3XkL._SX679_.jpg"},
-{id:14,name:"Gaming Chair",price:12000,img:"https://m.media-amazon.com/images/I/71qQ+Jb8GIL._SX679_.jpg"},
-{id:15,name:"Monitor",price:15000,img:"https://m.media-amazon.com/images/I/71nP7QpY1VL._SX679_.jpg"},
-{id:16,name:"SSD",price:5000,img:"https://m.media-amazon.com/images/I/71jG+e7roXL._SX679_.jpg"},
-{id:17,name:"Powerbank",price:1500,img:"https://m.media-amazon.com/images/I/71lVwl3q-kL._SX679_.jpg"},
-{id:18,name:"Charger",price:800,img:"https://m.media-amazon.com/images/I/61mIUCd-37L._SX679_.jpg"},
-{id:19,name:"Mic",price:2000,img:"https://m.media-amazon.com/images/I/61UxfXTUyvL._SX679_.jpg"},
-{id:20,name:"Tripod",price:1200,img:"https://m.media-amazon.com/images/I/71Uj9k5s3sL._SX679_.jpg"}
+/* PRODUCTS */
+const products=[
+{id:1,name:"iPhone",price:50000,cat:"elec",img:"https://m.media-amazon.com/images/I/61-r9zOKBCL._SX679_.jpg"},
+{id:2,name:"Shoes",price:2000,cat:"fash",img:"https://m.media-amazon.com/images/I/61utX8kBDlL._UX695_.jpg"},
+{id:3,name:"Laptop",price:70000,cat:"elec",img:"https://m.media-amazon.com/images/I/71jG+e7roXL._SX679_.jpg"},
+{id:4,name:"Watch",price:3000,cat:"gadg",img:"https://m.media-amazon.com/images/I/61ZjlBOp+rL._SX679_.jpg"}
 ];
 
-/* ================= AUTH ================= */
-async function signup(){
-let email=emailEl.value;
-let pass=passEl.value;
-let name=nameEl.value;
+/* CATEGORY */
+const categories=["all","elec","fash","gadg"];
+let currentCat="all";
 
+/* AUTH */
+async function signup(){
 await supabase.auth.signUp({
-email,password:pass,
-options:{data:{full_name:name}}
+email:email.value,password:pass.value,
+options:{data:{full_name:name.value}}
 });
-toast("Signup success");
+toast("Signup done");
 }
 
 async function login(){
-let email=emailEl.value;
-let pass=passEl.value;
-
-let {error}=await supabase.auth.signInWithPassword({email,password:pass});
+let {error}=await supabase.auth.signInWithPassword({
+email:email.value,password:pass.value
+});
 if(error) toast(error.message);
 }
 
@@ -221,43 +185,49 @@ options:{redirectTo:location.href}
 });
 }
 
-async function logout(){
-await supabase.auth.signOut();
-location.reload();
-}
-
-/* ================= SESSION ================= */
-supabase.auth.onAuthStateChange((e,session)=>{
-if(session){
-showHome();
-}
+supabase.auth.onAuthStateChange((e,s)=>{
+if(s) showHome();
 });
 
-/* ================= UI ================= */
+/* UI */
 function showHome(){
 loginPage.style.display="none";
 homePage.style.display="block";
+renderCats();
 render();
+updateCart();
 }
 
-function reload(){location.reload()}
-
-/* ================= RENDER ================= */
+/* RENDER */
 function render(){
-let html="";
-products.forEach(p=>{
-html+=`
+let data=products.filter(p=>
+(currentCat==="all"||p.cat===currentCat) &&
+p.name.toLowerCase().includes(search.value.toLowerCase())
+);
+
+grid.innerHTML=data.map(p=>`
 <div class="card" onclick="openDetail(${p.id})">
 <img src="${p.img}">
 <div>${p.name}</div>
 <div class="price">₹${p.price}</div>
-</div>
-`;
-});
-grid.innerHTML=html;
+</div>`).join("");
 }
 
-/* ================= DETAIL ================= */
+/* CATEGORY */
+function renderCats(){
+cats.innerHTML=categories.map(c=>
+`<div class="cat" onclick="setCat('${c}',this)">${c}</div>`
+).join("");
+}
+
+function setCat(c,el){
+currentCat=c;
+document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
+el.classList.add('active');
+render();
+}
+
+/* DETAIL */
 function openDetail(id){
 let p=products.find(x=>x.id==id);
 detail.style.display="block";
@@ -268,38 +238,51 @@ detail.innerHTML=`
 <img src="${p.img}" style="width:100%">
 <p>₹${p.price}</p>
 
-<select><option>Color</option><option>Black</option></select>
-<input type="number" value="1">
+<div>
+<button onclick="dec()">-</button>
+<span id="qty">1</span>
+<button onclick="inc()">+</button>
+</div>
 
 <button onclick="addCart(${p.id})">Add to Cart</button>
-<button onclick="toast('Buying...')">Buy Now</button>
-
-<p>Delivery in 7-15 days</p>
 <p>⭐⭐⭐⭐☆</p>
 `;
 }
 
-/* ================= CART ================= */
+let qty=1;
+function inc(){qty++;qtyEl.innerText=qty}
+function dec(){if(qty>1)qty--;qtyEl.innerText=qty}
+const qtyEl={set innerText(v){document.getElementById("qty").innerText=v}};
+
+/* CART */
 function addCart(id){
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
-cart.push(id);
+cart.push({id,qty});
 localStorage.setItem("cart",JSON.stringify(cart));
-toast("Added to cart");
+updateCart();
+toast("Added");
 }
 
-/* ================= TOAST ================= */
-function toast(msg){
-let t=document.createElement("div");
-t.className="toast";
-t.innerText=msg;
-document.body.appendChild(t);
-setTimeout(()=>t.remove(),2000);
+function updateCart(){
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+cartCount.innerText=cart.length;
 }
 
-/* ================= ELEMENTS ================= */
-const emailEl=document.getElementById("email");
-const passEl=document.getElementById("pass");
-const nameEl=document.getElementById("name");
+function showCart(){
+alert("Cart items: "+cartCount.innerText);
+}
+
+/* EVENTS */
+search.addEventListener("input",render);
+
+/* TOAST */
+function toast(t){
+let d=document.createElement("div");
+d.className="toast";
+d.innerText=t;
+document.body.appendChild(d);
+setTimeout(()=>d.remove(),2000);
+}
 
 </script>
 
