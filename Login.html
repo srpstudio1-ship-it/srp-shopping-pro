@@ -1,459 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login | SRP SHOPPING - Premium Marketplace</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-blue: #0056b3;
-            --secondary-blue: #007bff;
-            --soft-blue: #e7f1ff;
-            --pure-white: #ffffff;
-            --text-dark: #1a1a1a;
-            --text-gray: #6c757d;
-            --error-red: #dc3545;
-            --success-green: #28a745;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRP SHOPPING | Secure Login</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        body {
-            background-color: var(--soft-blue);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-        /* High-Fidelity Background Elements */
-        .bg-circles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins';}
 
-        .circle {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            opacity: 0.1;
-        }
+body{
+height:100vh;
+background:linear-gradient(135deg,#004aad,#00d4ff);
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+}
 
-        .circle-1 { width: 400px; height: 400px; top: -100px; left: -100px; }
-        .circle-2 { width: 300px; height: 300px; bottom: -50px; right: -50px; }
+/* Glass Box */
+.container{
+width:90%;
+max-width:420px;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(15px);
+border-radius:20px;
+padding:30px;
+text-align:center;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+animation:fadeIn 0.6s ease;
+}
 
-        /* Auth Container */
-        .auth-card {
-            background: var(--pure-white);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: var(--shadow-md);
-            margin: 20px;
-            transition: var(--transition);
-        }
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;}
+}
 
-        .brand-header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
+/* Logo */
+.logo{
+font-size:2rem;
+font-weight:800;
+margin-bottom:10px;
+}
 
-        .brand-logo {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-blue);
-            letter-spacing: -1px;
-            text-transform: uppercase;
-        }
+.status{
+margin-top:15px;
+font-size:14px;
+opacity:0.9;
+}
 
-        .brand-tagline {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
+/* Loader */
+.loader{
+width:50px;
+height:50px;
+border:5px solid rgba(255,255,255,0.3);
+border-top:5px solid white;
+border-radius:50%;
+margin:20px auto;
+animation:spin 1s linear infinite;
+}
 
-        /* Toggle Tabs */
-        .auth-tabs {
-            display: flex;
-            background: var(--soft-blue);
-            padding: 5px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-        }
+@keyframes spin{
+to{transform:rotate(360deg);}
+}
 
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: none;
-            font-weight: 600;
-            color: var(--text-gray);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
+/* Button */
+.btn{
+margin-top:20px;
+padding:12px 20px;
+background:white;
+color:#004aad;
+border:none;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+}
 
-        .tab-btn.active {
-            background: var(--pure-white);
-            color: var(--primary-blue);
-            box-shadow: var(--shadow-sm);
-        }
+/* Hidden */
+.hidden{display:none;}
 
-        /* Form Styling */
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-gray);
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-wrapper i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-blue);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 14px 15px 14px 45px;
-            border: 2px solid var(--soft-blue);
-            border-radius: 12px;
-            outline: none;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .form-control:focus {
-            border-color: var(--secondary-blue);
-            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
-        }
-
-        /* Buttons */
-        .btn-primary {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 10px;
-        }
-
-        .btn-primary:hover {
-            background: #004494;
-            transform: translateY(-2px);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 25px 0;
-            color: var(--text-gray);
-            font-size: 0.8rem;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
-
-        .btn-google {
-            width: 100%;
-            padding: 13px;
-            background: var(--pure-white);
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-google:hover {
-            background: #f8f9fa;
-            border-color: #ccc;
-        }
-
-        .btn-google img {
-            width: 20px;
-        }
-
-        /* Feedback States */
-        #auth-message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            display: none;
-            text-align: center;
-        }
-
-        .msg-error { background: #f8d7da; color: var(--error-red); border: 1px solid #f5c6cb; }
-        .msg-success { background: #d4edda; color: var(--success-green); border: 1px solid #c3e6cb; }
-
-        /* Footer Links */
-        .auth-footer {
-            margin-top: 25px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-
-        .auth-footer a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Responsive Adjustments */
-        @media (max-width: 480px) {
-            .auth-card { padding: 25px; }
-            .brand-logo { font-size: 2rem; }
-        }
-    </style>
+</style>
 </head>
+
 <body>
 
-    <div class="bg-circles">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-    </div>
+<div class="container">
 
-    <div class="auth-card">
-        <div class="brand-header">
-            <h1 class="brand-logo">SRP SHOPPING</h1>
-            <p class="brand-tagline">Experience Next-Gen E-Commerce</p>
-        </div>
+<div class="logo">SRP SHOPPING</div>
+<p>Secure Access Gateway</p>
 
-        <div id="auth-message"></div>
+<div class="loader" id="loader"></div>
 
-        <div class="auth-tabs">
-            <button class="tab-btn active" onclick="toggleAuth('login')">Login</button>
-            <button class="tab-btn" onclick="toggleAuth('signup')">Sign Up</button>
-        </div>
+<div class="status" id="status">
+Checking your session...
+</div>
 
-        <form id="login-form">
-            <div class="form-group">
-                <label>Email Address</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="login-email" class="form-control" placeholder="example@gmail.com" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
-                </div>
-            </div>
-            <button type="submit" class="btn-primary" id="login-btn">
-                <span class="btn-text">Sign In</span>
-                <div class="spinner"></div>
-            </button>
-        </form>
+<button class="btn hidden" id="loginBtn" onclick="goLogin()">
+Go to Login
+</button>
 
-        <form id="signup-form" style="display: none;">
-            <div class="form-group">
-                <label>Full Name</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="signup-name" class="form-control" placeholder="Subhash Rajpurohit">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Email Address</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="signup-email" class="form-control" placeholder="example@gmail.com" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Create Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="signup-password" class="form-control" placeholder="Minimum 6 characters" required>
-                </div>
-            </div>
-            <button type="submit" class="btn-primary" id="signup-btn">
-                <span class="btn-text">Create Account</span>
-                <div class="spinner"></div>
-            </button>
-        </form>
+</div>
 
-        <div class="divider">OR CONTINUE WITH</div>
+<script>
 
-        <button class="btn-google" onclick="signInWithGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-            Google
-        </button>
+/* ======================
+SUPABASE CONFIG
+====================== */
+const supabase = window.supabase.createClient(
+"https://cmxlfxqtrguuzpqdgcxv.supabase.co",
+"YOUR_PUBLIC_ANON_KEY"
+);
 
-        <div class="auth-footer">
-            <p id="toggle-footer-text">New to SRP SHOPPING? <a href="javascript:void(0)" onclick="toggleAuth('signup')">Create an account</a></p>
-        </div>
-    </div>
+/* ======================
+STATE
+====================== */
+let isProcessing = true;
 
-    <script>
-        // --- Supabase Configuration ---
-        const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ======================
+CHECK SESSION
+====================== */
+async function checkSession(){
 
-        // --- UI Logic ---
-        function toggleAuth(type) {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const tabs = document.querySelectorAll('.tab-btn');
-            const footerText = document.getElementById('toggle-footer-text');
+document.getElementById('status').innerText="Validating session...";
 
-            if (type === 'signup') {
-                loginForm.style.display = 'none';
-                signupForm.style.display = 'block';
-                tabs[1].classList.add('active');
-                tabs[0].classList.remove('active');
-                footerText.innerHTML = 'Already have an account? <a href="javascript:void(0)" onclick="toggleAuth(\'login\')">Login here</a>';
-            } else {
-                loginForm.style.display = 'block';
-                signupForm.style.display = 'none';
-                tabs[0].classList.add('active');
-                tabs[1].classList.remove('active');
-                footerText.innerHTML = 'New to SRP SHOPPING? <a href="javascript:void(0)" onclick="toggleAuth(\'signup\')">Create an account</a>';
-            }
-        }
+const { data, error } = await supabase.auth.getSession();
 
-        function showMessage(text, type) {
-            const msgBox = document.getElementById('auth-message');
-            msgBox.textContent = text;
-            msgBox.className = type === 'error' ? 'msg-error' : 'msg-success';
-            msgBox.style.display = 'block';
-            setTimeout(() => { msgBox.style.display = 'none'; }, 5000);
-        }
+if(data.session){
+document.getElementById('status').innerText="Welcome back!";
+setTimeout(()=>{
+window.location.href="home.html";
+},1000);
+}else{
+document.getElementById('status').innerText="No active session found.";
+showLogin();
+}
 
-        function setLoading(btnId, isLoading) {
-            const btn = document.getElementById(btnId);
-            const text = btn.querySelector('.btn-text');
-            const spinner = btn.querySelector('.spinner');
-            if (isLoading) {
-                text.style.display = 'none';
-                spinner.style.display = 'block';
-                btn.disabled = true;
-            } else {
-                text.style.display = 'block';
-                spinner.style.display = 'none';
-                btn.disabled = false;
-            }
-        }
+}
 
-        // --- Auth Logic ---
+/* ======================
+SHOW LOGIN BUTTON
+====================== */
+function showLogin(){
+document.getElementById('loader').classList.add('hidden');
+document.getElementById('loginBtn').classList.remove('hidden');
+}
 
-        // 1. Email Sign Up
-        document.getElementById('signup-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoading('signup-btn', true);
-            
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const fullName = document.getElementById('signup-name').value;
+/* ======================
+GO TO LOGIN
+====================== */
+function goLogin(){
+window.location.href="index.html";
+}
 
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: { data: { full_name: fullName } }
-            });
+/* ======================
+LISTEN AUTH CHANGES
+====================== */
+supabase.auth.onAuthStateChange((event, session)=>{
+if(session){
+window.location.href="home.html";
+}
+});
 
-            setLoading('signup-btn', false);
-            if (error) showMessage(error.message, 'error');
-            else showMessage('Check your email for confirmation link!', 'success');
-        });
+/* ======================
+INIT
+====================== */
+checkSession();
 
-        // 2. Email Login
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoading('login-btn', true);
+</script>
 
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-            setLoading('login-btn', false);
-            if (error) showMessage(error.message, 'error');
-            else window.location.href = 'index.html';
-        });
-
-        // 3. Google Sign In
-        async function signInWithGoogle() {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: window.location.origin + '/index.html' }
-            });
-            if (error) showMessage(error.message, 'error');
-        }
-
-        // Check Session on Load
-        window.onload = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) window.location.href = 'index.html';
-        };
-    </script>
 </body>
 </html>
-
