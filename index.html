@@ -12,6 +12,7 @@
         :root {
             --srp-blue: #004aad;
             --srp-light-blue: #007bff;
+            --srp-soft-blue: #e7f0ff;
             --srp-white: #ffffff;
             --srp-bg: #f0f2f5;
             --srp-text: #1c1e21;
@@ -35,6 +36,7 @@
             padding-top: var(--top-height);
             padding-bottom: calc(var(--nav-height) + 20px);
             overflow-x: hidden;
+            transition: background 0.3s;
         }
 
         /* --- TOP NAVIGATION AREA --- */
@@ -63,9 +65,23 @@
             color: var(--srp-blue);
             cursor: pointer;
             transition: transform 0.2s;
+            position: relative;
         }
 
         .brand-btn:active { transform: scale(0.95); }
+
+        .admin-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
 
         .top-right-info {
             display: flex;
@@ -83,6 +99,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            transition: 0.3s;
         }
 
         .privacy-btn {
@@ -143,7 +160,7 @@
             filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
         }
 
-        /* --- PRODUCT GRID --- */
+        /* --- CATEGORY SECTION --- */
         .section-title {
             padding: 10px 15px;
             font-weight: 700;
@@ -152,6 +169,43 @@
             justify-content: space-between;
         }
 
+        .category-item {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .cat-circle {
+            width: 65px;
+            height: 65px;
+            background: var(--srp-white);
+            border: 2px solid var(--srp-soft-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--srp-blue);
+            box-shadow: var(--srp-shadow);
+            transition: 0.3s;
+        }
+
+        .category-item.active .cat-circle {
+            background: var(--srp-blue);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .cat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--srp-text);
+        }
+
+        /* --- PRODUCT GRID --- */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -170,317 +224,75 @@
         .product-image-box {
             position: relative;
             width: 100%;
-            padding-top: 100%; /* 1:1 Aspect Ratio */
+            padding-top: 100%;
             background: #f9f9f9;
         }
 
         .product-image-box img {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
         }
 
-        .product-info {
-            padding: 10px;
-        }
-
-        .p-name {
-            font-size: 0.85rem;
-            font-weight: 500;
-            height: 34px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            margin-bottom: 5px;
-        }
-
-        .p-pricing {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
+        .product-info { padding: 10px; }
+        .p-name { font-size: 0.85rem; font-weight: 500; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 5px; }
+        .p-pricing { display: flex; align-items: center; gap: 5px; }
         .p-price { font-weight: 700; color: var(--srp-blue); font-size: 1rem; }
         .p-mrp { font-size: 0.75rem; text-decoration: line-through; color: var(--srp-gray); }
         .p-discount { font-size: 0.75rem; color: #28a745; font-weight: 600; }
 
         /* --- BOTTOM NAVIGATION --- */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background: var(--srp-white);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #eee;
-            z-index: 1000;
+            position: fixed; bottom: 0; width: 100%; height: var(--nav-height);
+            background: var(--srp-white); display: flex; justify-content: space-around;
+            align-items: center; border-top: 1px solid #eee; z-index: 1000;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--srp-gray);
-            flex: 1;
-            transition: 0.2s;
-        }
-
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--srp-gray); flex: 1; transition: 0.2s; }
         .nav-item i { font-size: 1.3rem; margin-bottom: 3px; }
         .nav-item span { font-size: 0.65rem; font-weight: 500; }
-
         .nav-item.active { color: var(--srp-blue); }
 
         .ai-btn-special {
-            background: var(--srp-blue);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: -30px;
-            box-shadow: 0 4px 10px rgba(0, 74, 173, 0.4);
-            color: white !important;
+            background: var(--srp-blue); width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-top: -30px;
+            box-shadow: 0 4px 10px rgba(0, 74, 173, 0.4); color: white !important;
         }
 
-        /* --- ADMIN PANEL OVERLAY --- */
-        #admin-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
+        /* --- PRODUCT DETAIL OVERLAY --- */
+        #product-detail-view {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--srp-white); z-index: 3000; display: none;
+            overflow-y: auto; animation: slideUp 0.4s cubic-bezier(0, 0, 0.2, 1);
         }
 
-        .admin-modal {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-<style>
-    /* Category Styles */
-    .category-item {
-        flex: 0 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-    }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    .cat-circle {
-        width: 65px;
-        height: 65px;
-        background: var(--srp-white);
-        border: 2px solid var(--srp-soft-blue);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: var(--srp-blue);
-        box-shadow: var(--srp-shadow);
-        transition: 0.3s;
-    }
+        .detail-header { position: sticky; top: 0; background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; z-index: 10; }
+        .image-slider-container { width: 100%; overflow-x: auto; display: flex; scroll-snap-type: x mandatory; background: #fdfdfd; }
+        .slider-img { min-width: 100%; height: 350px; object-fit: contain; scroll-snap-align: start; }
+        .detail-body { padding: 20px; }
+        .price-section { background: #f7f7f7; padding: 15px; border-radius: 10px; margin: 15px 0; }
+        .d-current-price { font-size: 1.8rem; font-weight: 700; }
+        .qty-selector { display: flex; align-items: center; gap: 15px; background: #eee; width: fit-content; padding: 5px 15px; border-radius: 25px; }
+        .action-row { display: flex; gap: 10px; margin: 25px 0; position: sticky; bottom: 0; background: white; padding: 15px 0; }
+        .btn-cart { flex: 1; padding: 15px; border-radius: 10px; background: #ffd814; border: none; font-weight: 600; }
+        .btn-buy { flex: 1; padding: 15px; border-radius: 10px; background: #ffa41c; border: none; font-weight: 600; }
 
-    .category-item.active .cat-circle {
-        background: var(--srp-blue);
-        color: white;
-        transform: scale(1.1);
-    }
-
-    .cat-label {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--srp-text);
-    }
-
-    /* Privacy Modal */
-    #privacy-modal {
-        display: none;
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: white;
-        z-index: 4000;
-        padding: 20px;
-        overflow-y: auto;
-    }
-
-    .privacy-content {
-        line-height: 1.6;
-        color: var(--srp-gray);
-        font-size: 0.9rem;
-    }
-
-    /* No Results State */
-    .no-results {
-        grid-column: 1 / span 2;
-        text-align: center;
-        padding: 50px 20px;
-        color: var(--srp-gray);
-    }
-
-    .no-results i {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        display: block;
-        color: #ddd;
-    }
-</style>
-
-<div id="privacy-modal">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 style="color:var(--srp-blue);">Privacy Policy</h2>
-        <button onclick="togglePrivacy(false)" style="background:none; border:none; font-size:1.5rem;"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="privacy-content">
-        <p><strong>Last Updated: March 2026</strong></p>
-        <p>Welcome to SRP SHOPPING. We value your privacy and are committed to protecting your personal data. This policy outlines how we handle your information when you use our multi-vendor marketplace.</p>
-        <br>
-        <h3>1. Data Collection</h3>
-        <p>We collect information you provide directly to us, such as when you create an account, update your profile, or make a purchase. This includes your name, email address, and shipping details.</p>
-        <br>
-        <h3>2. Payment Security</h3>
-        <p>All payments are processed through secure gateways (Razorpay/Supabase). SRP SHOPPING does not store your credit card numbers or CVV codes on our servers.</p>
-        <br>
-        <h3>3. Cookies</h3>
-        <p>We use cookies to maintain your session and remember items in your cart. You can disable cookies in your browser settings, but some features of the site may not function correctly.</p>
-        <br>
-        <p>For full legal documentation, please contact our administrator at <strong>Srpstudio1@gmail.com</strong>.</p>
-    </div>
-</div>
-
-<script>
-    // --- CATEGORY DATA ---
-    const CATEGORIES = [
-        { id: 'all', label: 'All', icon: 'fa-border-all' },
-        { id: 'elec', label: 'Electronics', icon: 'fa-laptop' },
-        { id: 'fash', label: 'Fashion', icon: 'fa-shirt' },
-        { id: 'home', label: 'Home', icon: 'fa-couch' },
-        { id: 'gadg', label: 'Gadgets', icon: 'fa-mobile-screen' },
-        { id: 'beau', label: 'Beauty', icon: 'fa-sparkles' }
-    ];
-
-    let activeCategory = 'all';
-    let searchQuery = '';
-
-    // --- RENDER CATEGORIES ---
-    function initCategories() {
-        const catBox = document.getElementById('category-scroller');
-        catBox.innerHTML = CATEGORIES.map(cat => `
-            <div class="category-item ${cat.id === activeCategory ? 'active' : ''}" onclick="filterByCategory('${cat.id}')">
-                <div class="cat-circle">
-                    <i class="fas ${cat.icon}"></i>
-                </div>
-                <span class="cat-label">${cat.label}</span>
-            </div>
-        `).join('');
-    }
-
-    // --- FILTERING LOGIC ---
-    function filterByCategory(catId) {
-        activeCategory = catId;
-        initCategories(); // Re-render to update active state
-        applyFilters();
-    }
-
-    // --- SEARCH LOGIC ---
-    document.querySelector('.search-bar').addEventListener('input', (e) => {
-        searchQuery = e.target.value.toLowerCase();
-        applyFilters();
-    });
-
-    function applyFilters() {
-        const container = document.getElementById('main-product-container');
+        /* --- FEEDBACK SYSTEMS --- */
+        #srp-toast-container { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); z-index: 5000; width: 90%; max-width: 400px; }
+        .srp-toast { background: rgba(0, 74, 173, 0.95); color: white; padding: 12px 20px; border-radius: 12px; margin-top: 10px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: toastIn 0.3s ease-out; }
+        @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        // Logical Filtering
-        const filtered = PRODUCT_DB.filter(p => {
-            const matchesCategory = (activeCategory === 'all' || p.brand.toLowerCase().includes(activeCategory) || p.name.toLowerCase().includes(activeCategory));
-            const matchesSearch = p.name.toLowerCase().includes(searchQuery) || p.brand.toLowerCase().includes(searchQuery);
-            return matchesCategory && matchesSearch;
-        });
-
-        if (filtered.length === 0) {
-            container.innerHTML = `
-                <div class="no-results">
-                    <i class="fas fa-search-minus"></i>
-                    <p>No products found for "${searchQuery}"</p>
-                    <button onclick="resetFilters()" style="margin-top:10px; color:var(--srp-blue); border:none; background:none; font-weight:600;">Clear All Filters</button>
-                </div>
-            `;
-        } else {
-            renderFilteredProducts(filtered);
-        }
-    }
-
-    function renderFilteredProducts(products) {
-        const container = document.getElementById('main-product-container');
-        container.innerHTML = products.map(p => `
-            <div class="product-card" onclick="openProduct(${p.id})">
-                <div class="product-image-box">
-                    <img src="${p.images[0]}" alt="${p.name}">
-                </div>
-                <div class="product-info">
-                    <div class="p-name">${p.name}</div>
-                    <div class="p-pricing">
-                        <span class="p-price">₹${p.price.toLocaleString()}</span>
-                        <span class="p-mrp">₹${p.mrp.toLocaleString()}</span>
-                        <span class="p-discount">${Math.round((p.mrp-p.price)/p.mrp*100)}% off</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function resetFilters() {
-        activeCategory = 'all';
-        searchQuery = '';
-        document.querySelector('.search-bar').value = '';
-        initCategories();
-        applyFilters();
-    }
-
-    // --- UTILITY FUNCTIONS ---
-    function togglePrivacy(show) {
-        document.getElementById('privacy-modal').style.display = show ? 'block' : 'none';
-        document.body.style.overflow = show ? 'hidden' : 'auto';
-    }
-
-    // Attach Privacy Click
-    document.querySelector('.privacy-btn').onclick = (e) => {
-        e.preventDefault();
-        togglePrivacy(true);
-    };
-
-    // Auto-Run
-    document.addEventListener('DOMContentLoaded', () => {
-        initCategories();
-        // Wallet Animation Simulation
-        setTimeout(() => {
-            const balance = document.getElementById('user-wallet-balance');
-            balance.innerText = "2,500.00";
-        }, 1500);
-    });
-
-
-        /* Skeleton Loading */
+        #admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .admin-modal { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
         .skeleton { background: #eee; border-radius: 8px; animation: loading 1.5s infinite; }
         @keyframes loading { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
+        /* Privacy Modal */
+        #privacy-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 4000; padding: 20px; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -489,7 +301,7 @@
         <div class="top-row">
             <button class="brand-btn" id="srp-brand-trigger">SRP SHOPPING</button>
             <div class="top-right-info">
-                <a href="privacy.html" class="privacy-btn"><i class="fas fa-shield-halved"></i></a>
+                <a href="#" class="privacy-btn" id="open-privacy"><i class="fas fa-shield-halved"></i></a>
                 <div class="wallet-badge">
                     <i class="fas fa-wallet"></i> ₹<span id="user-wallet-balance">0.00</span>
                 </div>
@@ -497,21 +309,24 @@
         </div>
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-bar" placeholder="Search for products, brands and more...">
+            <input type="text" class="search-bar" placeholder="Search products, brands and more...">
         </div>
     </header>
+
+    <div id="ptr" style="height:0; overflow:hidden; display:flex; align-items:center; justify-content:center; color:var(--srp-blue);">
+        <i class="fas fa-arrows-rotate fa-spin"></i>
+    </div>
 
     <div class="promo-banner">
         <div class="promo-text">
             <h2>Grand Sale Live!</h2>
-            <p>Flat 50% Off on Electronics</p>
+            <p>Flat 50% Off on Electronics & Gadgets</p>
         </div>
         <img src="https://cdn-icons-png.flaticon.com/512/3081/3081986.png" class="promo-img" alt="Offer">
     </div>
 
     <div class="section-title">Shop by Category</div>
-    <div id="category-scroller" style="display:flex; overflow-x:auto; padding:10px; gap:15px;">
-        </div>
+    <div id="category-scroller" style="display:flex; overflow-x:auto; padding:10px; gap:15px; scrollbar-width: none;"></div>
 
     <div class="section-title">
         Trending Products
@@ -526,548 +341,130 @@
     </main>
 
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <i class="fas fa-house"></i>
-            <span>Home</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </a>
-        <a href="wallet.html" class="nav-item">
-            <i class="fas fa-wallet"></i>
-            <span>Wallet</span>
-        </a>
-        <a href="ai.html" class="nav-item ai-btn-special">
-            <i class="fas fa-robot" style="font-size:1.5rem;"></i>
-        </a>
-        <a href="seller.html" class="nav-item">
-            <i class="fas fa-shop"></i>
-            <span>Seller</span>
-        </a>
-        <a href="cart.html" class="nav-item">
-            <i class="fas fa-cart-shopping"></i>
-            <span>Cart</span>
-        </a>
+        <a href="index.html" class="nav-item active"><i class="fas fa-house"></i><span>Home</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+        <a href="wallet.html" class="nav-item"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+        <a href="ai.html" class="nav-item ai-btn-special"><i class="fas fa-robot" style="font-size:1.5rem;"></i></a>
+        <a href="seller.html" class="nav-item"><i class="fas fa-shop"></i><span>Seller</span></a>
+        <a href="cart.html" class="nav-item"><i class="fas fa-cart-shopping"></i><span>Cart</span></a>
     </nav>
+
+    <div id="product-detail-view">
+        <div class="detail-header">
+            <button onclick="closeProduct()" style="background:none; border:none; font-size:1.5rem;"><i class="fas fa-arrow-left"></i></button>
+            <div class="brand-btn" style="font-size:1rem;">SRP SHOPPING</div>
+            <i class="fas fa-share-nodes"></i>
+        </div>
+        <div class="image-slider-container" id="detail-slider"></div>
+        <div class="detail-body">
+            <span class="d-brand" id="d-brand-name">SRP EXCLUSIVE</span>
+            <h1 class="d-name" id="d-title">Product Loading...</h1>
+            <div class="rating-stars" style="color:#ffa41c;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+            <div class="price-section">
+                <span style="color:#cc0c39; font-size:1.5rem;" id="d-pct">-0%</span>
+                <span class="d-current-price">₹<span id="d-price">0</span></span>
+                <div style="text-decoration:line-through; color:var(--srp-gray);">M.R.P.: ₹<span id="d-mrp-val">0</span></div>
+            </div>
+            <label style="font-weight:600;">Quantity</label>
+            <div class="qty-selector"><i class="fas fa-minus" onclick="updateQty(-1)"></i><span id="qty-val">1</span><i class="fas fa-plus" onclick="updateQty(1)"></i></div>
+            <div class="action-row">
+                <button class="btn-cart" onclick="addToCart()">Add to Cart</button>
+                <button class="btn-buy" onclick="window.location.href='checkout.html'">Buy Now</button>
+            </div>
+            <div id="d-desc" style="line-height:1.6; white-space:pre-line;"></div>
+        </div>
+    </div>
 
     <div id="admin-overlay">
         <div class="admin-modal">
             <i class="fas fa-lock" style="font-size:3rem; color:var(--srp-blue); margin-bottom:15px;"></i>
             <h3>Admin Access</h3>
-            <p style="margin:10px 0; font-size:0.9rem;">Enter security pin to proceed</p>
-            <input type="password" id="admin-pin" placeholder="••••" style="width:100%; padding:15px; text-align:center; font-size:1.5rem; letter-spacing:10px; border:2px solid #eee; border-radius:10px; outline:none;">
-            <button onclick="verifyAdmin()" class="brand-btn" style="background:var(--srp-blue); color:white; width:100%; margin-top:15px; padding:12px; border-radius:10px; font-size:1rem;">Unlock Panel</button>
-            <button onclick="document.getElementById('admin-overlay').style.display='none'" style="background:none; border:none; margin-top:15px; color:var(--srp-gray);">Cancel</button>
+            <input type="password" id="admin-pin" placeholder="PIN" style="width:100%; padding:15px; margin:15px 0; text-align:center; border:1px solid #ddd; border-radius:10px;">
+            <button onclick="verifyAdmin()" class="brand-btn" style="background:var(--srp-blue); color:white; width:100%; padding:12px; border-radius:10px;">Unlock</button>
         </div>
     </div>
 
+    <div id="privacy-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>Privacy Policy</h2>
+            <button onclick="togglePrivacy(false)" style="background:none; border:none; font-size:1.5rem;"><i class="fas fa-times"></i></button>
+        </div>
+        <p>Your data is managed by SRP SHOPPING. Admin contacts: Srpstudio1@gmail.com and subhashrajpurohit10@gmail.com.</p>
+    </div>
+
+    <div id="srp-toast-container"></div>
+
     <script>
-        // Supabase Init (Using credentials from Part 1)
         const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         const ADMIN_EMAILS = ['Srpstudio1@gmail.com', 'subhashrajpurohit10@gmail.com'];
         let currentUser = null;
+        let activeCategory = 'all';
+        let searchQuery = '';
 
-        // 1. Session Check & Admin Logic
+        const PRODUCT_DB = [];
+        for(let i=1; i<=20; i++) {
+            PRODUCT_DB.push({
+                id: i,
+                name: i===1 ? "SRP Pro Wireless Headphones" : i===2 ? "SRP Ultra-Slim 4K TV" : `Premium SRP Item ${i}`,
+                brand: i<5 ? "SRP Electronics" : "SRP Original",
+                price: 1500 + (i*200),
+                mrp: 3000 + (i*250),
+                images: [`https://picsum.photos/seed/${i+10}/400/400`],
+                desc: "High-quality professional grade product for SRP SHOPPING users. Features durable build and modern aesthetics."
+            });
+        }
+
         async function initApp() {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
+            if (!session) { window.location.href = 'login.html'; return; }
             currentUser = session.user;
-            document.getElementById('user-wallet-balance').innerText = "1,250.00"; // Placeholder
+            renderProducts();
+            initCategories();
+            checkAdminStatus();
+            setupRealtime();
         }
 
-        // Brand Button Logic
-        document.getElementById('srp-brand-trigger').addEventListener('click', () => {
-            if (currentUser && ADMIN_EMAILS.includes(currentUser.email)) {
-                document.getElementById('admin-overlay').style.display = 'flex';
-            } else {
-                location.reload();
-            }
-        });
-
-        function verifyAdmin() {
-            const pin = document.getElementById('admin-pin').value;
-            if (pin === "9999") { // Secure PIN
-                window.location.href = "admin_dashboard.html";
-            } else {
-                alert("Incorrect PIN Access Denied");
-            }
+        function renderProducts() {
+            const container = document.getElementById('main-product-container');
+            const filtered = PRODUCT_DB.filter(p => (activeCategory==='all' || p.brand.toLowerCase().includes(activeCategory)) && p.name.toLowerCase().includes(searchQuery));
+            container.innerHTML = filtered.map(p => `<div class="product-card" onclick="openProduct(${p.id})"><div class="product-image-box"><img src="${p.images[0]}"></div><div class="product-info"><div class="p-name">${p.name}</div><div class="p-pricing"><span class="p-price">₹${p.price}</span><span class="p-mrp">₹${p.mrp}</span></div></div></div>`).join('');
         }
-<style>
-    /* Product Detail Overlay Styles */
-    #product-detail-view {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--srp-white);
-        z-index: 3000;
-        display: none;
-        overflow-y: auto;
-        animation: slideUp 0.4s cubic-bezier(0, 0, 0.2, 1);
-    }
 
-    @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-    }
-
-    .detail-header {
-        position: sticky;
-        top: 0;
-        background: white;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #eee;
-        z-index: 10;
-    }
-
-    /* Horizontal Slider */
-    .image-slider-container {
-        width: 100%;
-        overflow-x: auto;
-        display: flex;
-        scroll-snap-type: x mandatory;
-        background: #fdfdfd;
-    }
-
-    .slider-img {
-        min-width: 100%;
-        height: 350px;
-        object-fit: contain;
-        scroll-snap-align: start;
-    }
-
-    .detail-body {
-        padding: 20px;
-    }
-
-    .d-brand { color: var(--srp-light-blue); font-weight: 600; font-size: 0.9rem; }
-    .d-name { font-size: 1.3rem; font-weight: 700; margin: 5px 0; line-height: 1.4; }
-    
-    .rating-stars { color: #ffa41c; font-size: 0.9rem; margin-bottom: 10px; }
-    
-    .price-section {
-        background: #f7f7f7;
-        padding: 15px;
-        border-radius: 10px;
-        margin: 15px 0;
-    }
-
-    .d-discount-tag {
-        color: #cc0c39;
-        font-size: 1.5rem;
-        font-weight: 300;
-    }
-
-    .d-current-price { font-size: 1.8rem; font-weight: 700; }
-    .d-mrp { text-decoration: line-through; color: var(--srp-gray); }
-
-    /* Selection Logic */
-    .selector-label { font-weight: 600; margin: 15px 0 8px; display: block; }
-    
-    .color-options { display: flex; gap: 10px; margin-bottom: 20px; }
-    .color-dot {
-        width: 35px; height: 35px; border-radius: 50%; border: 2px solid #eee;
-        cursor: pointer; transition: 0.2s;
-    }
-    .color-dot.active { border-color: var(--srp-blue); transform: scale(1.1); }
-
-    .qty-selector {
-        display: flex; align-items: center; gap: 15px;
-        background: #eee; width: fit-content; padding: 5px 15px; border-radius: 25px;
-    }
-
-    /* Action Buttons */
-    .action-row {
-        display: flex; gap: 10px; margin: 25px 0;
-        position: sticky; bottom: 0; background: white; padding: 15px 0;
-    }
-
-    .btn-cart { flex: 1; padding: 15px; border-radius: 10px; background: #ffd814; border: none; font-weight: 600; }
-    .btn-buy { flex: 1; padding: 15px; border-radius: 10px; background: #ffa41c; border: none; font-weight: 600; }
-
-    .delivery-info {
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-        padding: 15px 0;
-        margin: 20px 0;
-        color: #007600;
-        font-weight: 600;
-    }
-
-    .full-description {
-        line-height: 1.8;
-        color: #333;
-        font-size: 0.95rem;
-        white-space: pre-line;
-    }
-</style>
-
-<div id="product-detail-view">
-    <div class="detail-header">
-        <button onclick="closeProduct()" style="background:none; border:none; font-size:1.5rem;"><i class="fas fa-arrow-left"></i></button>
-        <div class="brand-btn" style="font-size:1rem;">SRP SHOPPING</div>
-        <i class="fas fa-share-nodes"></i>
-    </div>
-
-    <div class="image-slider-container" id="detail-slider">
-        </div>
-
-    <div class="detail-body">
-        <span class="d-brand" id="d-brand-name">SRP EXCLUSIVE</span>
-        <h1 class="d-name" id="d-title">Product Loading...</h1>
-        
-        <div class="rating-stars">
-            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-            <span style="color:var(--srp-light-blue); margin-left:10px;">12,458 ratings</span>
-        </div>
-
-        <div class="price-section">
-            <span class="d-discount-tag" id="d-pct">-50%</span>
-            <span class="d-current-price">₹<span id="d-price">0</span></span>
-            <div class="d-mrp">M.R.P.: ₹<span id="d-mrp-val">0</span></div>
-            <p style="font-size:0.8rem; color:green; margin-top:5px;">Inclusive of all taxes</p>
-        </div>
-
-        <label class="selector-label">Select Color</label>
-        <div class="color-options" id="color-list">
-            <div class="color-dot active" style="background: #000;"></div>
-            <div class="color-dot" style="background: #555;"></div>
-            <div class="color-dot" style="background: #004aad;"></div>
-        </div>
-
-        <label class="selector-label">Quantity</label>
-        <div class="qty-selector">
-            <i class="fas fa-minus" onclick="updateQty(-1)"></i>
-            <span id="qty-val" style="font-weight:700;">1</span>
-            <i class="fas fa-plus" onclick="updateQty(1)"></i>
-        </div>
-
-        <div class="delivery-info">
-            <i class="fas fa-truck"></i> FREE delivery in 7 to 15 days
-        </div>
-
-        <div class="action-row">
-            <button class="btn-cart" onclick="addToCart()">Add to Cart</button>
-            <button class="btn-buy" onclick="initiateBuyNow()">Buy Now</button>
-        </div>
-
-        <hr>
-        <h3 style="margin:20px 0 10px;">Product Description</h3>
-        <div class="full-description" id="d-desc">
-            </div>
-    </div>
-</div>
-
-<script>
-    // 20 Real Products Database
-    const PRODUCT_DB = [
-        {
-            id: 1,
-            name: "SRP Pro Wireless Noise Cancelling Headphones",
-            brand: "SRP Electronics",
-            price: 2499,
-            mrp: 4999,
-            images: ["https://m.media-amazon.com/images/I/61f496A7LcL._SL1500_.jpg", "https://m.media-amazon.com/images/I/51+Z1L5OQBL._SL1500_.jpg"],
-            desc: "Immerse yourself in pure sound with the SRP Pro Wireless Headphones. Engineered with advanced Active Noise Cancellation (ANC) technology, these headphones block out up to 95% of ambient noise, making them perfect for travel, office work, or daily commutes. \n\nFeaturing 40mm dynamic drivers, they deliver high-fidelity audio with deep bass and crystal-clear trebles. The plush memory foam ear cushions provide all-day comfort, while the foldable design ensures easy portability. With up to 50 hours of battery life on a single charge and fast-charging capabilities (10 mins = 5 hours play), you'll never be without your music.",
-            rating: 4.8
-        },
-        {
-            id: 2,
-            name: "SRP Ultra-Slim 4K Smart Android TV",
-            brand: "SRP Vision",
-            price: 28500,
-            mrp: 45000,
-            images: ["https://m.media-amazon.com/images/I/71fV9H2u8FL._SL1500_.jpg"],
-            desc: "Transform your living room into a cinematic haven with the SRP Ultra-Slim 4K Smart TV. Powered by the latest Android TV OS, it gives you access to thousands of apps like Netflix, Prime Video, and YouTube. The 4K UHD resolution combined with HDR10+ support ensures vibrant colors and lifelike detail. Integrated Dolby Atmos speakers provide a surround sound experience that fills the room.",
-            rating: 4.5
-        },
-        // ... Repeated pattern for 20 products
-    ];
-
-    // Mocking 20 products for the loop
-    for(let i=3; i<=20; i++) {
-        PRODUCT_DB.push({
-            id: i,
-            name: `Premium SRP Item ${i} - Limited Edition Collection`,
-            brand: "SRP Original",
-            price: 499 + (i*100),
-            mrp: 1200 + (i*150),
-            images: [`https://picsum.photos/seed/${i}/400/400`],
-            desc: "This is a high-quality SRP product designed for maximum durability and style. It features premium materials and is tested for performance across multiple environments. Perfect for modern lifestyle needs.",
-            rating: 4.2
-        });
-    }
-
-    // Render Products to Home
-    function renderProducts() {
-        const container = document.getElementById('main-product-container');
-        container.innerHTML = PRODUCT_DB.map(p => `
-            <div class="product-card" onclick="openProduct(${p.id})">
-                <div class="product-image-box">
-                    <img src="${p.images[0]}" alt="${p.name}">
-                </div>
-                <div class="product-info">
-                    <div class="p-name">${p.name}</div>
-                    <div class="p-pricing">
-                        <span class="p-price">₹${p.price.toLocaleString()}</span>
-                        <span class="p-mrp">₹${p.mrp.toLocaleString()}</span>
-                        <span class="p-discount">${Math.round((p.mrp-p.price)/p.mrp*100)}% off</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    let currentQty = 1;
-
-    function openProduct(id) {
-        const product = PRODUCT_DB.find(p => p.id === id);
-        const overlay = document.getElementById('product-detail-view');
-        
-        // Populate Data
-        document.getElementById('d-title').innerText = product.name;
-        document.getElementById('d-brand-name').innerText = product.brand;
-        document.getElementById('d-price').innerText = product.price.toLocaleString();
-        document.getElementById('d-mrp-val').innerText = product.mrp.toLocaleString();
-        document.getElementById('d-pct').innerText = `-${Math.round((product.mrp-product.price)/product.mrp*100)}%`;
-        document.getElementById('d-desc').innerText = product.desc;
-        
-        // Slider Images
-        const slider = document.getElementById('detail-slider');
-        slider.innerHTML = product.images.map(img => `<img src="${img}" class="slider-img">`).join('');
-        
-        currentQty = 1;
-        document.getElementById('qty-val').innerText = currentQty;
-        
-        overlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeProduct() {
-        document.getElementById('product-detail-view').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    function updateQty(val) {
-        currentQty += val;
-        if(currentQty < 1) currentQty = 1;
-        document.getElementById('qty-val').innerText = currentQty;
-    }
-
-    async function addToCart() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if(!user) return alert("Please login first");
-        
-        // Logic to push to Supabase 'cart' table
-        alert("Added to SRP Cart Successfully!");
-    }
-
-    function initiateBuyNow() {
-        window.location.href = "checkout.html";
-    }
-
-    // Initialize
-    window.onload = () => {
-        renderProducts();
-        initApp(); // From Part 2.1
-    }<style>
-    /* Toast Notification System */
-    #srp-toast-container {
-        position: fixed;
-        bottom: 85px; /* Above Bottom Nav */
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 5000;
-        width: 90%;
-        max-width: 400px;
-    }
-
-    .srp-toast {
-        background: rgba(0, 74, 173, 0.95);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 12px;
-        margin-top: 10px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        animation: toastIn 0.3s ease-out;
-    }
-
-    @keyframes toastIn {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Pull to Refresh Visual */
-    .ptr-element {
-        height: 0;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--srp-white);
-        transition: height 0.2s;
-        color: var(--srp-blue);
-    }
-
-    /* Skeleton Loading Enhancements */
-    .shimmer {
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-    }
-
-    /* Admin Quick Actions Badge */
-    .admin-badge {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background: #ff4757;
-        color: white;
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-</style>
-
-<div id="srp-toast-container"></div>
-
-<div id="ptr" class="ptr-element">
-    <i class="fas fa-arrows-rotate fa-spin"></i>
-</div>
-
-<script>
-    // --- ADVANCED UI NOTIFICATIONS ---
-    function showToast(message, icon = 'fa-check-circle') {
-        const container = document.getElementById('srp-toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'srp-toast';
-        toast.innerHTML = `
-            <i class="fas ${icon}"></i>
-            <span>${message}</span>
-        `;
-        
-        container.appendChild(toast);
-        
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(-10px)';
-            toast.style.transition = '0.3s';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-
-    // --- REAL-TIME WALLET & DATABASE LISTENER ---
-    async function setupRealtimeListeners() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) return;
-
-        // Listen for changes in the 'wallets' table for this specific user
-        const walletSubscription = supabaseClient
-            .channel('public:wallets')
-            .on('postgres_changes', { 
-                event: 'UPDATE', 
-                schema: 'public', 
-                table: 'wallets', 
-                filter: `user_id=eq.${user.id}` 
-            }, payload => {
-                const newBalance = payload.new.balance;
-                document.getElementById('user-wallet-balance').innerText = newBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-                showToast("Wallet Updated!", "fa-wallet");
-            })
-            .subscribe();
-            
-        console.log("SRP Real-time Engine: Active");
-    }
-
-    // --- PULL TO REFRESH LOGIC ---
-    let touchStart = 0;
-    window.addEventListener('touchstart', e => {
-        touchStart = e.touches[0].pageY;
-    }, { passive: true });
-
-    window.addEventListener('touchmove', e => {
-        const touchMove = e.touches[0].pageY;
-        const ptr = document.getElementById('ptr');
-        if (window.scrollY === 0 && touchMove > touchStart + 10) {
-            ptr.style.height = '60px';
+        function initCategories() {
+            const cats = [{id:'all',l:'All',i:'fa-border-all'},{id:'elec',l:'Electronics',i:'fa-laptop'},{id:'fash',l:'Fashion',i:'fa-shirt'}];
+            document.getElementById('category-scroller').innerHTML = cats.map(c => `<div class="category-item ${c.id===activeCategory?'active':''}" onclick="activeCategory='${c.id}';initCategories();renderProducts()"><div class="cat-circle"><i class="fas ${c.i}"></i></div><span class="cat-label">${c.l}</span></div>`).join('');
         }
-    }, { passive: true });
 
-    window.addEventListener('touchend', () => {
-        const ptr = document.getElementById('ptr');
-        if (ptr.style.height === '60px') {
-            setTimeout(() => {
-                ptr.style.height = '0';
-                location.reload();
-            }, 800);
+        function openProduct(id) {
+            const p = PRODUCT_DB.find(x => x.id === id);
+            document.getElementById('d-title').innerText = p.name;
+            document.getElementById('d-price').innerText = p.price;
+            document.getElementById('d-desc').innerText = p.desc;
+            document.getElementById('detail-slider').innerHTML = `<img src="${p.images[0]}" class="slider-img">`;
+            document.getElementById('product-detail-view').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
-    });
 
-    // --- OVERRIDE ADD TO CART FOR FEEDBACK ---
-    const originalAddToCart = window.addToCart;
-    window.addToCart = async function() {
-        // First play a small haptic-like visual feedback
-        const btn = document.querySelector('.btn-cart');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        btn.style.opacity = '0.7';
-
-        // Simulate Network Delay
-        setTimeout(() => {
-            showToast("Item added to your SRP Basket!", "fa-cart-plus");
-            btn.innerHTML = 'Add to Cart';
-            btn.style.opacity = '1';
-            
-            // Close the product overlay after success
-            setTimeout(() => closeProduct(), 500);
-        }, 800);
-    };
-
-    // --- ADMIN BRANDING OVERLAY INJECTOR ---
-    function checkAdminStatus() {
-        const brandBtn = document.getElementById('srp-brand-trigger');
-        if (currentUser && ADMIN_EMAILS.includes(currentUser.email)) {
-            brandBtn.style.position = 'relative';
-            brandBtn.innerHTML += '<span class="admin-badge">Admin</span>';
-            console.log("Admin Privileges Verified: Srpstudio1 / subhashrajpurohit10");
-        }
-    }
-
-    // --- FINAL INIT ---
-    document.addEventListener('DOMContentLoaded', () => {
-        setupRealtimeListeners();
-        checkAdminStatus();
+        function closeProduct() { document.getElementById('product-detail-view').style.display='none'; document.body.style.overflow='auto'; }
         
-        // Welcome Toast
-        setTimeout(() => {
-            const name = currentUser?.user_metadata?.full_name || "User";
-            showToast(`Welcome back, ${name}!`);
-        }, 2000);
-    });
+        function showToast(m) {
+            const c = document.getElementById('srp-toast-container');
+            const t = document.createElement('div'); t.className='srp-toast'; t.innerHTML=`<i class="fas fa-check"></i><span>${m}</span>`;
+            c.appendChild(t); setTimeout(()=>t.remove(), 3000);
+        }
 
+        async function addToCart() { showToast("Added to Basket!"); setTimeout(closeProduct, 500); }
+        function togglePrivacy(s) { document.getElementById('privacy-modal').style.display=s?'block':'none'; }
+        document.getElementById('open-privacy').onclick=()=>togglePrivacy(true);
+        document.querySelector('.search-bar').oninput=(e)=>{ searchQuery=e.target.value.toLowerCase(); renderProducts(); };
+        
+        function checkAdminStatus() { if(currentUser && ADMIN_EMAILS.includes(currentUser.email)) document.getElementById('srp-brand-trigger').innerHTML += '<span class="admin-badge">Admin</span>'; }
+        document.getElementById('srp-brand-trigger').onclick=()=>{ if(ADMIN_EMAILS.includes(currentUser.email)) document.getElementById('admin-overlay').style.display='flex'; else location.reload(); };
+        function verifyAdmin() { if(document.getElementById('admin-pin').value==='9999') window.location.href='admin_dashboard.html'; else alert('Denied'); }
 
-</script>
-
-        </body>
+        initApp();
+    </script>
+</body>
 </html>
