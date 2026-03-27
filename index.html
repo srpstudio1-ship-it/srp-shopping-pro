@@ -356,6 +356,24 @@
     </style>
 </head>
 <body>
+    <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px;">
+    <div style="text-align:center; margin-bottom:40px;">
+        <i class="fas fa-shopping-bag" style="font-size:4rem; color:var(--srp-blue);"></i>
+        <h1 style="margin-top:15px; font-weight:800; color:var(--srp-blue);">SRP SHOPPING</h1>
+        <p style="color:var(--srp-gray);">Experience Premium Shopping</p>
+    </div>
+    
+    <div style="width:100%; max-width:400px;">
+        <input type="email" id="user-email" placeholder="Email Address" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:15px; outline:none;">
+        <input type="password" id="user-pass" placeholder="Password" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:20px; outline:none;">
+        <button onclick="handleLogin()" style="width:100%; padding:15px; background:var(--srp-blue); color:white; border:none; border-radius:12px; font-weight:700; font-size:1.1rem; box-shadow: 0 4px 15px rgba(0,74,173,0.3);">LOGIN TO SHOP</button>
+        
+        <p style="text-align:center; margin-top:20px; color:var(--srp-gray); font-size:0.9rem;">
+            Authorized Access Only for <br><b>Srpstudio1 Dashboard</b>
+        </p>
+    </div>
+</div>
+
 
     <header class="top-nav">
         <div class="top-row">
@@ -786,14 +804,43 @@
             }
         `;
         document.head.appendChild(style);
+// 1. New Login Handler
+function handleLogin() {
+    const email = document.getElementById('user-email').value;
+    const pass = document.getElementById('user-pass').value;
 
-        // FINAL EXECUTION
-        window.onload = () => {
-            renderItems();
-            document.getElementById('balance-val').innerText = "1,250.00";
-        };
-                                                        // Animation Keyframes Injection
+    // Simple validation for now (You can connect this to Supabase later)
+    if (email.includes("@") && pass.length >= 4) {
+        localStorage.setItem('srp_logged_in', 'true');
+        localStorage.setItem('srp_user_email', email);
         
+        // Hide login and show shop
+        document.getElementById('login-screen').style.display = 'none';
+        showToast("Welcome back, " + email.split('@')[0]);
+    } else {
+        alert("Please enter valid credentials");
+    }
+}
+
+// 2. Updated Initialization (The "Guard")
+window.addEventListener('DOMContentLoaded', () => {
+    const isLoggedIn = localStorage.getItem('srp_logged_in');
+
+    if (isLoggedIn === 'true') {
+        // User is already logged in, hide the login screen immediately
+        document.getElementById('login-screen').style.display = 'none';
+        renderItems();
+    } else {
+        // Stay on login screen
+        console.log("Waiting for login...");
+    }
+
+    updateCartUI();
+    handleImageLoadError();
+    
+    const savedBalance = localStorage.getItem('srp_wallet') || "1,250.00";
+    document.getElementById('balance-val').innerText = parseFloat(savedBalance).toLocaleString('en-IN');
+});
 
     </script>
     
