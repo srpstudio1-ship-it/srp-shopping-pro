@@ -115,11 +115,248 @@ body{
     <button onclick="cart()">Cart</button>
     <button onclick="ai()">AI</button>
 </div><script>
+// ======================
+// GLOBAL STATE
+// ======================
+let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
+// ======================
+// PRODUCT PAGE UI
+// ======================
+function openProduct(i){
+let p = productList[i];
+
+document.getElementById("home").innerHTML = `
+<div style="padding:10px">
+
+    <!-- IMAGE SLIDER -->
+    <div style="display:flex;overflow-x:auto">
+        <img src="${p.img}" style="width:300px;margin-right:10px">
+        <img src="${p.img}" style="width:300px;margin-right:10px">
+        <img src="${p.img}" style="width:300px">
+    </div>
+
+    <h2>${p.name}</h2>
+
+    <!-- COLOR -->
+    <label>Color:</label>
+    <select id="color">
+        <option>Black</option>
+        <option>White</option>
+        <option>Blue</option>
+    </select>
+
+    <!-- QUANTITY -->
+    <label>Quantity:</label>
+    <input type="number" id="qty" value="1" min="1">
+
+    <!-- PRICE -->
+    <h3>MRP: ₹${p.price + 500}</h3>
+    <h2 style="color:green">Price: ₹${p.price}</h2>
+    <p style="color:red">${Math.round(((p.price+500-p.price)/(p.price+500))*100)}% OFF</p>
+
+    <!-- BUTTONS -->
+    <button onclick="addToCart(${i})">Add to Cart</button>
+    <button onclick="buyNow()">Buy Now</button>
+    <button onclick="addWishlist(${i})">❤️ Wishlist</button>
+
+    <p>Delivery in 7-15 days</p>
+
+    <!-- LONG DESCRIPTION -->
+    <p>${generateDescription(p.name)}</p>
+
+    <!-- BACK -->
+    <button onclick="reload()">⬅ Back</button>
+</div>
+`;
+
+}
+
+// ======================
+// DESCRIPTION GENERATOR (~long)
+// ======================
+function generateDescription(name){
+let text = "";
+for(let i=0;i<50;i++){
+text += "${name} is a premium quality product designed for durability, performance, and comfort. ";
+}
+return text;
+}
+
+// ======================
+// CART SYSTEM
+// ======================
+function addToCart(i){
+let qty = document.getElementById("qty").value;
+let item = productList[i];
+
+cartItems.push({
+    name:item.name,
+    price:item.price,
+    qty:parseInt(qty)
+});
+
+localStorage.setItem("cart", JSON.stringify(cartItems));
+alert("Added to cart");
+
+}
+
+function cart(){
+let html = "<h2>Your Cart</h2>";
+let total = 0;
+
+cartItems.forEach((item, index)=>{
+    let sub = item.price * item.qty;
+    total += sub;
+
+    html += `
+    <div>
+        <h3>${item.name}</h3>
+        <p>₹${item.price} x ${item.qty}</p>
+        <p>Total: ₹${sub}</p>
+        <button onclick="removeCart(${index})">Remove</button>
+    </div>
+    <hr>
+    `;
+});
+
+html += `<h2>Total: ₹${total}</h2>`;
+html += `<button onclick="checkout()">Checkout</button>`;
+html += `<button onclick="reload()">Back</button>`;
+
+document.getElementById("home").innerHTML = html;
+
+}
+
+function removeCart(i){
+cartItems.splice(i,1);
+localStorage.setItem("cart", JSON.stringify(cartItems));
+cart();
+}
+
+// ======================
+// BUY NOW / CHECKOUT
+// ======================
+function buyNow(){
+window.open("https://rzp.io/rzp/juTBnc4Q");
+}
+
+function checkout(){
+window.open("https://rzp.io/rzp/juTBnc4Q");
+}
+
+// ======================
+// WISHLIST
+// ======================
+function addWishlist(i){
+wishlist.push(productList[i]);
+localStorage.setItem("wishlist", JSON.stringify(wishlist));
+alert("Added to wishlist");
+}
+
+// ======================
+// PROFILE PAGE (UPGRADE)
+// ======================
+function profile(){
+document.getElementById("home").innerHTML = `
+<h2>My Account</h2>
+
+<button onclick="showOrders()">Orders</button>
+<button onclick="showAddress()">Address</button>
+<button onclick="showWishlist()">Wishlist</button>
+<button onclick="cart()">Cart</button>
+<button onclick="reload()">Back</button>
+`;
+
+}
+
+// ======================
+// ORDERS (DUMMY)
+// ======================
+function showOrders(){
+document.getElementById("home").innerHTML = "<h2>Your Orders</h2> <p>No orders yet</p> <button onclick="profile()">Back</button>";
+}
+
+// ======================
+// ADDRESS BOOK
+// ======================
+let addresses = JSON.parse(localStorage.getItem("addr")) || [];
+
+function showAddress(){
+let html = "<h2>Address Book</h2>";
+
+addresses.forEach((a,i)=>{
+    html += `<p>${a}</p>
+    <button onclick="delAddr(${i})">Delete</button><hr>`;
+});
+
+html += `
+<input id="newAddr" placeholder="Enter address">
+<button onclick="addAddr()">Add</button>
+<button onclick="profile()">Back</button>
+`;
+
+document.getElementById("home").innerHTML = html;
+
+}
+
+function addAddr(){
+let val = document.getElementById("newAddr").value;
+addresses.push(val);
+localStorage.setItem("addr", JSON.stringify(addresses));
+showAddress();
+}
+
+function delAddr(i){
+addresses.splice(i,1);
+localStorage.setItem("addr", JSON.stringify(addresses));
+showAddress();
+}
+
+// ======================
+// WISHLIST PAGE
+// ======================
+function showWishlist(){
+let html = "<h2>Wishlist</h2>";
+
+wishlist.forEach((w)=>{
+    html += `<p>${w.name} - ₹${w.price}</p>`;
+});
+
+html += `<button onclick="profile()">Back</button>`;
+document.getElementById("home").innerHTML = html;
+
+}
+
+// ======================
+// SEARCH FILTER
+// ======================
+function searchProduct(){
+let val = document.getElementById("search").value.toLowerCase();
+
+let filtered = productList.filter(p => 
+    p.name.toLowerCase().includes(val)
+);
+
+let box = document.getElementById("products");
+box.innerHTML="";
+
+filtered.forEach((p,i)=>{
+    box.innerHTML += `
+    <div class="card" onclick="openProduct(${i})">
+        <img src="${p.img}">
+        <h4>${p.name}</h4>
+        <p>₹${p.price}</p>
+    </div>
+    `;
+});
+
+    }
 // 🔐 SUPABASE
 const supabase = window.supabase.createClient(
-"YOUR_URL",
-"YOUR_KEY"
+"YOUR_URL".https://cmxlfxqtrguuzpqdgcxv.supabase.co
+    "YOUR_KEY"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0
 );
 
 // ADMIN EMAILS
@@ -223,7 +460,305 @@ function ai(){alert("AI coming");}
 function reload(){location.reload();}
 function privacy(){alert("Privacy policy");}
 function searchProduct(){alert("Search feature coming");}
+// ==========================
+// SELLER SYSTEM DATABASE (LOCAL)
+// ==========================
+let sellerRequests = JSON.parse(localStorage.getItem("sellerReq")) || [];
+let sellers = JSON.parse(localStorage.getItem("sellers")) || [];
+let sellerProducts = JSON.parse(localStorage.getItem("sellerProducts")) || [];
+let sellerOrders = JSON.parse(localStorage.getItem("sellerOrders")) || [];
+let withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
 
+// ==========================
+// SELLER BUTTON ENTRY
+// ==========================
+function seller(){
+let user = supabase.auth.getUser();
+
+document.getElementById("home").innerHTML = `
+<h2>Seller Dashboard</h2>
+
+<button onclick="applySeller()">Apply to Sell</button>
+<button onclick="openSellerPanel()">Open Dashboard</button>
+<button onclick="reload()">Back</button>
+`;
+
+}
+
+// ==========================
+// PAGE 1: APPLY SELLER
+// ==========================
+function applySeller(){
+document.getElementById("home").innerHTML = `
+<h2>Seller Registration</h2>
+
+<input id="name" placeholder="Full Name"><br>
+<input id="phone" placeholder="Phone Number"><br>
+<input id="aadhar" placeholder="Aadhar Number"><br>
+<input id="pan" placeholder="PAN Number"><br>
+<input id="gst" placeholder="GST Number"><br>
+
+<button onclick="submitSeller()">Submit</button>
+<button onclick="seller()">Back</button>
+`;
+
+}
+
+function submitSeller(){
+let data = {
+name:document.getElementById("name").value,
+phone:document.getElementById("phone").value,
+aadhar:document.getElementById("aadhar").value,
+pan:document.getElementById("pan").value,
+gst:document.getElementById("gst").value,
+status:"pending"
+};
+
+sellerRequests.push(data);
+localStorage.setItem("sellerReq", JSON.stringify(sellerRequests));
+
+alert("Request submitted. Wait for admin approval.");
+seller();
+
+}
+
+// ==========================
+// ADMIN APPROVAL (AUTO BASIC)
+// ==========================
+function checkSellerApproval(){
+sellerRequests.forEach((req)=>{
+if(req.status === "pending"){
+req.status = "approved"; // auto approve
+sellers.push(req);
+}
+});
+
+localStorage.setItem("sellerReq", JSON.stringify(sellerRequests));
+localStorage.setItem("sellers", JSON.stringify(sellers));
+
+}
+
+// ==========================
+// PAGE 2: SELLER DASHBOARD
+// ==========================
+function openSellerPanel(){
+checkSellerApproval();
+
+if(sellers.length === 0){
+    alert("Not approved yet");
+    return;
+}
+
+document.getElementById("home").innerHTML = `
+<h2>Seller Panel</h2>
+
+<button onclick="uploadProduct()">Upload Product</button>
+<button onclick="viewMyProducts()">My Products</button>
+<button onclick="sellerOrdersView()">Orders</button>
+<button onclick="sellerEarnings()">Earnings</button>
+<button onclick="withdrawPage()">Withdraw</button>
+<button onclick="promotionPage()">Promote Product</button>
+
+<button onclick="seller()">Back</button>
+`;
+
+}
+
+// ==========================
+// UPLOAD PRODUCT
+// ==========================
+function uploadProduct(){
+document.getElementById("home").innerHTML = `
+<h2>Upload Product</h2>
+
+<input id="pname" placeholder="Product Name"><br>
+<input id="mrp" placeholder="MRP"><br>
+<input id="price" placeholder="Discount Price"><br>
+<input id="qty" placeholder="Quantity"><br>
+<input id="cat" placeholder="Category"><br>
+<textarea id="desc" placeholder="Description"></textarea><br>
+<input type="file" id="img"><br>
+
+<button onclick="saveProduct()">Submit</button>
+<button onclick="openSellerPanel()">Back</button>
+`;
+
+}
+
+function saveProduct(){
+let file = document.getElementById("img").files[0];
+
+let reader = new FileReader();
+reader.onload = function(e){
+
+    let product = {
+        id:Date.now(),
+        name:document.getElementById("pname").value,
+        mrp:document.getElementById("mrp").value,
+        price:document.getElementById("price").value,
+        qty:document.getElementById("qty").value,
+        cat:document.getElementById("cat").value,
+        desc:document.getElementById("desc").value,
+        img:e.target.result
+    };
+
+    sellerProducts.push(product);
+    localStorage.setItem("sellerProducts", JSON.stringify(sellerProducts));
+
+    alert("Product uploaded");
+    openSellerPanel();
+}
+
+reader.readAsDataURL(file);
+
+}
+
+// ==========================
+// VIEW SELLER PRODUCTS
+// ==========================
+function viewMyProducts(){
+let html = "<h2>My Products</h2>";
+
+sellerProducts.forEach((p)=>{
+    html += `
+    <div>
+        <img src="${p.img}" width="100">
+        <p>${p.name}</p>
+        <p>₹${p.price}</p>
+    </div>
+    <hr>
+    `;
+});
+
+html += `<button onclick="openSellerPanel()">Back</button>`;
+document.getElementById("home").innerHTML = html;
+
+}
+
+// ==========================
+// SELLER ORDERS
+// ==========================
+function sellerOrdersView(){
+let html = "<h2>Orders</h2>";
+
+if(sellerOrders.length === 0){
+    html += "<p>No orders</p>";
+}
+
+sellerOrders.forEach((o,i)=>{
+    html += `
+    <div>
+        <p>Order ID: ${o.id}</p>
+        <p>User: ${o.name}</p>
+        <p>Address: ${o.address}</p>
+
+        <input placeholder="Tracking ID" id="track${i}">
+        <button onclick="updateTrack(${i})">Update</button>
+    </div>
+    <hr>
+    `;
+});
+
+html += `<button onclick="openSellerPanel()">Back</button>`;
+document.getElementById("home").innerHTML = html;
+
+}
+
+function updateTrack(i){
+let val = document.getElementById("track"+i).value;
+sellerOrders[i].tracking = val;
+
+localStorage.setItem("sellerOrders", JSON.stringify(sellerOrders));
+alert("Tracking updated");
+
+}
+
+// ==========================
+// EARNINGS
+// ==========================
+function sellerEarnings(){
+let total = 0;
+
+sellerOrders.forEach(o=>{
+    total += o.amount || 0;
+});
+
+document.getElementById("home").innerHTML = `
+<h2>Total Earnings: ₹${total}</h2>
+<button onclick="openSellerPanel()">Back</button>
+`;
+
+}
+
+// ==========================
+// WITHDRAWAL
+// ==========================
+function withdrawPage(){
+document.getElementById("home").innerHTML = `
+<h2>Withdraw</h2>
+
+<input id="amount" placeholder="Enter amount">
+<button onclick="requestWithdraw()">Request</button>
+<button onclick="openSellerPanel()">Back</button>
+`;
+
+}
+
+function requestWithdraw(){
+let amt = document.getElementById("amount").value;
+
+withdrawals.push({
+    amount:amt,
+    status:"pending"
+});
+
+localStorage.setItem("withdrawals", JSON.stringify(withdrawals));
+
+alert("Withdrawal requested");
+openSellerPanel();
+
+}
+
+// ==========================
+// PROMOTION SYSTEM
+// ==========================
+function promotionPage(){
+document.getElementById("home").innerHTML = `
+<h2>Promote Product</h2>
+
+<input id="prodId" placeholder="Product ID">
+<input id="mobile" placeholder="Mobile Number">
+
+<button onclick="payPromotion()">Pay & Promote</button>
+<button onclick="openSellerPanel()">Back</button>
+`;
+
+}
+
+function payPromotion(){
+window.open("https://rzp.io/rzp/juTBnc4Q");
+}
+
+// ==========================
+// INTEGRATE SELLER PRODUCTS INTO HOME
+// ==========================
+function loadProducts(){
+let box = document.getElementById("products");
+box.innerHTML="";
+
+let allProducts = [...productList, ...sellerProducts];
+
+allProducts.forEach((p,i)=>{
+    box.innerHTML += `
+    <div class="card" onclick="openProduct(${i})">
+        <img src="${p.img}">
+        <h4>${p.name}</h4>
+        <p>₹${p.price || p.mrp}</p>
+    </div>
+    `;
+});
+
+    }
 </script>
 </body>
 </html>
