@@ -1,290 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SRP SHOPPING PRO</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
-body{background:#eef2f7}
-
-/* HEADER */
-.header{
-position:fixed;top:0;width:100%;background:white;
-display:flex;align-items:center;gap:10px;
-padding:10px;z-index:1000;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
-}
-.logo{font-weight:800;color:#004aad;cursor:pointer}
-.search input{padding:8px;border-radius:10px;border:1px solid #ccc;width:100%}
-.wallet{font-size:13px;color:#004aad;font-weight:600}
-
-/* NAV */
-.nav{
-position:fixed;bottom:0;width:100%;background:white;
-display:flex;justify-content:space-around;padding:10px;
-border-top:1px solid #ddd;
-}
-
-/* LOGIN */
-#loginPage{
-height:100vh;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(135deg,#004aad,#00d4ff);
-}
-.box{
-background:rgba(255,255,255,0.1);
-padding:20px;border-radius:20px;
-backdrop-filter:blur(10px);
-width:300px;color:white;
-}
-input,button{
-width:100%;padding:10px;margin-top:8px;border-radius:10px;border:none;
-}
-button{background:#004aad;color:white;font-weight:600}
-
-/* HOME */
-#homePage{display:none;padding-top:70px;padding-bottom:70px}
-
-.banner{
-margin:10px;padding:20px;border-radius:15px;color:white;
-background:linear-gradient(135deg,#004aad,#00d4ff);
-}
-
-/* CATEGORY */
-.cats{display:flex;gap:8px;padding:10px;overflow:auto}
-.cat{background:white;padding:6px 10px;border-radius:10px;cursor:pointer}
-.cat.active{background:#004aad;color:white}
-
-/* GRID */
-.grid{
-display:grid;grid-template-columns:repeat(2,1fr);
-gap:10px;padding:10px;
-}
-
-.card{
-background:white;padding:10px;border-radius:12px;
-transition:0.3s;cursor:pointer;
-}
-.card:hover{transform:scale(1.05)}
-.card img{width:100%;height:120px;object-fit:contain}
-.price{color:#004aad;font-weight:700}
-
-/* DETAIL */
-#detail{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:white;display:none;overflow:auto;z-index:2000;
-padding:15px;
-}
-
-/* CART BADGE */
-.badge{
-background:red;color:white;border-radius:50%;
-padding:2px 6px;font-size:10px;margin-left:3px;
-}
-
-/* TOAST */
-.toast{
-position:fixed;bottom:80px;left:50%;
-transform:translateX(-50%);
-background:black;color:white;padding:10px 20px;border-radius:20px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRP SHOPPING | Premium Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f0f7ff; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; display: flex; justify-content: space-around; align-items: center; background: white; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 50; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #64748b; transition: all 0.3s; }
+        .nav-item.active { color: #1e40af; transform: translateY(-5px); }
+        .product-card { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .product-card:hover { transform: translateY(-8px); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
+<body class="overflow-x-hidden">
 
-<body>
-
-<!-- LOGIN -->
-<div id="loginPage">
-<div class="box">
-<h2>SRP SHOPPING</h2>
-<input id="name" placeholder="Full Name">
-<input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="signup()">Signup</button>
-<button onclick="login()">Login</button>
-<button onclick="googleLogin()">Google Login</button>
-</div>
+<div id="app-loader" class="fixed inset-0 z-[100] bg-white flex items-center justify-center">
+    <div class="loader"></div>
 </div>
 
-<!-- HOME -->
-<div id="homePage">
-
-<div class="header">
-<div class="logo" onclick="reload()">SRP</div>
-<div class="search"><input id="search" placeholder="Search"></div>
-<div class="wallet">₹<span id="wallet">500</span></div>
+<div id="toast" class="fixed top-5 right-5 z-[100] transform translate-x-full transition-transform duration-300 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-2xl hidden">
+    <span id="toast-msg">Success!</span>
 </div>
 
-<div class="banner">🔥 Big Sale</div>
-<div class="banner">⚡ Trending Deals</div>
-<div class="banner">🎯 Top Picks</div>
+<section id="auth-section" class="min-h-screen flex items-center justify-center p-4 blue-gradient">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 transform transition-all">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-blue-800">SRP SHOPPING</h1>
+            <p class="text-gray-500 text-sm mt-2">Elevate your shopping experience</p>
+        </div>
 
-<div class="cats" id="cats"></div>
-<div class="grid" id="grid"></div>
+        <div id="auth-form">
+            <div id="login-fields">
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700">Email Address</label>
+                    <input type="email" id="auth-email" class="w-full mt-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="name@example.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700">Password</label>
+                    <input type="password" id="auth-password" class="w-full mt-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="••••••••">
+                </div>
+                <button onclick="handleEmailLogin()" class="w-full py-4 blue-gradient text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition transform active:scale-95 mb-4">
+                    Login to Account
+                </button>
+                <div class="flex items-center my-6">
+                    <div class="flex-grow h-px bg-gray-200"></div>
+                    <span class="px-4 text-sm text-gray-400">OR</span>
+                    <div class="flex-grow h-px bg-gray-200"></div>
+                </div>
+                <button onclick="handleGoogleLogin()" class="w-full py-4 border-2 border-gray-100 flex items-center justify-center gap-3 rounded-xl hover:bg-gray-50 transition">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" width="20" alt="G">
+                    <span class="font-semibold text-gray-700">Continue with Google</span>
+                </button>
+            </div>
+            <p class="text-center mt-6 text-sm text-gray-600">
+                Don't have an account? <a href="#" onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-blue-600 font-bold underline">Create Account</a>
+            </p>
+        </div>
+    </div>
+</section>
 
+<section id="main-section" class="hidden min-h-screen pb-24">
+    <header class="glass sticky top-0 z-40 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-4">
+            <button onclick="handleSRPClick()" class="font-extrabold text-blue-700 text-xl tracking-tighter">SRP SHOPPING</button>
+            <div class="relative hidden md:block">
+                <input type="text" id="main-search" oninput="filterProducts()" placeholder="Search products..." class="pl-10 pr-4 py-2 bg-gray-100 rounded-full w-64 focus:ring-2 focus:ring-blue-500 outline-none">
+                <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-400 w-4 h-4"></i>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="openPrivacy()" class="text-xs font-medium text-gray-500 hover:text-blue-600">Privacy Policy</button>
+            <div class="flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+                <i data-lucide="wallet" class="w-4 h-4 text-blue-600"></i>
+                <span class="text-sm font-bold text-blue-700">₹<span id="wallet-balance">0.00</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-4 max-w-7xl mx-auto">
+        <div class="relative w-full h-48 md:h-64 rounded-2xl overflow-hidden mb-8 shadow-xl">
+            <div id="banner-slider" class="flex transition-transform duration-500 h-full">
+                <div class="min-w-full blue-gradient flex items-center justify-center text-white relative">
+                    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    <div class="text-center z-10">
+                        <h2 class="text-4xl font-black">SRP MEGA SALE</h2>
+                        <p class="text-lg opacity-90">Up to 70% Discount on Electronics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex overflow-x-auto gap-3 pb-4 mb-6 custom-scrollbar">
+            <button onclick="filterCategory('All')" class="whitespace-nowrap px-6 py-2 bg-blue-600 text-white rounded-full font-semibold shadow-md">All Products</button>
+            <button onclick="filterCategory('Electronics')" class="whitespace-nowrap px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border hover:bg-blue-50">Electronics</button>
+            <button onclick="filterCategory('Fashion')" class="whitespace-nowrap px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border hover:bg-blue-50">Fashion</button>
+            <button onclick="filterCategory('Mobiles')" class="whitespace-nowrap px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border hover:bg-blue-50">Mobiles</button>
+            <button onclick="filterCategory('Home')" class="whitespace-nowrap px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border hover:bg-blue-50">Home</button>
+        </div>
+
+        <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button onclick="showPage('home')" class="nav-item active" id="nav-home">
+            <i data-lucide="home"></i>
+            <span>Home</span>
+        </button>
+        <button onclick="showPage('wallet')" class="nav-item" id="nav-wallet">
+            <i data-lucide="wallet"></i>
+            <span>Wallet</span>
+        </button>
+        <button onclick="showPage('ai')" class="nav-item">
+            <div class="w-12 h-12 blue-gradient rounded-full flex items-center justify-center -mt-8 shadow-lg border-4 border-white">
+                <i data-lucide="sparkles" class="text-white"></i>
+            </div>
+            <span>SRP AI</span>
+        </button>
+        <button onclick="showPage('seller')" class="nav-item" id="nav-seller">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Seller</span>
+        </button>
+        <button onclick="showPage('account')" class="nav-item" id="nav-account">
+            <i data-lucide="user"></i>
+            <span>Profile</span>
+        </button>
+        <button onclick="toggleCart()" class="nav-item relative">
+            <i data-lucide="shopping-cart"></i>
+            <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            <span>Cart</span>
+        </button>
+    </nav>
+</section>
+
+<div id="detail-overlay" class="fixed inset-0 z-[60] bg-black bg-opacity-50 hidden flex items-end md:items-center justify-center p-0 md:p-4">
+    <div class="bg-white w-full max-w-4xl h-[90vh] md:h-auto rounded-t-3xl md:rounded-3xl overflow-hidden flex flex-col md:flex-row relative">
+        <button onclick="closeDetail()" class="absolute top-4 right-4 z-50 bg-white rounded-full p-2 shadow-lg"><i data-lucide="x"></i></button>
+        
+        <div class="w-full md:w-1/2 bg-gray-100 flex items-center justify-center p-4 relative">
+            <div id="detail-slider" class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth w-full h-80 md:h-[500px]">
+                </div>
+        </div>
+
+        <div class="w-full md:w-1/2 p-6 overflow-y-auto custom-scrollbar">
+            <h2 id="det-title" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+            <div class="flex items-center gap-2 mb-4">
+                <div class="flex text-yellow-400"><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4"></i></div>
+                <span class="text-sm text-gray-500">(1,240 Ratings)</span>
+            </div>
+            
+            <div class="flex items-baseline gap-3 mb-6">
+                <span id="det-price" class="text-3xl font-black text-blue-700"></span>
+                <span id="det-mrp" class="text-lg text-gray-400 line-through"></span>
+                <span id="det-discount" class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold"></span>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-2 uppercase tracking-wide">Select Color</label>
+                <div class="flex gap-3">
+                    <button class="w-8 h-8 rounded-full bg-black border-2 border-white ring-2 ring-black"></button>
+                    <button class="w-8 h-8 rounded-full bg-blue-600 border-2 border-white ring-1 ring-gray-200"></button>
+                    <button class="w-8 h-8 rounded-full bg-gray-400 border-2 border-white ring-1 ring-gray-200"></button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <button onclick="addToCartCurrent()" class="py-4 border-2 border-blue-600 text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition uppercase tracking-widest text-xs">Add To Cart</button>
+                <button class="py-4 blue-gradient text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition uppercase tracking-widest text-xs">Buy Now</button>
+            </div>
+
+            <p class="text-sm text-green-600 font-semibold mb-6 flex items-center gap-2">
+                <i data-lucide="truck" class="w-4 h-4"></i> Free Delivery in 7 to 15 Days
+            </p>
+
+            <div class="border-t pt-6">
+                <h3 class="font-bold mb-3">Product Description</h3>
+                <p id="det-desc" class="text-gray-600 leading-relaxed text-sm"></p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- DETAIL -->
-<div id="detail"></div>
-
-<!-- NAV -->
-<div class="nav">
-<div onclick="showHome()">Home</div>
-<div>Profile</div>
-<div>Wallet</div>
-<div>Seller</div>
-<div onclick="showCart()">Cart <span id="cartCount" class="badge">0</span></div>
-<div>AI</div>
+<div id="admin-panel" class="fixed inset-0 z-[80] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-3xl p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Admin Control Center</h2>
+            <button onclick="document.getElementById('admin-panel').classList.add('hidden')" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x"></i></button>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="p-6 bg-blue-50 rounded-2xl">
+                <p class="text-sm text-gray-500">Total Revenue</p>
+                <h3 class="text-2xl font-bold text-blue-700">₹45,290.00</h3>
+            </div>
+            <div class="p-6 bg-green-50 rounded-2xl">
+                <p class="text-sm text-gray-500">Pending Orders</p>
+                <h3 class="text-2xl font-bold text-green-700">12</h3>
+            </div>
+        </div>
+        <button class="w-full mt-6 py-4 bg-gray-800 text-white rounded-xl font-bold">Upload New Banner / Product</button>
+    </div>
 </div>
 
 <script>
+    // --- SUPABASE CONFIGURATION ---
+    // Update these with your real Supabase credentials
+    const SUPABASE_URL = 'https://your-project-url.supabase.co';
+    const SUPABASE_KEY = 'your-anon-key';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* SUPABASE */
-const supabase = window.supabase.createClient(
-"https://cmxlfxqtrguuzpqdgcxv.supabase.co",
-"YOUR_SUPABASE_ANON_KEY"
-);
+    // --- STATE MANAGEMENT ---
+    let currentUser = null;
+    let products = [];
+    let cart = [];
+    let currentProduct = null;
+    let isLoginMode = true;
 
-/* PRODUCTS */
-const products=[
-{id:1,name:"iPhone",price:50000,cat:"elec",img:"https://m.media-amazon.com/images/I/61-r9zOKBCL._SX679_.jpg"},
-{id:2,name:"Shoes",price:2000,cat:"fash",img:"https://m.media-amazon.com/images/I/61utX8kBDlL._UX695_.jpg"},
-{id:3,name:"Laptop",price:70000,cat:"elec",img:"https://m.media-amazon.com/images/I/71jG+e7roXL._SX679_.jpg"},
-{id:4,name:"Watch",price:3000,cat:"gadg",img:"https://m.media-amazon.com/images/I/61ZjlBOp+rL._SX679_.jpg"}
-];
+    const ADMIN_EMAILS = ['Srpstudio1@gmail.com', 'subhashrajpurohit10@gmail.com'];
 
-/* CATEGORY */
-const categories=["all","elec","fash","gadg"];
-let currentCat="all";
+    // --- CORE LOGIC ---
 
-/* AUTH */
-async function signup(){
-await supabase.auth.signUp({
-email:email.value,password:pass.value,
-options:{data:{full_name:name.value}}
-});
-toast("Signup done");
-}
+    async function init() {
+        lucide.createIcons();
+        checkUserSession();
+        loadRealProducts();
+        
+        setTimeout(() => {
+            document.getElementById('app-loader').style.display = 'none';
+        }, 1500);
+    }
 
-async function login(){
-let {error}=await supabase.auth.signInWithPassword({
-email:email.value,password:pass.value
-});
-if(error) toast(error.message);
-}
+    async function checkUserSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            setupUser(session.user);
+        }
+    }
 
-async function googleLogin(){
-await supabase.auth.signInWithOAuth({
-provider:"google",
-options:{redirectTo:location.href}
-});
-}
+    function setupUser(user) {
+        currentUser = user;
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('main-section').classList.remove('hidden');
+        document.getElementById('wallet-balance').innerText = "500.00"; // Starting bonus
+        showToast(`Welcome back, ${user.email.split('@')[0]}!`);
+    }
 
-supabase.auth.onAuthStateChange((e,s)=>{
-if(s) showHome();
-});
+    // --- AUTH ACTIONS ---
 
-/* UI */
-function showHome(){
-loginPage.style.display="none";
-homePage.style.display="block";
-renderCats();
-render();
-updateCart();
-}
+    async function handleGoogleLogin() {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin }
+        });
+        if (error) showToast(error.message, true);
+    }
 
-/* RENDER */
-function render(){
-let data=products.filter(p=>
-(currentCat==="all"||p.cat===currentCat) &&
-p.name.toLowerCase().includes(search.value.toLowerCase())
-);
+    async function handleEmailLogin() {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
 
-grid.innerHTML=data.map(p=>`
-<div class="card" onclick="openDetail(${p.id})">
-<img src="${p.img}">
-<div>${p.name}</div>
-<div class="price">₹${p.price}</div>
-</div>`).join("");
-}
+        if (isLoginMode) {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) showToast(error.message, true);
+            else setupUser(data.user);
+        } else {
+            const { data, error } = await supabase.auth.signUp({ email, password });
+            if (error) showToast(error.message, true);
+            else showToast("Verification email sent!");
+        }
+    }
 
-/* CATEGORY */
-function renderCats(){
-cats.innerHTML=categories.map(c=>
-`<div class="cat" onclick="setCat('${c}',this)">${c}</div>`
-).join("");
-}
+    function toggleAuthMode() {
+        isLoginMode = !isLoginMode;
+        const btn = document.getElementById('auth-toggle-btn');
+        const submitBtn = document.querySelector('#auth-form button');
+        btn.innerText = isLoginMode ? "Create Account" : "Login to Account";
+        submitBtn.innerText = isLoginMode ? "Login to Account" : "Create New Account";
+    }
 
-function setCat(c,el){
-currentCat=c;
-document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
-el.classList.add('active');
-render();
-}
+    // --- UI ACTIONS ---
 
-/* DETAIL */
-function openDetail(id){
-let p=products.find(x=>x.id==id);
-detail.style.display="block";
+    function loadRealProducts() {
+        // Mocking 20 Real Products data structure
+        const titles = ["Pro Wireless Buds", "OLED Smart TV 55\"", "Luxury Cotton Tee", "Gaming Keyboard RGB", "Sleek Smartphone 12GB", "Ergonomic Desk Chair", "Automatic Coffee Maker", "Ultra Slim Laptop", "Noise Cancelling Headphones", "Running Shoes Pro"];
+        const cats = ["Electronics", "Mobiles", "Fashion", "Home"];
+        
+        products = Array.from({ length: 20 }).map((_, i) => ({
+            id: i,
+            name: titles[i % titles.length] + " " + (i + 1),
+            price: Math.floor(Math.random() * 5000) + 999,
+            mrp: Math.floor(Math.random() * 8000) + 6000,
+            category: cats[i % cats.length],
+            image: `https://picsum.photos/seed/${i + 50}/400/400`,
+            description: "Experience the next level of quality with the SRP SHOPPING signature series. This product is crafted using high-grade materials and cutting-edge technology to ensure durability and performance. It features a sleek, ergonomic design that blends seamlessly with your lifestyle. Whether you're using it at home, office, or on the go, it delivers unmatched reliability. This item comes with a full 1-year warranty and premium customer support. This is part of our limited edition 2026 collection, designed to meet the demands of modern users. Order now to experience the future of digital retail."
+        }));
+        renderProducts(products);
+    }
 
-detail.innerHTML=`
-<button onclick="detail.style.display='none'">Back</button>
-<h2>${p.name}</h2>
-<img src="${p.img}" style="width:100%">
-<p>₹${p.price}</p>
+    function renderProducts(list) {
+        const grid = document.getElementById('product-grid');
+        grid.innerHTML = list.map(p => `
+            <div onclick="openProduct(${p.id})" class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer">
+                <div class="relative aspect-square overflow-hidden bg-gray-50">
+                    <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                    <span class="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">NEW</span>
+                </div>
+                <div class="p-3">
+                    <h3 class="text-sm font-bold text-gray-800 truncate">${p.name}</h3>
+                    <div class="flex items-center gap-1 my-1">
+                        <span class="text-xs font-bold text-blue-700">₹${p.price}</span>
+                        <span class="text-[10px] text-gray-400 line-through">₹${p.mrp}</span>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-[10px] text-green-600 font-bold">SALE ON</span>
+                        <button class="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
+                            <i data-lucide="plus" class="w-3 h-3"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
 
-<div>
-<button onclick="dec()">-</button>
-<span id="qty">1</span>
-<button onclick="inc()">+</button>
-</div>
+    function filterCategory(cat) {
+        const filtered = cat === 'All' ? products : products.filter(p => p.category === cat);
+        renderProducts(filtered);
+    }
 
-<button onclick="addCart(${p.id})">Add to Cart</button>
-<p>⭐⭐⭐⭐☆</p>
-`;
-}
+    function filterProducts() {
+        const val = document.getElementById('main-search').value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(val));
+        renderProducts(filtered);
+    }
 
-let qty=1;
-function inc(){qty++;qtyEl.innerText=qty}
-function dec(){if(qty>1)qty--;qtyEl.innerText=qty}
-const qtyEl={set innerText(v){document.getElementById("qty").innerText=v}};
+    function openProduct(id) {
+        currentProduct = products.find(p => p.id === id);
+        const overlay = document.getElementById('detail-overlay');
+        document.getElementById('det-title').innerText = currentProduct.name;
+        document.getElementById('det-price').innerText = "₹" + currentProduct.price;
+        document.getElementById('det-mrp').innerText = "₹" + currentProduct.mrp;
+        document.getElementById('det-discount').innerText = Math.round((1 - currentProduct.price/currentProduct.mrp)*100) + "% OFF";
+        document.getElementById('det-desc').innerText = currentProduct.description;
+        
+        const slider = document.getElementById('detail-slider');
+        slider.innerHTML = `
+            <img src="${currentProduct.image}" class="min-w-full snap-center object-contain">
+            <img src="https://picsum.photos/seed/${id+100}/400/400" class="min-w-full snap-center object-contain">
+            <img src="https://picsum.photos/seed/${id+200}/400/400" class="min-w-full snap-center object-contain">
+        `;
 
-/* CART */
-function addCart(id){
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
-cart.push({id,qty});
-localStorage.setItem("cart",JSON.stringify(cart));
-updateCart();
-toast("Added");
-}
+        overlay.classList.remove('hidden');
+        lucide.createIcons();
+    }
 
-function updateCart(){
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
-cartCount.innerText=cart.length;
-}
+    function closeDetail() {
+        document.getElementById('detail-overlay').classList.add('hidden');
+    }
 
-function showCart(){
-alert("Cart items: "+cartCount.innerText);
-}
+    function handleSRPClick() {
+        if (ADMIN_EMAILS.includes(currentUser?.email)) {
+            const pass = prompt("Enter Admin Password:");
+            if (pass === "1234") {
+                document.getElementById('admin-panel').classList.remove('hidden');
+                lucide.createIcons();
+            } else {
+                location.reload();
+            }
+        } else {
+            location.reload();
+        }
+    }
 
-/* EVENTS */
-search.addEventListener("input",render);
+    function addToCartCurrent() {
+        cart.push(currentProduct);
+        document.getElementById('cart-count').innerText = cart.length;
+        showToast("Added to cart!");
+        closeDetail();
+    }
 
-/* TOAST */
-function toast(t){
-let d=document.createElement("div");
-d.className="toast";
-d.innerText=t;
-document.body.appendChild(d);
-setTimeout(()=>d.remove(),2000);
-}
+    function showToast(msg, error = false) {
+        const t = document.getElementById('toast');
+        const m = document.getElementById('toast-msg');
+        m.innerText = msg;
+        t.style.backgroundColor = error ? '#ef4444' : '#2563eb';
+        t.classList.remove('hidden', 'translate-x-full');
+        setTimeout(() => t.classList.add('translate-x-full'), 3000);
+    }
 
+    function showPage(page) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('nav-' + page)?.classList.add('active');
+        showToast("Opening " + page + " page...");
+    }
+
+    window.onload = init;
 </script>
-
 </body>
 </html>
