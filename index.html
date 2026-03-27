@@ -881,7 +881,192 @@
     window.onload = () => {
         renderProducts();
         initApp(); // From Part 2.1
+    }<style>
+    /* Toast Notification System */
+    #srp-toast-container {
+        position: fixed;
+        bottom: 85px; /* Above Bottom Nav */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5000;
+        width: 90%;
+        max-width: 400px;
     }
+
+    .srp-toast {
+        background: rgba(0, 74, 173, 0.95);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        animation: toastIn 0.3s ease-out;
+    }
+
+    @keyframes toastIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Pull to Refresh Visual */
+    .ptr-element {
+        height: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--srp-white);
+        transition: height 0.2s;
+        color: var(--srp-blue);
+    }
+
+    /* Skeleton Loading Enhancements */
+    .shimmer {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    /* Admin Quick Actions Badge */
+    .admin-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ff4757;
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+</style>
+
+<div id="srp-toast-container"></div>
+
+<div id="ptr" class="ptr-element">
+    <i class="fas fa-arrows-rotate fa-spin"></i>
+</div>
+
+<script>
+    // --- ADVANCED UI NOTIFICATIONS ---
+    function showToast(message, icon = 'fa-check-circle') {
+        const container = document.getElementById('srp-toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'srp-toast';
+        toast.innerHTML = `
+            <i class="fas ${icon}"></i>
+            <span>${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-10px)';
+            toast.style.transition = '0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // --- REAL-TIME WALLET & DATABASE LISTENER ---
+    async function setupRealtimeListeners() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) return;
+
+        // Listen for changes in the 'wallets' table for this specific user
+        const walletSubscription = supabaseClient
+            .channel('public:wallets')
+            .on('postgres_changes', { 
+                event: 'UPDATE', 
+                schema: 'public', 
+                table: 'wallets', 
+                filter: `user_id=eq.${user.id}` 
+            }, payload => {
+                const newBalance = payload.new.balance;
+                document.getElementById('user-wallet-balance').innerText = newBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                showToast("Wallet Updated!", "fa-wallet");
+            })
+            .subscribe();
+            
+        console.log("SRP Real-time Engine: Active");
+    }
+
+    // --- PULL TO REFRESH LOGIC ---
+    let touchStart = 0;
+    window.addEventListener('touchstart', e => {
+        touchStart = e.touches[0].pageY;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', e => {
+        const touchMove = e.touches[0].pageY;
+        const ptr = document.getElementById('ptr');
+        if (window.scrollY === 0 && touchMove > touchStart + 10) {
+            ptr.style.height = '60px';
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+        const ptr = document.getElementById('ptr');
+        if (ptr.style.height === '60px') {
+            setTimeout(() => {
+                ptr.style.height = '0';
+                location.reload();
+            }, 800);
+        }
+    });
+
+    // --- OVERRIDE ADD TO CART FOR FEEDBACK ---
+    const originalAddToCart = window.addToCart;
+    window.addToCart = async function() {
+        // First play a small haptic-like visual feedback
+        const btn = document.querySelector('.btn-cart');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        btn.style.opacity = '0.7';
+
+        // Simulate Network Delay
+        setTimeout(() => {
+            showToast("Item added to your SRP Basket!", "fa-cart-plus");
+            btn.innerHTML = 'Add to Cart';
+            btn.style.opacity = '1';
+            
+            // Close the product overlay after success
+            setTimeout(() => closeProduct(), 500);
+        }, 800);
+    };
+
+    // --- ADMIN BRANDING OVERLAY INJECTOR ---
+    function checkAdminStatus() {
+        const brandBtn = document.getElementById('srp-brand-trigger');
+        if (currentUser && ADMIN_EMAILS.includes(currentUser.email)) {
+            brandBtn.style.position = 'relative';
+            brandBtn.innerHTML += '<span class="admin-badge">Admin</span>';
+            console.log("Admin Privileges Verified: Srpstudio1 / subhashrajpurohit10");
+        }
+    }
+
+    // --- FINAL INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+        setupRealtimeListeners();
+        checkAdminStatus();
+        
+        // Welcome Toast
+        setTimeout(() => {
+            const name = currentUser?.user_metadata?.full_name || "User";
+            showToast(`Welcome back, ${name}!`);
+        }, 2000);
+    });
+
+
 </script>
 
         </body>
