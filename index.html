@@ -1,581 +1,229 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SRP SHOPPING | Premium Global Marketplace</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRP SHOPPING</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f0f8ff;
+}
 
-    <style>
-        :root {
-            --srp-black: #000000;
-            --srp-gold: #FFD700;
-            --srp-dark-gold: #B8860B;
-            --srp-gray: #1A1A1A;
-            --srp-light-gray: #2D2D2D;
-            --srp-white: #FFFFFF;
-            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
+/* NAVBAR */
+.topbar{
+    background:#0b5ed7;
+    color:white;
+    padding:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-        /* 7.3 Day/Night Mode Variables */
-        body.light-mode {
-            --srp-black: #FFFFFF;
-            --srp-gray: #F7F7F7;
-            --srp-white: #000000;
-            --srp-light-gray: #E0E0E0;
-        }
+.topbar button{
+    margin-right:8px;
+    padding:6px 10px;
+    border:none;
+    background:white;
+    color:#0b5ed7;
+    cursor:pointer;
+}
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--srp-black);
-            color: var(--srp-white);
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+/* BOTTOM NAV */
+.bottom{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#0b5ed7;
+    display:flex;
+    justify-content:space-around;
+    padding:10px;
+}
 
-        .premium-font { font-family: 'Cinzel', serif; }
+.bottom button{
+    background:white;
+    border:none;
+    padding:8px;
+}
 
-        /* --- AUTHENTICATION UI --- */
-        #auth-screen {
-            background: radial-gradient(circle at center, var(--srp-light-gray) 0%, var(--srp-black) 100%);
-        }
+/* LOGIN */
+.login{
+    display:flex;
+    flex-direction:column;
+    max-width:300px;
+    margin:50px auto;
+}
 
-        .gold-input {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid var(--srp-light-gray) !important;
-            color: var(--srp-white) !important;
-            transition: var(--transition);
-        }
+.login input, .login button{
+    margin:5px;
+    padding:10px;
+}
 
-        .gold-input:focus {
-            border-color: var(--srp-gold) !important;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-            background: rgba(255, 255, 255, 0.07) !important;
-        }
+/* PRODUCTS */
+.products{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    padding:10px;
+}
 
-        .btn-gold {
-            background: linear-gradient(135deg, var(--srp-gold) 0%, var(--srp-dark-gold) 100%);
-            color: black;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: var(--transition);
-        }
+.card{
+    background:white;
+    padding:10px;
+    border-radius:10px;
+}
 
-        .btn-gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
-        }
+.card img{
+    width:100%;
+    height:150px;
+    object-fit:cover;
+}
 
-        /* --- NAVIGATION --- */
-        .header-glass {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--srp-light-gray);
-        }
+/* BANNER */
+.banner{
+    width:100%;
+    height:150px;
+    background:url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da') center/cover;
+    margin:10px 0;
+}
 
-        .bottom-nav {
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--srp-light-gray);
-            height: 80px;
-        }
+</style></head><body><!-- TOP BAR --><div class="topbar">
+    <div>
+        <button onclick="reload()">SRP SHOPPING</button>
+    </div><div>
+    <input type="text" id="search" placeholder="Search">
+    <button onclick="searchProduct()">Search</button>
+    <button onclick="privacy()">Privacy</button>
+    <span id="wallet">₹0</span>
+</div>
 
-        .nav-icon {
-            font-size: 1.4rem;
-            color: #666;
-            transition: var(--transition);
-        }
+</div><!-- LOGIN --><div id="loginPage" class="login">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password"><button onclick="signup()">Create Account</button>
+<button onclick="login()">Login</button>
+<button onclick="google()">Login with Google</button>
 
-        .nav-item.active .nav-icon {
-            color: var(--srp-gold);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
+</div><!-- HOME --><div id="home" style="display:none"><div class="banner"></div>
 
-        .nav-item.active span {
-            color: var(--srp-gold);
-        }
+<div class="products" id="products"></div>
 
-        /* --- PRODUCT CARDS --- */
-        .p-card {
-            background: var(--srp-gray);
-            border: 1px solid var(--srp-light-gray);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: var(--transition);
-        }
+</div><!-- BOTTOM --><div class="bottom">
+    <button onclick="showHome()">Home</button>
+    <button onclick="profile()">Account</button>
+    <button onclick="wallet()">Wallet</button>
+    <button onclick="seller()">Seller</button>
+    <button onclick="cart()">Cart</button>
+    <button onclick="ai()">AI</button>
+</div><script>
 
-        .p-card:hover {
-            border-color: var(--srp-gold);
-            transform: translateY(-5px);
-        }
+// 🔐 SUPABASE
+const supabase = window.supabase.createClient(
+"YOUR_URL",
+"YOUR_KEY"
+);
 
-        .gold-badge {
-            background: var(--srp-gold);
-            color: black;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
+// ADMIN EMAILS
+const admins = [
+"Srpstudio1@gmail.com",
+"subhashrajpurohit10@gmail.com"
+];
 
-        /* --- DRAWER SYSTEM --- */
-        .drawer {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 92vh;
-            background: var(--srp-black);
-            border-top: 2px solid var(--srp-gold);
-            border-radius: 30px 30px 0 0;
-            z-index: 2000;
-            transition: bottom 0.6s cubic-bezier(0.32, 0.72, 0, 1);
-            overflow-y: auto;
-        }
+// AUTH
+async function signup(){
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("password").value;
 
-        .drawer.open { bottom: 0; }
+    await supabase.auth.signUp({email:email,password:pass});
+    alert("Account created");
+}
 
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            display: none;
-            z-index: 1999;
-        }
+async function login(){
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("password").value;
 
-        /* AI Floating Button */
-        .ai-pulse {
-            animation: pulse 2s infinite;
-        }
+    let {data,error} = await supabase.auth.signInWithPassword({
+        email:email,
+        password:pass
+    });
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-        }
+    if(error) return alert(error.message);
 
-        /* Address & Order Styling */
-        .srp-list-item {
-            background: var(--srp-light-gray);
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body class="dark-theme">
+    afterLogin(data.user);
+}
 
-    <section id="auth-screen" class="fixed inset-0 z-[9999] flex items-center justify-center p-6">
-        <div class="w-full max-w-md bg-zinc-900/50 border border-zinc-800 p-8 rounded-[40px] backdrop-blur-xl relative">
-            <div class="text-center mb-10">
-                <h1 class="premium-font text-4xl tracking-widest text-white mb-2" style="color: var(--srp-gold);">SRP</h1>
-                <h2 class="text-sm font-bold uppercase tracking-[0.3em] text-zinc-500">Shopping Marketplace</h2>
-            </div>
+async function google(){
+    await supabase.auth.signInWithOAuth({
+        provider:'google'
+    });
+}
 
-            <div id="auth-forms-container">
-                <button onclick="signInWithGoogle()" class="w-full bg-white text-black py-4 rounded-2xl font-black flex items-center justify-center gap-3 mb-6 transition-all active:scale-95">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20">
-                    Login with Google
-                </button>
+// AFTER LOGIN
+function afterLogin(user){
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("home").style.display="block";
 
-                <div class="relative flex py-4 items-center">
-                    <div class="flex-grow border-t border-zinc-800"></div>
-                    <span class="flex-shrink mx-4 text-zinc-600 text-[10px] font-bold uppercase tracking-widest">Or Secure Email</span>
-                    <div class="flex-grow border-t border-zinc-800"></div>
-                </div>
+    loadProducts();
 
-                <form id="login-form" class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Member Email</label>
-                        <input type="email" id="auth-email" required class="w-full gold-input px-6 py-4 rounded-2xl outline-none font-medium" placeholder="yourname@luxury.com">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Password</label>
-                        <input type="password" id="auth-password" required class="w-full gold-input px-6 py-4 rounded-2xl outline-none font-medium" placeholder="••••••••">
-                    </div>
-                    <button type="submit" id="main-auth-btn" class="w-full btn-gold py-5 rounded-2xl mt-4 text-sm active:scale-95">Enter Marketplace</button>
-                </form>
-                <p class="mt-8 text-center text-xs text-zinc-500 font-semibold">
-                    First time visiting? <button onclick="toggleAuth()" id="auth-toggle-text" class="text-yellow-500 font-bold hover:underline ml-1">Create Account</button>
-                </p>
-            </div>
+    if(admins.includes(user.email)){
+        alert("Admin detected");
+    }
+}
+
+// PRODUCTS (20)
+const productList = [
+{name:"iPhone 14",price:70000,img:"https://m.media-amazon.com/images/I/61cwywLZR-L._SX679_.jpg"},
+{name:"Shoes",price:999,img:"https://m.media-amazon.com/images/I/71li-ujtlUL._UY500_.jpg"},
+{name:"Watch",price:1999,img:"https://m.media-amazon.com/images/I/61y2VVWcGBL._UY500_.jpg"},
+{name:"Headphones",price:1499,img:"https://m.media-amazon.com/images/I/61CGHv6kmWL._SX679_.jpg"},
+{name:"Tshirt",price:499,img:"https://m.media-amazon.com/images/I/71-3HjGNDUL._UY741_.jpg"},
+{name:"Laptop",price:50000,img:"https://m.media-amazon.com/images/I/71jG+e7roXL._SX679_.jpg"},
+{name:"Bag",price:899,img:"https://m.media-amazon.com/images/I/81fPKd-2AYL._UY500_.jpg"},
+{name:"Bluetooth",price:799,img:"https://m.media-amazon.com/images/I/61v1+eZ1X1L._SX679_.jpg"},
+{name:"Camera",price:30000,img:"https://m.media-amazon.com/images/I/81aV7VZ1s-L._SX679_.jpg"},
+{name:"Keyboard",price:699,img:"https://m.media-amazon.com/images/I/61a+v9pC6OL._SX679_.jpg"},
+{name:"Mouse",price:399,img:"https://m.media-amazon.com/images/I/61LtuGzXeaL._SX679_.jpg"},
+{name:"TV",price:25000,img:"https://m.media-amazon.com/images/I/71F4jU7MRUS._SX679_.jpg"},
+{name:"Fan",price:1999,img:"https://m.media-amazon.com/images/I/61bR3R9X6kL._SX679_.jpg"},
+{name:"Bottle",price:299,img:"https://m.media-amazon.com/images/I/61R7QxWvBKL._SX679_.jpg"},
+{name:"Book",price:199,img:"https://m.media-amazon.com/images/I/81iqZ2HHD-L.jpg"},
+{name:"Table",price:5000,img:"https://m.media-amazon.com/images/I/71X0is1oZ-L._SX679_.jpg"},
+{name:"Chair",price:2500,img:"https://m.media-amazon.com/images/I/71v8hJvGZJL._SX679_.jpg"},
+{name:"Mixer",price:3000,img:"https://m.media-amazon.com/images/I/61kR9H0H8EL._SX679_.jpg"},
+{name:"AC",price:40000,img:"https://m.media-amazon.com/images/I/71q7J1Y7v-L._SX679_.jpg"},
+{name:"Fridge",price:35000,img:"https://m.media-amazon.com/images/I/71v6R4cX2PL._SX679_.jpg"}
+];
+
+function loadProducts(){
+    let box = document.getElementById("products");
+    box.innerHTML="";
+
+    productList.forEach((p,i)=>{
+        box.innerHTML += `
+        <div class="card" onclick="openProduct(${i})">
+            <img src="${p.img}">
+            <h4>${p.name}</h4>
+            <p>₹${p.price}</p>
         </div>
-    </section>
+        `;
+    });
+}
 
-    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000">
-        <header class="header-glass sticky top-0 z-[1000] px-5 py-4">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div onclick="toggleAdminCheck()" class="w-10 h-10 bg-gradient-to-tr from-yellow-600 to-yellow-300 rounded-xl flex items-center justify-center text-black shadow-lg shadow-yellow-500/20">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <div>
-                        <h1 class="premium-font text-xl text-white tracking-widest leading-none">SRP</h1>
-                        <p class="text-[8px] font-bold text-yellow-500 uppercase tracking-widest mt-1">Luxury Shop</p>
-                    </div>
-                </div>
+function openProduct(i){
+    alert(productList[i].name);
+}
 
-                <div class="flex items-center gap-4">
-                    <button onclick="toggleTheme()" id="theme-btn" class="text-zinc-400 text-lg"><i class="fas fa-moon"></i></button>
-                    <div class="bg-zinc-800/80 border border-zinc-700 px-4 py-2 rounded-xl flex items-center gap-2">
-                        <i class="fas fa-wallet text-yellow-500 text-xs"></i>
-                        <span class="font-black text-xs">₹<span id="wallet-balance">1500.00</span></span>
-                    </div>
-                </div>
-            </div>
+// NAV BUTTONS
+function showHome(){document.getElementById("home").style.display="block";}
+function profile(){alert("Profile page coming");}
+function wallet(){window.open("https://rzp.io/rzp/juTBnc4Q");}
+function seller(){alert("Seller dashboard coming");}
+function cart(){alert("Cart coming");}
+function ai(){alert("AI coming");}
 
-            <div class="mt-4 relative">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-                <input type="text" id="main-search" onkeyup="filterProducts()" placeholder="Search luxury goods, sneakers, tech..." class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium focus:border-yellow-500 outline-none transition-all">
-                <button onclick="openDrawer('filter-drawer')" class="absolute right-4 top-1/2 -translate-y-1/2 text-yellow-500">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
-        </header>
+function reload(){location.reload();}
+function privacy(){alert("Privacy policy");}
+function searchProduct(){alert("Search feature coming");}
 
-        <div class="flex gap-4 overflow-x-auto no-scrollbar px-5 py-4">
-            <div onclick="applyCategory('all')" class="cat-pill active px-6 py-2 bg-yellow-500 text-black rounded-full text-xs font-black uppercase whitespace-nowrap">All Items</div>
-            <div onclick="applyCategory('Smartphones')" class="cat-pill px-6 py-2 bg-zinc-800 text-zinc-400 rounded-full text-xs font-black uppercase whitespace-nowrap">Smartphones</div>
-            <div onclick="applyCategory('Electronics')" class="cat-pill px-6 py-2 bg-zinc-800 text-zinc-400 rounded-full text-xs font-black uppercase whitespace-nowrap">Electronics</div>
-            <div onclick="applyCategory('Fashion')" class="cat-pill px-6 py-2 bg-zinc-800 text-zinc-400 rounded-full text-xs font-black uppercase whitespace-nowrap">Fashion</div>
-            <div onclick="applyCategory('Luxury')" class="cat-pill px-6 py-2 bg-zinc-800 text-zinc-400 rounded-full text-xs font-black uppercase whitespace-nowrap">Luxury</div>
-        </div>
-
-        <main class="px-5 pb-32 space-y-8">
-            <section class="relative rounded-[32px] overflow-hidden p-8 aspect-[16/9] flex flex-col justify-end">
-                <img src="https://images.unsplash.com/photo-1511732351157-1865ef6022e2?w=800" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                <div class="relative z-10">
-                    <span class="bg-red-600 text-white px-3 py-1 rounded-md text-[10px] font-black uppercase">🔥 Festival Special</span>
-                    <h2 class="premium-font text-3xl text-white mt-2 leading-tight">SRP DIWALI SALE<br><span class="text-yellow-500">UP TO 80% OFF</span></h2>
-                    <p class="text-xs text-zinc-300 mt-2 font-medium">Use Code: <span class="text-white font-bold">FESTIVE100</span></p>
-                    <button class="mt-4 bg-white text-black px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider">Shop The Collection</button>
-                </div>
-            </section>
-
-            <div>
-                <div class="flex justify-between items-end mb-6">
-                    <h3 class="premium-font text-xl text-white">Curated For You</h3>
-                    <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">20 Results Found</p>
-                </div>
-                <div id="product-container" class="grid grid-cols-2 gap-4"></div>
-            </div>
-        </main>
-
-        <nav class="bottom-nav fixed bottom-0 left-0 w-full z-[1500] grid grid-cols-6 items-center px-2">
-            <button onclick="navigate('home')" class="nav-item active flex flex-col items-center gap-1">
-                <i class="fas fa-home nav-icon"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Home</span>
-            </button>
-            <button onclick="openDrawer('account-drawer')" class="nav-item flex flex-col items-center gap-1">
-                <i class="fas fa-user-circle nav-icon"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Account</span>
-            </button>
-            <button onclick="openDrawer('wallet-drawer')" class="nav-item flex flex-col items-center gap-1">
-                <i class="fas fa-wallet nav-icon"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Wallet</span>
-            </button>
-            <button onclick="openDrawer('seller-reg-drawer')" class="nav-item flex flex-col items-center gap-1">
-                <i class="fas fa-store nav-icon"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Seller</span>
-            </button>
-            <button onclick="openDrawer('cart-drawer')" class="nav-item flex flex-col items-center gap-1">
-                <div class="relative">
-                    <i class="fas fa-shopping-cart nav-icon"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-500 text-black text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
-                </div>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Cart</span>
-            </button>
-            <button onclick="openDrawer('ai-drawer')" class="nav-item flex flex-col items-center gap-1">
-                <div class="w-10 h-10 rounded-xl bg-yellow-500 flex items-center justify-center ai-pulse">
-                    <i class="fas fa-robot text-black text-lg"></i>
-                </div>
-                <span class="text-[8px] font-bold uppercase tracking-widest mt-0.5 text-yellow-500">AI Bot</span>
-            </button>
-        </nav>
-    </div>
-
-    <div id="global-overlay" class="overlay" onclick="closeAllDrawers()"></div>
-
-    <div id="account-drawer" class="drawer">
-        <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mt-4"></div>
-        <div class="p-8">
-            <h2 class="premium-font text-2xl text-white mb-6">Profile & Settings</h2>
-            
-            <div class="mb-8">
-                <h3 class="text-xs font-black uppercase text-yellow-500 tracking-widest mb-4">7.1 My Orders</h3>
-                <div id="orders-list">
-                    <div class="srp-list-item flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] text-zinc-500 font-bold">ID: ORD101</p>
-                            <p class="text-sm font-bold">Rolex Submariner</p>
-                            <p class="text-[9px] text-green-500 font-black uppercase">Shipped</p>
-                        </div>
-                        <a href="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx?p1=IN123456789" target="_blank" class="bg-zinc-800 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest">Track</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="text-xs font-black uppercase text-yellow-500 tracking-widest mb-4">7.2 Address Book</h3>
-                <div id="address-list" class="space-y-2 mb-4"></div>
-                <button onclick="addNewAddress()" class="w-full py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-black uppercase">+ Add New Address</button>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="text-xs font-black uppercase text-yellow-500 tracking-widest mb-4">7.10 Security Settings</h3>
-                <div class="space-y-3">
-                    <button onclick="enable2FA()" class="w-full py-4 bg-zinc-800 rounded-2xl flex items-center justify-between px-6">
-                        <span class="text-xs font-bold text-white">Enable 2FA Authentication</span>
-                        <i class="fas fa-shield-alt text-yellow-500"></i>
-                    </button>
-                    <button onclick="logoutAll()" class="w-full py-4 bg-red-900/20 border border-red-900/50 rounded-2xl text-red-500 text-xs font-bold">Logout From All Devices</button>
-                </div>
-            </div>
-            
-            <button onclick="signOut()" class="w-full py-5 btn-gold rounded-2xl text-xs font-black">LOGOUT ACCOUNT</button>
-        </div>
-    </div>
-
-    <div id="wallet-drawer" class="drawer">
-        <div class="p-8">
-            <h2 class="premium-font text-2xl mb-6 text-white">SRP Digital Wallet (7.4)</h2>
-            <div class="bg-gradient-to-br from-yellow-500 to-yellow-700 p-8 rounded-[40px] text-black shadow-2xl relative overflow-hidden">
-                <i class="fas fa-crown absolute -right-6 -bottom-6 text-9xl opacity-10 rotate-12"></i>
-                <p class="text-[10px] font-black uppercase tracking-widest opacity-80">Current Credit</p>
-                <h3 class="text-5xl font-black mt-2">₹<span id="wallet-balance-drawer">1500.00</span></h3>
-                <div class="flex gap-4 mt-10">
-                    <button onclick="rechargeWallet()" class="bg-black text-white px-6 py-3 rounded-2xl font-black text-xs uppercase shadow-xl">Recharge</button>
-                    <button class="bg-black/10 text-black border border-black/20 px-6 py-3 rounded-2xl font-black text-xs uppercase">History</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="product-drawer" class="drawer">
-        <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mt-4"></div>
-        <div id="product-detail-content" class="p-6 pb-32"></div>
-    </div>
-
-    <div id="ai-drawer" class="drawer">
-        <div class="p-6 flex flex-col h-full">
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-14 h-14 rounded-2xl bg-yellow-500 flex items-center justify-center"><i class="fas fa-robot text-2xl text-black"></i></div>
-                <div>
-                    <h3 class="premium-font text-xl text-white">SRP Assistant</h3>
-                    <p class="text-xs text-yellow-500 font-bold uppercase tracking-widest">Always Active</p>
-                </div>
-            </div>
-            <div id="ai-messages" class="flex-grow overflow-y-auto space-y-4 no-scrollbar"></div>
-            <div class="mt-4 flex gap-2">
-                <input type="text" id="ai-input" placeholder="Find shoes under ₹500..." class="flex-grow bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-yellow-500 outline-none">
-                <button onclick="handleAI()" class="bg-yellow-500 text-black w-12 h-12 rounded-xl flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- CORE CONFIG & DATA ---
-        const SB_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
-        const _supabase = supabase.createClient(SB_URL, SB_KEY);
-
-        const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
-        let isSignUp = false;
-        let walletBalanceValue = 1500;
-        let addresses = [{ id: 1, detail: "123 Main St, Mumbai" }];
-
-        // --- 7.3 THEME LOGIC ---
-        function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle('light-mode');
-            const icon = document.querySelector('#theme-btn i');
-            const isDark = !body.classList.contains('light-mode');
-            icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        // --- 7.4 WALLET LOGIC ---
-        function updateWalletDisplay() {
-            document.getElementById('wallet-balance').innerText = walletBalanceValue.toFixed(2);
-            document.getElementById('wallet-balance-drawer').innerText = walletBalanceValue.toFixed(2);
-        }
-
-        function rechargeWallet() {
-            walletBalanceValue += 500;
-            updateWalletDisplay();
-            alert("₹500.00 added to your SRP Wallet.");
-        }
-
-        // --- 7.2 ADDRESS BOOK ---
-        function renderAddresses() {
-            const list = document.getElementById('address-list');
-            list.innerHTML = addresses.map(addr => `
-                <div class="srp-list-item flex justify-between items-center">
-                    <span class="text-xs font-bold">${addr.detail}</span>
-                    <button onclick="deleteAddress(${addr.id})" class="text-red-500 text-xs"><i class="fas fa-trash"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function addNewAddress() {
-            const val = prompt("Enter full shipping address:");
-            if(val) {
-                addresses.push({ id: Date.now(), detail: val });
-                renderAddresses();
-            }
-        }
-
-        function deleteAddress(id) {
-            addresses = addresses.filter(a => a.id !== id);
-            renderAddresses();
-        }
-
-        // --- 7.10 SECURITY ---
-        function enable2FA() {
-            alert("Verification code sent to your registered mobile number for Two-Factor Authentication.");
-        }
-
-        function logoutAll() {
-            if(confirm("Logout from all active sessions?")) {
-                signOut();
-            }
-        }
-
-        // --- AUTHENTICATION ---
-        function toggleAuth() {
-            isSignUp = !isSignUp;
-            document.getElementById('main-auth-btn').innerText = isSignUp ? 'Create Premium Account' : 'Enter Marketplace';
-            document.getElementById('auth-toggle-text').innerText = isSignUp ? 'Back to Login' : 'Create Account';
-        }
-
-        document.getElementById('login-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            if(isSignUp) {
-                const { error } = await _supabase.auth.signUp({ email, password });
-                if(!error) alert("Check email for verification!");
-            } else {
-                const { error } = await _supabase.auth.signInWithPassword({ email, password });
-                if(error) alert(error.message);
-            }
-        };
-
-        _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                const app = document.getElementById('app-content');
-                app.classList.remove('hidden');
-                setTimeout(() => app.style.opacity = '1', 100);
-                initMarketplace();
-            }
-        });
-
-        async function signOut() {
-            await _supabase.auth.signOut();
-            window.location.reload();
-        }
-
-        // --- PRODUCT DATA & RENDERING ---
-        const PRODUCTS = [
-            { id: 101, name: "Air Jordan 1 Retro High", price: 15999, mrp: 18999, cat: "Fashion", img: "https://images.unsplash.com/photo-1584735175315-9d5df23860e6?w=500", rating: 4.9, stock: 45, desc: "Premium leather iconic wings logo." },
-            { id: 102, name: "iPhone 15 Pro Max", price: 159900, mrp: 169900, cat: "Smartphones", img: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=500", rating: 4.8, stock: 12, desc: "Forged in titanium. A17 Pro chip." },
-            { id: 104, name: "Rolex Submariner Gold", price: 450000, mrp: 520000, cat: "Luxury", img: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500", rating: 5.0, stock: 2, desc: "The archetypal divers' watch." }
-        ];
-
-        function initMarketplace() {
-            renderProducts(PRODUCTS);
-            renderAddresses();
-            updateWalletDisplay();
-            if(localStorage.getItem('theme') === 'light') toggleTheme();
-        }
-
-        function renderProducts(arr) {
-            const container = document.getElementById('product-container');
-            container.innerHTML = arr.map(p => `
-                <div class="p-card" onclick="openProduct(${p.id})">
-                    <div class="relative h-48">
-                        <img src="${p.img}" class="w-full h-full object-cover">
-                        <div class="absolute top-3 left-3 gold-badge">-${Math.round((p.mrp-p.price)/p.mrp*100)}%</div>
-                    </div>
-                    <div class="p-4">
-                        <p class="text-[8px] font-black uppercase text-yellow-500 tracking-[0.2em] mb-1">${p.cat}</p>
-                        <h4 class="text-xs font-bold text-white line-clamp-1 mb-2">${p.name}</h4>
-                        <div class="flex items-end justify-between">
-                            <p class="text-sm font-black text-white">₹${p.price.toLocaleString()}</p>
-                            <span class="text-[9px] font-black">${p.rating} <i class="fas fa-star text-yellow-500"></i></span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openProduct(id) {
-            const p = PRODUCTS.find(x => x.id === id);
-            document.getElementById('product-detail-content').innerHTML = `
-                <img src="${p.img}" class="w-full h-64 object-cover rounded-[30px] mb-6">
-                <h2 class="premium-font text-3xl text-white mb-2">${p.name}</h2>
-                <p class="text-4xl font-black text-yellow-500 mb-4">₹${p.price.toLocaleString()}</p>
-                <p class="text-zinc-400 text-sm mb-8">${p.desc}</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <button class="py-5 bg-zinc-800 text-white rounded-2xl font-black text-xs uppercase">Bag</button>
-                    <button onclick="buyNow(${p.price})" class="py-5 btn-gold rounded-2xl font-black text-xs uppercase">Checkout</button>
-                </div>
-            `;
-            openDrawer('product-drawer');
-        }
-
-        function buyNow(price) {
-            if(walletBalanceValue >= price) {
-                walletBalanceValue -= price;
-                updateWalletDisplay();
-                alert("Order Successful! ₹" + price + " deducted from Wallet.");
-            } else {
-                alert("Insufficient Wallet Balance!");
-            }
-        }
-
-        // --- DRAWER & UI HELPERS ---
-        function openDrawer(id) {
-            document.getElementById(id).classList.add('open');
-            document.getElementById('global-overlay').style.display = 'block';
-        }
-
-        function closeAllDrawers() {
-            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
-            document.getElementById('global-overlay').style.display = 'none';
-        }
-
-        function navigate(page) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            if(page === 'home') {
-                document.querySelector('.nav-item').classList.add('active');
-                closeAllDrawers();
-            }
-        }
-
-        function handleAI() {
-            const input = document.getElementById('ai-input');
-            const box = document.getElementById('ai-messages');
-            if(!input.value) return;
-            box.innerHTML += `<div class="bg-yellow-500 text-black p-4 rounded-2xl ml-12 text-sm font-bold">${input.value}</div>`;
-            input.value = "";
-            setTimeout(() => {
-                box.innerHTML += `<div class="bg-zinc-800 p-4 rounded-2xl mr-12 text-sm font-medium text-white">Searching for your luxury request...</div>`;
-                box.scrollTop = box.scrollHeight;
-            }, 800);
-        }
-    </script>
+</script>
 </body>
 </html>
