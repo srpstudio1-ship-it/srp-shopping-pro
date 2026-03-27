@@ -3,372 +3,573 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SRP SHOPPING | Enterprise</title>
+    <title>SRP SHOPPING | Pro Marketplace</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. THEME & RESET --- */
+        /* ==========================================================================
+           SRP SHOPPING - GLOBAL DESIGN SYSTEM (PREMIUM BLUE & WHITE)
+           ========================================================================== 
+        */
         :root {
-            --primary: #0A2647; --secondary: #144272; --accent: #2C74B3; 
-            --bg: #F4F7F9; --surface: #FFFFFF; --text: #1E293B; --text-light: #64748B;
-            --danger: #EF4444; --success: #10B981; --warning: #F59E0B;
+            /* Color Palette */
+            --srp-blue-deep: #001C30;
+            --srp-blue-primary: #176B87;
+            --srp-blue-light: #64CCC5;
+            --srp-blue-ultra: #DAFFFB;
+            --srp-white: #FFFFFF;
+            --srp-gray-50: #F8FAFC;
+            --srp-gray-100: #F1F5F9;
+            --srp-gray-400: #94A3B8;
+            --srp-text-dark: #0F172A;
+            --srp-text-muted: #475569;
+            --srp-danger: #FF4D4D;
+            --srp-success: #00D26A;
+
+            /* Shadows */
+            --shadow-soft: 0 4px 20px rgba(23, 107, 135, 0.08);
+            --shadow-strong: 0 10px 30px rgba(0, 28, 48, 0.15);
+            --shadow-neon: 0 0 15px rgba(100, 204, 197, 0.4);
+
+            /* Layout */
+            --top-nav-height: 75px;
+            --bottom-nav-height: 70px;
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 28px;
+            --container-max: 1200px;
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); padding-top: 60px; padding-bottom: 70px; overflow-x: hidden; }
-        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
-        button, input { border: none; outline: none; background: none; }
-        .hidden { display: none !important; }
 
-        /* --- 2. TOP NAVIGATION --- */
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .brand-btn { font-size: 1.2rem; font-weight: 800; cursor: pointer; letter-spacing: 1px; }
-        .top-actions { display: flex; align-items: center; gap: 12px; }
-        .wallet-display { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .policy-btn { font-size: 0.75rem; text-decoration: underline; cursor: pointer; color: #cbd5e1; }
-        .search-container { background: var(--primary); padding: 10px 15px; position: sticky; top: 60px; z-index: 999; }
-        .search-input { width: 100%; padding: 12px 20px; border-radius: 8px; border: 2px solid var(--accent); background: var(--surface); color: var(--text); font-weight: 500; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-        /* --- 3. BOTTOM NAVIGATION --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--surface); display: flex; justify-content: space-between; align-items: center; padding: 0 10px; box-shadow: 0 -2px 15px rgba(0,0,0,0.05); z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 16%; color: var(--text-light); font-size: 0.65rem; font-weight: 600; cursor: pointer; }
-        .nav-item.active { color: var(--accent); }
-        .nav-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
-        .nav-ai { background: var(--accent); color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; transform: translateY(-10px); box-shadow: 0 4px 10px rgba(44,116,179,0.4); }
+        body {
+            background-color: var(--srp-gray-50);
+            color: var(--srp-text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-        /* --- 4. AUTHENTICATION & ADMIN --- */
-        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--primary); position: fixed; inset: 0; z-index: 2000; }
-        .auth-card { background: var(--surface); width: 100%; max-width: 400px; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .auth-title { text-align: center; color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; }
-        .input-group { margin-bottom: 15px; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; }
-        .btn-main { width: 100%; padding: 14px; background: var(--accent); color: white; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-bottom: 10px; }
-        .btn-google { width: 100%; padding: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        
-        .admin-panel { position: fixed; inset: 0; background: var(--primary); z-index: 3000; color: white; padding: 20px; overflow-y: auto; }
-        .admin-header { font-size: 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 20px; }
+        /* ==========================================================================
+           AUTHENTICATION LAYER (LOGIN & SIGNUP)
+           ========================================================================== 
+        */
+        #auth-gate {
+            position: fixed;
+            inset: 0;
+            background: var(--srp-white);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-        /* --- 5. BANNERS & SRP POSTER GRID --- */
-        .promo-banner { margin: 15px; background: linear-gradient(135deg, var(--warning), #f97316); border-radius: 12px; padding: 20px; color: white; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
-        .promo-banner h2 { font-size: 1.5rem; margin-bottom: 5px; }
-        
-        .poster-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 15px 20px; }
-        .poster-item { position: relative; border-radius: 12px; overflow: hidden; height: 120px; background: var(--secondary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .poster-item:first-child { grid-column: 1 / -1; height: 160px; }
-        .poster-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .poster-label { position: absolute; bottom: 10px; left: 10px; color: white; font-weight: 800; font-family: 'Montserrat'; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); z-index: 2; }
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--srp-white);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-strong);
+            border: 1px solid var(--srp-gray-100);
+            animation: authFadeIn 0.8s ease-out;
+        }
 
-        /* --- 6. PRODUCT GRID & CARDS --- */
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 20px; }
-        .product-card { background: var(--surface); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; cursor: pointer; }
-        .product-img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #e2e8f0; }
-        .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; }
-        .p-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .p-price-row { display: flex; align-items: baseline; gap: 5px; margin-top: auto; }
-        .p-price { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
-        .p-mrp { font-size: 0.75rem; text-decoration: line-through; color: var(--text-light); }
-        .p-discount { color: var(--success); font-size: 0.7rem; font-weight: 600; }
+        @keyframes authFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* --- 7. AMAZON-STYLE PRODUCT DETAIL VIEW --- */
-        .detail-view { position: fixed; inset: 0; background: var(--bg); z-index: 1500; overflow-y: auto; padding-bottom: 80px; }
-        .detail-header { position: sticky; top: 0; background: var(--surface); padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; }
-        .back-btn { font-size: 1.5rem; cursor: pointer; font-weight: bold; color: var(--primary); }
-        .slider-container { width: 100%; height: 350px; background: white; position: relative; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
-        .slider-img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; scroll-snap-align: start; }
-        .detail-body { padding: 15px; background: var(--surface); margin-bottom: 10px; }
-        .d-title { font-size: 1.2rem; margin-bottom: 8px; line-height: 1.3; }
-        .d-rating { color: var(--warning); font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 5px; }
-        .d-price-box { border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 15px; }
-        .selection-row { margin-bottom: 15px; }
-        .selection-row label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
-        .color-opts { display: flex; gap: 10px; }
-        .color-dot { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #cbd5e1; cursor: pointer; }
-        .color-dot.active { border-color: var(--primary); transform: scale(1.1); }
-        .qty-select { padding: 8px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; width: 100px; }
-        .action-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .btn-cart { background: #fef08a; color: #854d0e; padding: 15px; border-radius: 50px; font-weight: 700; font-size: 1rem; }
-        .btn-buy { background: #f97316; color: white; padding: 15px; border-radius: 50px; font-weight: 700; font-size: 1rem; }
-        .delivery-info { font-size: 0.85rem; color: var(--success); font-weight: 600; margin-top: 15px; display: flex; align-items: center; gap: 5px; }
-        .long-desc { padding: 15px; background: var(--surface); font-size: 0.9rem; line-height: 1.6; color: #475569; }
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 2rem;
+            color: var(--srp-blue-deep);
+            letter-spacing: -1px;
+        }
+
+        .auth-logo span {
+            color: var(--srp-blue-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--srp-text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 55px;
+            background: var(--srp-gray-100);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            padding: 0 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            background: var(--srp-white);
+            border-color: var(--srp-blue-primary);
+            box-shadow: var(--shadow-neon);
+            outline: none;
+        }
+
+        .btn-auth-main {
+            width: 100%;
+            height: 55px;
+            background: var(--srp-blue-deep);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 28, 48, 0.3);
+        }
+
+        .btn-auth-main:hover {
+            transform: translateY(-2px);
+            background: var(--srp-blue-primary);
+        }
+
+        .google-btn-wrapper {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--srp-text-muted);
+        }
+
+        .auth-switch span {
+            color: var(--srp-blue-primary);
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* ==========================================================================
+           TOP NAVIGATION BAR (DESKTOP & MOBILE)
+           ========================================================================== 
+        */
+        .header-main {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--top-nav-height);
+            background: var(--srp-white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            z-index: 999;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: var(--srp-blue-deep);
+            cursor: pointer;
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-wrapper {
+            flex: 0 1 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            height: 45px;
+            background: var(--srp-gray-100);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--srp-gray-100);
+            padding: 0 45px 0 20px;
+            font-size: 0.9rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--srp-text-muted);
+        }
+
+        .top-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .policy-btn {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--srp-blue-primary);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .wallet-display {
+            background: var(--srp-blue-ultra);
+            padding: 8px 15px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            color: var(--srp-blue-deep);
+        }
+
+        /* ==========================================================================
+           BOTTOM NAVIGATION BAR (6 WORKING BUTTONS)
+           ========================================================================== 
+        */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bottom-nav-height);
+            background: var(--srp-white);
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.05);
+            z-index: 999;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: var(--srp-text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: none;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .nav-item span {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .nav-item.active {
+            color: var(--srp-blue-primary);
+        }
+
+        .nav-ai-btn {
+            color: var(--srp-blue-primary);
+            position: relative;
+        }
+
+        .nav-ai-btn i {
+            font-size: 1.5rem;
+            filter: drop-shadow(var(--shadow-neon));
+        }
+
+        /* ==========================================================================
+           MODALS & OVERLAYS
+           ========================================================================== 
+        */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 28, 48, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--srp-white);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+        }
     </style>
 </head>
 <body>
 
-    <svg style="display:none;">
-        <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-        <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-        <symbol id="icon-wallet" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 10h20" stroke="currentColor" stroke-width="2"/></symbol>
-        <symbol id="icon-store" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 22V12h6v10" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-        <symbol id="icon-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="20" cy="21" r="1" stroke="currentColor" stroke-width="2" fill="none"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
-        <symbol id="icon-ai" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v4h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h1V8h-1a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4z" fill="currentColor"/></symbol>
-    </svg>
+    <div id="auth-gate">
+        <div class="auth-container" id="login-container">
+            <div class="auth-logo">
+                <h1>SRP<span>SHOPPING</span></h1>
+                <p>Premium Marketplace Experience</p>
+            </div>
 
-    <div id="authView" class="auth-container">
-        <div class="auth-card">
-            <h1 class="auth-title">SRP SHOPPING</h1>
-            <form id="loginForm">
-                <div class="input-group">
-                    <input type="email" id="authEmail" placeholder="Email Address" required>
+            <form id="srp-login-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="example@srp.com" required>
                 </div>
-                <div class="input-group">
-                    <input type="password" id="authPass" placeholder="Password" required>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-pass" placeholder="••••••••" required>
                 </div>
-                <button type="button" class="btn-main" onclick="App.login()">Log In / Sign Up</button>
+                <button type="submit" class="btn-auth-main">SIGN IN TO ACCOUNT</button>
             </form>
-            <div style="text-align: center; margin: 15px 0; color: #94a3b8;">OR</div>
-            <button class="btn-google" onclick="alert('Google Auth Triggered')">
-                <img src="https://www.google.com/favicon.ico" width="18" alt="G"> Continue with Google
+
+            <div class="google-btn-wrapper">
+                <div id="google-login-btn"></div>
+            </div>
+
+            <div class="auth-switch">
+                New to SRP? <span onclick="SRPAuth.toggleAuth('signup')">Create Pro Account</span>
+            </div>
+        </div>
+
+        <div class="auth-container" id="signup-container" style="display: none;">
+            <div class="auth-logo">
+                <h1>SRP<span>SHOPPING</span></h1>
+                <p>Join our Multi-vendor platform</p>
+            </div>
+            <form id="srp-signup-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Subhash Rajpurohit" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reg-email" placeholder="srpstudio1@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Create Password</label>
+                    <input type="password" id="reg-pass" placeholder="Minimum 8 characters" required>
+                </div>
+                <button type="submit" class="btn-auth-main">CREATE ACCOUNT</button>
+            </form>
+            <div class="auth-switch">
+                Already have an account? <span onclick="SRPAuth.toggleAuth('login')">Log In</span>
+            </div>
+        </div>
+    </div>
+
+    <header class="header-main" id="main-header" style="display: none;">
+        <div class="brand-container">
+            <button class="brand-btn" id="srp-logo-trigger" onclick="location.reload()">
+                SRP SHOPPING
             </button>
         </div>
-    </div>
 
-    <div id="mainApp" class="hidden">
-        
-        <header class="top-bar">
-            <div class="brand-btn" onclick="App.handleBrandClick()">SRP SHOPPING</div>
-            <div class="top-actions">
-                <span class="policy-btn" onclick="alert('Privacy Policy Loaded')">Privacy</span>
-                <div class="wallet-display">₹<span id="walletBal">0.00</span></div>
-            </div>
-        </header>
-
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search products, brands and more..." onkeyup="App.filterProducts(this.value)">
+        <div class="search-wrapper">
+            <input type="text" placeholder="Search 50,000+ products..." id="srp-global-search">
+            <span class="search-icon">🔍</span>
         </div>
 
-        <div class="promo-banner">
-            <h2>MEGA BLOCKBUSTER SALE</h2>
-            <p>Up to 80% OFF on Top Electronics & Fashion</p>
-        </div>
-
-        <div class="poster-grid">
-            <div class="poster-item" onclick="App.filterCategory('electronics')">
-                <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&q=80" alt="Electronics">
-                <div class="poster-label">PRO ELECTRONICS</div>
-            </div>
-            <div class="poster-item" onclick="App.filterCategory('fashion')">
-                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&q=80" alt="Fashion">
-                <div class="poster-label">FASHION</div>
-            </div>
-            <div class="poster-item" onclick="App.filterCategory('home')">
-                <img src="https://images.unsplash.com/photo-1583847268964-b28e5f17468e?w=300&q=80" alt="Home">
-                <div class="poster-label">SMART HOME</div>
+        <div class="top-right-actions">
+            <a href="#" class="policy-btn">Privacy Policy</a>
+            <div class="wallet-display">
+                <span>👛</span> ₹<span id="top-wallet-amount">0.00</span>
             </div>
         </div>
+    </header>
 
-        <div class="product-grid" id="productGrid"></div>
-
-        <nav class="bottom-nav">
-            <div class="nav-item active" onclick="App.switchTab('home')">
-                <svg class="nav-icon"><use href="#icon-home"></use></svg> Home
+    <div id="admin-lock" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:20px; color:var(--srp-blue-deep)">Admin Access Required</h2>
+            <div class="form-group">
+                <input type="password" id="admin-key" placeholder="Enter Secure Admin Key">
             </div>
-            <div class="nav-item" onclick="App.switchTab('profile')">
-                <svg class="nav-icon"><use href="#icon-user"></use></svg> Account
-            </div>
-            <div class="nav-item" onclick="App.switchTab('wallet')">
-                <svg class="nav-icon"><use href="#icon-wallet"></use></svg> Wallet
-            </div>
-            <div class="nav-item" onclick="App.switchTab('seller')">
-                <svg class="nav-icon"><use href="#icon-store"></use></svg> Seller
-            </div>
-            <div class="nav-item" onclick="App.switchTab('cart')">
-                <svg class="nav-icon"><use href="#icon-cart"></use></svg> Cart
-            </div>
-            <div class="nav-item" onclick="alert('SRP AI Assistant Active!')">
-                <div class="nav-ai"><svg class="nav-icon" style="margin:0;"><use href="#icon-ai"></use></svg></div>
-            </div>
-        </nav>
-    </div>
-
-    <div id="productDetailView" class="detail-view hidden">
-        <div class="detail-header">
-            <div class="back-btn" onclick="App.closeProduct()">←</div>
-            <div style="font-weight: 600; font-family: 'Montserrat';">Details</div>
-        </div>
-        
-        <div class="slider-container" id="pdSlider"></div>
-        
-        <div class="detail-body">
-            <h2 class="d-title" id="pdTitle"></h2>
-            <div class="d-rating">★★★★☆ 4.8 (12,453 ratings)</div>
-            
-            <div class="d-price-box">
-                <div style="color: var(--success); font-weight: 800; font-size: 1.5rem;">
-                    -<span id="pdDiscount"></span>% 
-                    <span style="color: var(--text); margin-left: 10px;">₹<span id="pdPrice"></span></span>
-                </div>
-                <div class="p-mrp" style="font-size: 0.9rem; margin-top: 5px;">M.R.P.: ₹<span id="pdMrp"></span></div>
-            </div>
-
-            <div class="selection-row">
-                <label>Colour Selection</label>
-                <div class="color-opts">
-                    <div class="color-dot active" style="background: #1e293b;"></div>
-                    <div class="color-dot" style="background: #ef4444;"></div>
-                    <div class="color-dot" style="background: #e2e8f0;"></div>
-                </div>
-            </div>
-
-            <div class="selection-row">
-                <label>Quantity</label>
-                <select class="qty-select" id="pdQty">
-                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                </select>
-            </div>
-
-            <div class="delivery-info">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                FREE Delivery in 7 to 15 days
-            </div>
-
-            <div class="action-btns">
-                <button class="btn-cart" onclick="alert('Added to Cart!')">Add to Cart</button>
-                <button class="btn-buy" onclick="alert('Processing Checkout...')">Buy Now</button>
-            </div>
-        </div>
-
-        <div class="long-desc">
-            <h3>Product Description</h3>
-            <p style="margin-top: 10px;">Experience the ultimate in quality and performance with this premium product. Engineered for durability and designed with the modern user in mind, it seamlessly integrates into your daily lifestyle. 
-            <br><br>[Simulated 5000-word SEO description block: Contains exhaustive specifications, manufacturing details, warranty information, user guide highlights, material composition, environmental impact statements, and comprehensive feature breakdowns...]
-            <br><br>Features:<br>- Advanced architectural design<br>- Premium materials<br>- 1-Year Brand Warranty<br>- 100% Authentic Quality</p>
+            <button class="btn-auth-main" onclick="SRPAdmin.verify()">UNLOCK PANEL</button>
+            <button style="margin-top:10px; width:100%; padding:10px; border:none; background:none; font-weight:700; color:var(--srp-danger)" onclick="document.getElementById('admin-lock').style.display='none'">CANCEL</button>
         </div>
     </div>
 
-    <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-header">
-            <span onclick="App.closeAdmin()" style="cursor:pointer; margin-right: 15px;">←</span>
-            Admin Dashboard
-        </div>
-        <div class="auth-card" style="margin: 0 auto; background: var(--surface); color: var(--text);">
-            <h3>Secure Admin Access</h3>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Authenticated as: <span id="adminIdDisplay"></span></p>
-            <input type="password" id="adminPin" placeholder="Enter Master PIN" style="width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px;">
-            <button class="btn-main" onclick="alert('Admin Panel Unlocked. Supabase connection ready.')">Unlock Dashboard</button>
-        </div>
-    </div>
+    <main id="app-content" style="display: none; padding-top: 90px; padding-bottom: 100px;">
+        </main>
+
+    <nav class="bottom-nav" id="main-nav" style="display: none;">
+        <button class="nav-item active" onclick="SRPRoute.go('home')">
+            <i>🏠</i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="SRPRoute.go('profile')">
+            <i>👤</i>
+            <span>Account</span>
+        </button>
+        <button class="nav-item" onclick="SRPRoute.go('wallet')">
+            <i>👛</i>
+            <span>Wallet</span>
+        </button>
+        <button class="nav-item" onclick="SRPRoute.go('seller')">
+            <i>🏬</i>
+            <span>Dashboard</span>
+        </button>
+        <button class="nav-item" onclick="SRPRoute.go('cart')">
+            <i>🛒</i>
+            <span>Cart</span>
+        </button>
+        <button class="nav-item nav-ai-btn" onclick="SRPRoute.go('ai')">
+            <i>🤖</i>
+            <span>AI Bot</span>
+        </button>
+    </nav>
 
     <script>
-        /**
-         * SRP SHOPPING CORE ENGINE
-         * Supabase Setup Instructions: 
-         * 1. Go to supabase.com, create project "srp-shopping".
-         * 2. Copy URL and ANON KEY into the config below.
-         */
-        
-        const DB = [
-            {id: 1, name: "Samsung Galaxy S24 Ultra", cat: "electronics", price: 129999, mrp: 134999, img: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300"},
-            {id: 2, name: "Sony WH-1000XM5 Headphones", cat: "electronics", price: 29990, mrp: 34990, img: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=300"},
-            {id: 3, name: "Men's Premium Denim Jacket", cat: "fashion", price: 2499, mrp: 4999, img: "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=300"},
-            {id: 4, name: "Smart LED Bulb 16M Colors", cat: "home", price: 699, mrp: 1999, img: "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=300"},
-            {id: 5, name: "Apple MacBook Pro M3", cat: "electronics", price: 169900, mrp: 189900, img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300"},
-            {id: 6, name: "Nike Air Max Sneakers", cat: "fashion", price: 8995, mrp: 12995, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
-            {id: 7, name: "Echo Dot Smart Speaker", cat: "home", price: 3499, mrp: 4499, img: "https://images.unsplash.com/photo-1543512214-318c7553f230?w=300"},
-            {id: 8, name: "Mechanical Gaming Keyboard", cat: "electronics", price: 4500, mrp: 7999, img: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300"},
-            {id: 9, name: "Women's Summer Dress", cat: "fashion", price: 1299, mrp: 2999, img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300"},
-            {id: 10, name: "Robot Vacuum Cleaner", cat: "home", price: 15999, mrp: 24999, img: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=300"},
-            {id: 11, name: "GoPro HERO12 Black", cat: "electronics", price: 40990, mrp: 45000, img: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=300"},
-            {id: 12, name: "Luxury Men's Watch", cat: "fashion", price: 5999, mrp: 12000, img: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=300"},
-            {id: 13, name: "Ergonomic Office Chair", cat: "home", price: 7500, mrp: 15000, img: "https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?w=300"},
-            {id: 14, name: "iPad Pro 12.9", cat: "electronics", price: 112900, mrp: 119900, img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300"},
-            {id: 15, name: "Polarized Sunglasses", cat: "fashion", price: 999, mrp: 2500, img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=300"},
-            {id: 16, name: "Air Purifier HEPA", cat: "home", price: 9999, mrp: 14999, img: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300"},
-            {id: 17, name: "Wireless Earbuds Pro", cat: "electronics", price: 2499, mrp: 5999, img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300"},
-            {id: 18, name: "Leather Formal Shoes", cat: "fashion", price: 2199, mrp: 4999, img: "https://images.unsplash.com/photo-1614252235316-cb46ec531c36?w=300"},
-            {id: 19, name: "Smart Door Lock", cat: "home", price: 8500, mrp: 12500, img: "https://images.unsplash.com/photo-1558002038-1055907df827?w=300"},
-            {id: 20, name: "4K Action Camera", cat: "electronics", price: 6500, mrp: 12000, img: "https://images.unsplash.com/photo-1502920514313-52581002a659?w=300"}
-        ];
+        /* ==========================================================================
+           SRP SHOPPING ENGINE - PART 1 LOGIC
+           ========================================================================== 
+        */
 
-        const App = {
+        const SRPAuth = {
             currentUser: null,
-            adminEmails: ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"],
+            admins: ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"],
 
             init() {
-                this.renderProducts(DB);
-                document.getElementById('walletBal').innerText = "15,450";
+                // Initialize Google Login
+                google.accounts.id.initialize({
+                    client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+                    callback: this.handleGoogleResponse
+                });
+                google.accounts.id.renderButton(
+                    document.getElementById("google-login-btn"),
+                    { theme: "outline", size: "large", width: "350" }
+                );
+
+                this.bindForms();
             },
 
-            login() {
-                const email = document.getElementById('authEmail').value;
-                const pass = document.getElementById('authPass').value;
-                if(email && pass) {
-                    this.currentUser = email;
-                    document.getElementById('authView').classList.add('hidden');
-                    document.getElementById('mainApp').classList.remove('hidden');
-                    this.init();
+            toggleAuth(view) {
+                const login = document.getElementById('login-container');
+                const signup = document.getElementById('signup-container');
+                if(view === 'signup') {
+                    login.style.display = 'none';
+                    signup.style.display = 'block';
                 } else {
-                    alert("Please enter Email and Password");
+                    login.style.display = 'block';
+                    signup.style.display = 'none';
                 }
             },
 
-            handleBrandClick() {
-                if(this.adminEmails.includes(this.currentUser.toLowerCase())) {
-                    document.getElementById('adminIdDisplay').innerText = this.currentUser;
-                    document.getElementById('adminPanel').classList.remove('hidden');
+            bindForms() {
+                document.getElementById('srp-login-form').onsubmit = (e) => {
+                    e.preventDefault();
+                    this.loginSuccess({ email: document.getElementById('login-email').value });
+                };
+
+                document.getElementById('srp-signup-form').onsubmit = (e) => {
+                    e.preventDefault();
+                    alert('Account Created Successfully! Please Sign In.');
+                    this.toggleAuth('login');
+                };
+            },
+
+            handleGoogleResponse(response) {
+                console.log("Encoded JWT ID token: " + response.credential);
+                SRPAuth.loginSuccess({ email: "google-user@gmail.com" });
+            },
+
+            loginSuccess(user) {
+                this.currentUser = user;
+                document.getElementById('auth-gate').style.display = 'none';
+                document.getElementById('main-header').style.display = 'flex';
+                document.getElementById('main-nav').style.display = 'grid';
+                document.getElementById('app-content').style.display = 'block';
+                
+                // Initialize Wallet for UI
+                document.getElementById('top-wallet-amount').innerText = "15,450.00";
+                
+                alert(`Welcome, ${user.email}`);
+            }
+        };
+
+        const SRPAdmin = {
+            openPanel() {
+                if(SRPAuth.admins.includes(SRPAuth.currentUser.email)) {
+                    document.getElementById('admin-lock').style.display = 'flex';
                 } else {
+                    alert("Unauthorized Access. Admin credentials required.");
                     location.reload();
                 }
             },
 
-            closeAdmin() {
-                document.getElementById('adminPanel').classList.add('hidden');
-            },
-
-            renderProducts(data) {
-                const grid = document.getElementById('productGrid');
-                grid.innerHTML = data.map(p => {
-                    const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
-                    return `
-                    <div class="product-card" onclick="App.openProduct(${p.id})">
-                        <img src="${p.img}" class="product-img" loading="lazy">
-                        <div class="product-info">
-                            <div class="p-title">${p.name}</div>
-                            <div class="p-price-row">
-                                <span class="p-price">₹${p.price.toLocaleString('en-IN')}</span>
-                                <span class="p-mrp">₹${p.mrp.toLocaleString('en-IN')}</span>
-                            </div>
-                            <div class="p-discount">${discount}% OFF</div>
-                        </div>
-                    </div>`;
-                }).join('');
-            },
-
-            filterCategory(cat) {
-                this.renderProducts(DB.filter(p => p.cat === cat));
-            },
-
-            filterProducts(query) {
-                const q = query.toLowerCase();
-                this.renderProducts(DB.filter(p => p.name.toLowerCase().includes(q) || p.cat.includes(q)));
-            },
-
-            openProduct(id) {
-                const p = DB.find(x => x.id === id);
-                const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
-                
-                document.getElementById('pdSlider').innerHTML = `
-                    <img src="${p.img}" class="slider-img">
-                    <img src="${p.img}" class="slider-img" style="filter: grayscale(100%);">
-                `;
-                document.getElementById('pdTitle').innerText = p.name;
-                document.getElementById('pdPrice').innerText = p.price.toLocaleString('en-IN');
-                document.getElementById('pdMrp').innerText = p.mrp.toLocaleString('en-IN');
-                document.getElementById('pdDiscount').innerText = discount;
-                
-                document.getElementById('mainApp').classList.add('hidden');
-                document.getElementById('productDetailView').classList.remove('hidden');
-            },
-
-            closeProduct() {
-                document.getElementById('productDetailView').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-            },
-
-            switchTab(tab) {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                event.currentTarget.classList.add('active');
-                if(tab !== 'home') alert(`Navigating to ${tab.toUpperCase()} module...`);
+            verify() {
+                const key = document.getElementById('admin-key').value;
+                if(key === "SRP786") {
+                    alert("Admin Panel Unlocked. Redirecting to Management Console...");
+                    // Logic for admin panel view will be in Part 5
+                } else {
+                    alert("Invalid Admin Security Key.");
+                }
             }
+        };
+
+        const SRPRoute = {
+            go(page) {
+                const items = document.querySelectorAll('.nav-item');
+                items.forEach(i => i.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+                console.log(`Navigating to ${page}`);
+                // Dynamic page rendering logic will be in Part 2
+            }
+        };
+
+        // Initialize App
+        window.onload = () => {
+            SRPAuth.init();
+            
+            // Special trigger for SRP SHOPPING button
+            const logo = document.getElementById('srp-logo-trigger');
+            logo.addEventListener('contextmenu', (e) => {
+                e.preventDefault(); // Right-click or long press
+                SRPAdmin.openPanel();
+            });
         };
     </script>
 </body>
