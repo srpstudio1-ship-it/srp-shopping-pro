@@ -1,344 +1,293 @@
+<!-- =========================
+SRP SHOPPING AUTH SYSTEM (PRO)
+PART 1
+========================= -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SRP SHOPPING | Pro Marketplace</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ==========================================================================
-           SRP SHOPPING - GLOBAL DESIGN SYSTEM (PREMIUM BLUE & WHITE)
-           ========================================================================== 
-        */
-        :root {
-            --srp-blue-deep: #001C30;
-            --srp-blue-primary: #176B87;
-            --srp-blue-light: #64CCC5;
-            --srp-blue-ultra: #DAFFFB;
-            --srp-white: #FFFFFF;
-            --srp-gray-50: #F8FAFC;
-            --srp-gray-100: #F1F5F9;
-            --srp-gray-400: #94A3B8;
-            --srp-text-dark: #0F172A;
-            --srp-text-muted: #475569;
-            --srp-danger: #FF4D4D;
-            --srp-success: #00D26A;
-            --shadow-soft: 0 4px 20px rgba(23, 107, 135, 0.08);
-            --shadow-strong: 0 10px 30px rgba(0, 28, 48, 0.15);
-            --shadow-neon: 0 0 15px rgba(100, 204, 197, 0.4);
-            --top-nav-height: 75px;
-            --bottom-nav-height: 70px;
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 28px;
-            --container-max: 1200px;
-            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRP SHOPPING | Auth</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--srp-gray-50); color: var(--srp-text-dark); overflow-x: hidden; min-height: 100vh; }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        /* AUTH STYLES */
-        #auth-gate { position: fixed; inset: 0; background: var(--srp-white); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-container { width: 100%; max-width: 450px; background: var(--srp-white); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-strong); border: 1px solid var(--srp-gray-100); animation: authFadeIn 0.8s ease-out; }
-        @keyframes authFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .auth-logo { text-align: center; margin-bottom: 30px; }
-        .auth-logo h1 { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2rem; color: var(--srp-blue-deep); letter-spacing: -1px; }
-        .auth-logo span { color: var(--srp-blue-primary); }
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--srp-text-dark); }
-        .form-group input { width: 100%; height: 55px; background: var(--srp-gray-100); border: 2px solid transparent; border-radius: var(--radius-md); padding: 0 20px; font-size: 1rem; font-weight: 500; transition: var(--transition); }
-        .form-group input:focus { background: var(--srp-white); border-color: var(--srp-blue-primary); box-shadow: var(--shadow-neon); outline: none; }
-        .btn-auth-main { width: 100%; height: 55px; background: var(--srp-blue-deep); color: white; border: none; border-radius: var(--radius-md); font-size: 1rem; font-weight: 800; cursor: pointer; transition: var(--transition); margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 28, 48, 0.3); }
-        .google-btn-wrapper { margin-top: 25px; display: flex; justify-content: center; }
-        .auth-switch { text-align: center; margin-top: 25px; font-size: 0.9rem; color: var(--srp-text-muted); }
-        .auth-switch span { color: var(--srp-blue-primary); font-weight: 800; cursor: pointer; }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        /* NAV STYLES */
-        .header-main { position: fixed; top: 0; left: 0; right: 0; height: var(--top-nav-height); background: var(--srp-white); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; z-index: 999; box-shadow: var(--shadow-soft); }
-        .brand-btn { font-family: 'Montserrat'; font-weight: 900; font-size: 1.4rem; color: var(--srp-blue-deep); cursor: pointer; background: none; border: none; }
-        .search-wrapper { flex: 0 1 500px; margin: 0 20px; position: relative; }
-        .search-wrapper input { width: 100%; height: 45px; background: var(--srp-gray-100); border-radius: var(--radius-sm); border: 1px solid var(--srp-gray-100); padding: 0 45px 0 20px; }
-        .wallet-display { background: var(--srp-blue-ultra); padding: 8px 15px; border-radius: var(--radius-sm); font-weight: 800; color: var(--srp-blue-deep); }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-height); background: var(--srp-white); display: grid; grid-template-columns: repeat(6, 1fr); box-shadow: 0 -5px 25px rgba(0,0,0,0.05); z-index: 999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--srp-text-muted); border: none; background: none; cursor: pointer; }
-        .nav-item.active { color: var(--srp-blue-primary); }
-        .nav-item i { font-size: 1.3rem; }
-        .nav-item span { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
 
-        /* PART 2 & 3 STYLES */
-        .section-container { padding: 25px 5%; max-width: var(--container-max); margin: 0 auto; }
-        .srp-hero-slider { width: 95%; margin: 15px auto; height: 180px; position: relative; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-strong); }
-        .banner-wrapper { display: flex; height: 100%; transition: transform 0.5s ease; }
-        .banner-slide { min-width: 100%; display: flex; align-items: center; padding: 0 30px; color: white; }
-        .banner-dots { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.4); border-radius: 50%; }
-        .dot.active { background: white; width: 20px; border-radius: 10px; }
-        .category-poster-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .poster-item { position: relative; height: 120px; border-radius: 12px; overflow: hidden; }
-        .poster-item img { width: 100%; height: 100%; object-fit: cover; }
-        .product-grid-main { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .srp-card { background: white; border-radius: 16px; padding: 10px; box-shadow: var(--shadow-soft); }
-        .product-detail-modal { position: fixed; inset: 0; background: white; z-index: 10001; display: none; overflow-y: auto; }
-        .main-slider-track { display: flex; transition: transform 0.4s; }
-        .slide-img { min-width: 100%; height: 300px; object-fit: contain; }
-        .btn-yellow { background: #FFD814; width: 100%; padding: 15px; border-radius: 25px; border: none; font-weight: 700; margin-bottom: 10px; }
-        .btn-orange { background: #FFA41C; width: 100%; padding: 15px; border-radius: 25px; border: none; font-weight: 700; }
+body{
+background:linear-gradient(135deg,#004aad,#00d4ff);
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 
-        /* PART 4 & 5 STYLES */
-        .route-view { padding: 20px 5%; display: none; }
-        .wallet-card-premium { background: linear-gradient(135deg, #001C30 0%, #176B87 100%); border-radius: 20px; padding: 25px; color: white; }
-        .txn-item { display: flex; align-items: center; padding: 15px; background: white; border-radius: 12px; margin-bottom: 10px; box-shadow: var(--shadow-soft); }
-        .ai-chat-container { height: 70vh; background: white; display: flex; flex-direction: column; border-radius: 20px; box-shadow: var(--shadow-strong); }
-        .chat-window { flex-grow: 1; padding: 15px; overflow-y: auto; background: #f0f4f8; }
-        .msg { padding: 10px 15px; border-radius: 15px; margin-bottom: 10px; max-width: 80%; }
-        .msg.bot { background: white; align-self: flex-start; }
-        .msg.user { background: var(--srp-blue-primary); color: white; align-self: flex-end; margin-left: auto; }
-        .admin-dashboard-wrapper { display: flex; background: white; border-radius: 20px; overflow: hidden; min-height: 60vh; }
-        .admin-sidebar { width: 80px; background: var(--srp-blue-deep); color: white; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
-        .admin-table { width: 100%; border-collapse: collapse; }
-        .admin-table td, th { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 0.8rem; }
-    </style>
+/* Container */
+.auth-box{
+width:100%;
+max-width:420px;
+background:white;
+border-radius:20px;
+padding:30px;
+box-shadow:0 20px 50px rgba(0,0,0,0.2);
+animation:fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;}
+}
+
+/* Logo */
+.logo{
+text-align:center;
+margin-bottom:20px;
+}
+
+.logo h1{
+color:#004aad;
+font-weight:800;
+}
+
+/* Tabs */
+.tabs{
+display:flex;
+margin-bottom:20px;
+background:#f1f3f5;
+border-radius:10px;
+overflow:hidden;
+}
+
+.tab{
+flex:1;
+text-align:center;
+padding:12px;
+cursor:pointer;
+font-weight:600;
+}
+
+.tab.active{
+background:#004aad;
+color:white;
+}
+
+/* Inputs */
+.input{
+width:100%;
+padding:14px;
+border:1px solid #ddd;
+border-radius:10px;
+margin-bottom:12px;
+outline:none;
+transition:0.3s;
+}
+
+.input:focus{
+border-color:#004aad;
+}
+
+/* Button */
+.btn{
+width:100%;
+padding:14px;
+background:#004aad;
+color:white;
+border:none;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+margin-top:10px;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.02);
+}
+
+/* Google Button */
+.google-btn{
+background:white;
+color:#444;
+border:1px solid #ddd;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+}
+
+.google-btn img{
+width:20px;
+}
+
+/* Divider */
+.divider{
+text-align:center;
+margin:15px 0;
+color:#999;
+}
+
+/* Hidden */
+.hidden{
+display:none;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div id="auth-gate">
-        <div class="auth-container" id="login-container">
-            <div class="auth-logo"><h1>SRP<span>SHOPPING</span></h1><p>Premium Marketplace</p></div>
-            <form id="srp-login-form">
-                <div class="form-group"><label>Email</label><input type="email" id="login-email" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="login-pass" required></div>
-                <button type="submit" class="btn-auth-main">SIGN IN</button>
-            </form>
-            <div class="google-btn-wrapper"><div id="google-login-btn"></div></div>
-            <div class="auth-switch">New? <span onclick="SRPAuth.toggleAuth('signup')">Create Account</span></div>
-        </div>
-        <div class="auth-container" id="signup-container" style="display: none;">
-            <div class="auth-logo"><h1>SRP<span>SHOPPING</span></h1></div>
-            <form id="srp-signup-form">
-                <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" required></div>
-                <div class="form-group"><label>Email</label><input type="email" id="reg-email" required></div>
-                <div class="form-group"><label>Password</label><input type="password" id="reg-pass" required></div>
-                <button type="submit" class="btn-auth-main">CREATE ACCOUNT</button>
-            </form>
-            <div class="auth-switch">Back to <span onclick="SRPAuth.toggleAuth('login')">Login</span></div>
-        </div>
-    </div>
+<div class="auth-box">
 
-    <header class="header-main" id="main-header" style="display: none;">
-        <button class="brand-btn" id="srp-logo-trigger" onclick="location.reload()">SRP SHOPPING</button>
-        <div class="search-wrapper"><input type="text" placeholder="Search products..." id="srp-global-search"></div>
-        <div class="wallet-display">👛 ₹<span id="top-wallet-amount">0.00</span></div>
-    </header>
+<div class="logo">
+<h1>SRP SHOPPING</h1>
+<p style="color:#666;">Premium Experience</p>
+</div>
 
-    <main id="app-content" style="display: none; padding-top: 85px; padding-bottom: 80px;">
-        <section id="home-view" class="route-view" style="display:block;">
-            <div class="srp-hero-slider">
-                <div class="banner-wrapper" id="banner-stage">
-                    <div class="banner-slide" style="background:#001C30"><h2>TECH FEST 2026</h2></div>
-                    <div class="banner-slide" style="background:#176B87"><h2>STREETWEAR X SRP</h2></div>
-                    <div class="banner-slide" style="background:#000"><h2>BECOME A SELLER</h2></div>
-                </div>
-                <div class="banner-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
-            </div>
-            <div class="section-container">
-                <h3 style="margin-bottom:15px">Categories</h3>
-                <div class="category-poster-grid">
-                    <div class="poster-item" onclick="SRPStore.filter('electronics')"><img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400"></div>
-                    <div class="poster-item" onclick="SRPStore.filter('fashion')"><img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400"></div>
-                </div>
-            </div>
-            <div class="section-container">
-                <h3 style="margin-bottom:15px">Trending Deals</h3>
-                <div class="product-grid-main" id="dynamic-product-grid"></div>
-            </div>
-        </section>
+<!-- Tabs -->
+<div class="tabs">
+<div class="tab active" onclick="switchTab('login')">Login</div>
+<div class="tab" onclick="switchTab('signup')">Signup</div>
+</div>
 
-        <div id="product-view-overlay" class="product-detail-modal">
-            <button onclick="SRPUI.closeProduct()" style="padding:20px; border:none; background:none; font-size:1.5rem">✕ Close</button>
-            <div class="product-slider-container"><div class="main-slider-track" id="slider-track"></div></div>
-            <div style="padding:20px">
-                <h1 id="det-title" style="font-size:1.2rem">Product</h1>
-                <div style="font-size:2rem; font-weight:800; margin:10px 0">₹<span id="det-price">0</span></div>
-                <p style="color:gray; text-decoration:line-through">M.R.P: ₹<span id="det-mrp">0</span></p>
-                <div id="color-injector" style="display:flex; gap:10px; margin:20px 0"></div>
-                <button class="btn-yellow" onclick="SRPStore.addToCart()">Add to Cart</button>
-                <button class="btn-orange" onclick="SRPStore.buyNow()">Buy Now</button>
-                <hr style="margin:20px 0; opacity:0.1">
-                <h3>Description</h3>
-                <div id="det-long-desc" style="font-size:0.8rem; line-height:1.6; color:#444"></div>
-            </div>
-        </div>
+<!-- LOGIN -->
+<div id="login-box">
 
-        <section id="wallet-view" class="route-view">
-            <div class="wallet-card-premium">
-                <p>Balance</p>
-                <h2 style="font-size:2.5rem">₹15,450.00</h2>
-                <button style="margin-top:15px; padding:10px; width:100%; border-radius:10px; border:none">Add Money</button>
-            </div>
-            <h3 style="margin:20px 0">Recent History</h3>
-            <div id="transaction-list">
-                <div class="txn-item"><div>📥</div><div style="flex:1; margin-left:15px"><b>Refund #SRP99</b><br><small>24 Mar</small></div><div style="color:green">+₹499</div></div>
-            </div>
-        </section>
+<input type="email" id="login-email" class="input" placeholder="Email">
+<input type="password" id="login-pass" class="input" placeholder="Password">
 
-        <section id="seller-view" class="route-view">
-            <h1>Seller Hub</h1>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0">
-                <div style="background:white; padding:15px; border-radius:10px"><b>Orders</b><br>24</div>
-                <div style="background:white; padding:15px; border-radius:10px"><b>Revenue</b><br>₹82k</div>
-            </div>
-            <div class="txn-item">📦 Manage Products</div>
-            <div class="txn-item">📊 Sales Analytics</div>
-        </section>
+<button class="btn" onclick="loginUser()">Login</button>
 
-        <section id="cart-view" class="route-view">
-            <h2>Your Cart</h2>
-            <div id="cart-items-list" style="margin-top:20px"></div>
-            <div id="cart-summary" style="margin-top:20px; background:white; padding:20px; border-radius:15px; display:none">
-                <div style="display:flex; justify-content:space-between"><b>Total:</b><b id="cart-total-final">₹0</b></div>
-                <button class="btn-orange" style="margin-top:15px">Checkout</button>
-            </div>
-        </section>
+<div class="divider">OR</div>
 
-        <section id="ai-view" class="route-view">
-            <div class="ai-chat-container">
-                <div style="background:var(--srp-blue-deep); color:white; padding:15px">SRP Assistant</div>
-                <div class="chat-window" id="ai-messages">
-                    <div class="msg bot">How can I help you today?</div>
-                </div>
-                <div style="padding:15px; display:flex; gap:10px">
-                    <input type="text" id="ai-input" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ddd">
-                    <button onclick="SRPAI.sendMessage()" style="padding:10px 20px; border-radius:20px; border:none; background:var(--srp-blue-deep); color:white">Send</button>
-                </div>
-            </div>
-        </section>
+<button class="btn google-btn" onclick="googleLogin()">
+<img src="https://cdn-icons-png.flaticon.com/512/281/281764.png">
+Continue with Google
+</button>
 
-        <section id="admin-view" class="route-view">
-            <div class="admin-dashboard-wrapper">
-                <div class="admin-sidebar">🏠<br><br>👥<br><br>📦</div>
-                <div style="flex:1; padding:15px">
-                    <h3>Admin Overview</h3>
-                    <table class="admin-table">
-                        <tr><th>User</th><th>Role</th></tr>
-                        <tr><td>srpstudio1@gmail.com</td><td>Owner</td></tr>
-                        <tr><td>subhashrajpurohit10@gmail.com</td><td>Admin</td></tr>
-                    </table>
-                </div>
-            </div>
-        </section>
+</div>
 
-        <section id="profile-view" class="route-view">
-            <div style="text-align:center; padding:30px">
-                <div style="width:80px; height:80px; background:#ddd; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:2rem">👤</div>
-                <h2 id="u-display-name">Subhash Rajpurohit</h2>
-                <p id="u-display-email">srpstudio1@gmail.com</p>
-            </div>
-            <div class="txn-item" onclick="SRPRoute.go('wallet')">👛 My Wallet <span>❯</span></div>
-            <div class="txn-item" style="color:red" onclick="location.reload()">🚪 Logout</div>
-        </section>
-    </main>
+<!-- SIGNUP -->
+<div id="signup-box" class="hidden">
 
-    <nav class="bottom-nav" id="main-nav" style="display: none;">
-        <button class="nav-item active" onclick="SRPRoute.go('home')"><i>🏠</i><span>Home</span></button>
-        <button class="nav-item" onclick="SRPRoute.go('profile')"><i>👤</i><span>Profile</span></button>
-        <button class="nav-item" onclick="SRPRoute.go('wallet')"><i>👛</i><span>Wallet</span></button>
-        <button class="nav-item" onclick="SRPRoute.go('seller')"><i>🏬</i><span>Seller</span></button>
-        <button class="nav-item" onclick="SRPRoute.go('cart')"><i>🛒</i><span>Cart</span></button>
-        <button class="nav-item" onclick="SRPRoute.go('ai')"><i>🤖</i><span>AI Bot</span></button>
-    </nav>
+<input type="text" id="signup-name" class="input" placeholder="Full Name">
+<input type="email" id="signup-email" class="input" placeholder="Email">
+<input type="password" id="signup-pass" class="input" placeholder="Password">
 
-    <script>
-        const SRPAuth = {
-            admins: ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"],
-            init() {
-                document.getElementById('srp-login-form').onsubmit = (e) => { e.preventDefault(); this.loginSuccess({ email: document.getElementById('login-email').value }); };
-                document.getElementById('srp-signup-form').onsubmit = (e) => { e.preventDefault(); alert('Success'); this.toggleAuth('login'); };
-            },
-            toggleAuth(v) {
-                document.getElementById('login-container').style.display = v === 'login' ? 'block' : 'none';
-                document.getElementById('signup-container').style.display = v === 'signup' ? 'block' : 'none';
-            },
-            loginSuccess(u) {
-                document.getElementById('auth-gate').style.display = 'none';
-                document.querySelectorAll('#main-header, #main-nav, #app-content').forEach(el => el.style.display = 'flex');
-                document.getElementById('app-content').style.display = 'block';
-                document.getElementById('top-wallet-amount').innerText = "15,450.00";
-                document.getElementById('u-display-email').innerText = u.email;
-                SRPStore.init();
-            }
-        };
+<button class="btn" onclick="signupUser()">Create Account</button>
 
-        const SRPStore = {
-            products: [
-                { id: 1, name: "Samsung Galaxy Buds Pro 2", price: 14999, mrp: 19999, img: "https://m.media-amazon.com/images/I/61S9aVnRZDL._SL1500_.jpg", color: ["White", "Black"] },
-                { id: 2, name: "SRP Developer Hoodie", price: 1299, mrp: 2999, img: "https://m.media-amazon.com/images/I/71YyP9fDqAL._UX679_.jpg", color: ["Navy"] },
-                { id: 11, name: "Dell XPS 13 Laptop", price: 95000, mrp: 120000, img: "https://m.media-amazon.com/images/I/81shKAnPpxL._SL1500_.jpg", color: ["Silver"] },
-                { id: 15, name: "Sony PS5 Console", price: 54990, mrp: 54990, img: "https://m.media-amazon.com/images/I/81shKAnPpxL._SL1500_.jpg", color: ["White"] }
-            ],
-            init() { this.renderProducts(this.products); },
-            renderProducts(list) {
-                document.getElementById('dynamic-product-grid').innerHTML = list.map(p => `
-                    <div class="srp-card" onclick="SRPUI.openProduct(${p.id})">
-                        <img src="${p.img}" style="width:100%; height:120px; object-fit:contain">
-                        <div style="font-size:0.8rem; margin:10px 0; height:35px; overflow:hidden">${p.name}</div>
-                        <b>₹${p.price.toLocaleString()}</b>
-                        <button class="btn-orange" style="padding:5px; font-size:0.7rem; margin-top:10px">VIEW</button>
-                    </div>
-                `).join('');
-            }
-        };
+</div>
 
-        const SRPUI = {
-            openProduct(id) {
-                const p = SRPStore.products.find(x => x.id === id);
-                document.getElementById('product-view-overlay').style.display = 'block';
-                document.getElementById('det-title').innerText = p.name;
-                document.getElementById('det-price').innerText = p.price.toLocaleString();
-                document.getElementById('det-mrp').innerText = p.mrp.toLocaleString();
-                document.getElementById('slider-track').innerHTML = `<img src="${p.img}" class="slide-img">`;
-                document.getElementById('det-long-desc').innerText = "Premium quality product featuring high performance. Integrated with SRP SHOPPING standards for Srpstudio1 administrator users.";
-            },
-            closeProduct() { document.getElementById('product-view-overlay').style.display = 'none'; }
-        };
+</div>
 
-        const SRPRoute = {
-            go(page) {
-                document.querySelectorAll('.route-view').forEach(v => v.style.display = 'none');
-                document.getElementById(`${page}-view`).style.display = 'block';
-                document.querySelectorAll('.nav-item').forEach(n => {
-                    n.classList.remove('active');
-                    if(n.innerText.toLowerCase().includes(page)) n.classList.add('active');
-                });
-                if(page === 'cart') this.renderCart();
-            },
-            renderCart() {
-                const list = document.getElementById('cart-items-list');
-                const sum = document.getElementById('cart-summary');
-                if(SRPCart.items.length === 0) { list.innerHTML = "Cart is empty"; sum.style.display='none'; }
-                else {
-                    sum.style.display = 'block';
-                    list.innerHTML = SRPCart.items.map(i => `<div class="txn-item"><b>${i.name}</b> - ₹${i.price}</div>`).join('');
-                }
-            }
-        };
+<script>
 
-        const SRPCart = { items: [], add(p) { this.items.push(p); alert('Added!'); } };
-        const SRPAI = {
-            sendMessage() {
-                const i = document.getElementById('ai-input');
-                const m = document.getElementById('ai-messages');
-                m.innerHTML += `<div class="msg user">${i.value}</div>`;
-                setTimeout(() => { m.innerHTML += `<div class="msg bot">I am processing your request for SRP SHOPPING...</div>`; }, 600);
-                i.value = '';
-            }
-        };
+/* =====================
+SUPABASE CONFIG
+===================== */
+const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
+const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY"; // replace
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        window.onload = () => SRPAuth.init();
-    </script>
+/* =====================
+TAB SWITCH
+===================== */
+function switchTab(type){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+
+if(type==='login'){
+document.querySelectorAll('.tab')[0].classList.add('active');
+document.getElementById('login-box').classList.remove('hidden');
+document.getElementById('signup-box').classList.add('hidden');
+}else{
+document.querySelectorAll('.tab')[1].classList.add('active');
+document.getElementById('login-box').classList.add('hidden');
+document.getElementById('signup-box').classList.remove('hidden');
+}
+}
+
+/* =====================
+SIGNUP
+===================== */
+async function signupUser(){
+const name = document.getElementById('signup-name').value;
+const email = document.getElementById('signup-email').value;
+const pass = document.getElementById('signup-pass').value;
+
+if(!name || !email || !pass){
+alert("Fill all fields");
+return;
+}
+
+const {data,error} = await supabase.auth.signUp({
+email:email,
+password:pass,
+options:{
+data:{full_name:name}
+}
+});
+
+if(error){
+alert(error.message);
+}else{
+alert("Signup successful! Check your email.");
+switchTab('login');
+}
+}
+
+/* =====================
+LOGIN
+===================== */
+async function loginUser(){
+const email = document.getElementById('login-email').value;
+const pass = document.getElementById('login-pass').value;
+
+const {data,error} = await supabase.auth.signInWithPassword({
+email:email,
+password:pass
+});
+
+if(error){
+alert(error.message);
+}else{
+localStorage.setItem("srp_user", JSON.stringify(data.user));
+window.location.href="home.html"; // PART 2
+}
+}
+
+/* =====================
+GOOGLE LOGIN
+===================== */
+async function googleLogin(){
+await supabase.auth.signInWithOAuth({
+provider:'google',
+options:{
+redirectTo: window.location.origin + "/home.html"
+}
+});
+}
+
+/* =====================
+SESSION CHECK
+===================== */
+async function checkSession(){
+const {data} = await supabase.auth.getSession();
+
+if(data.session){
+window.location.href="home.html";
+}
+}
+
+checkSession();
+
+</script>
+
 </body>
 </html>
