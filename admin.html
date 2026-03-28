@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRP SHOPPING | Ultimate Admin Engine v2.0</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #10b981;
+            --dark-bg: #0f172a;
+            --sidebar-bg: #1e293b;
+            --glass-white: rgba(255, 255, 255, 0.8);
+            --glass-dark: rgba(30, 41, 59, 0.7);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        /* High-End UI Effects */
+        .dark-mode { background-color: var(--dark-bg); color: #f1f5f9; }
+        
+        .sidebar-link {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .sidebar-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-link:hover::after, .sidebar-link.active::after { width: 100%; }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            border-left-color: var(--primary);
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .glass {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: var(--glass-white);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .dark-mode .glass {
+            background: var(--glass-dark);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .neo-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Animated Transitions */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-section { animation: fadeInUp 0.5s ease-out forwards; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+
+        /* Status Badges */
+        .status-pill {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-confirmed { background: #e0f2fe; color: #0369a1; }
+        .status-shipped { background: #fef3c7; color: #92400e; }
+        .status-delivered { background: #dcfce7; color: #166534; }
+    </style>
+</head>
+<body class="antialiased">
+
+<div id="main-layout" class="flex min-h-screen relative overflow-hidden">
+    
+    <aside id="main-sidebar" class="fixed inset-y-0 left-0 w-72 bg-slate-900 text-slate-400 z-50 transform transition-transform duration-300 lg:translate-x-0 -translate-x-full border-r border-white/5">
+        <div class="h-full flex flex-col">
+            <div class="p-8 flex items-center justify-between">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40 group-hover:rotate-12 transition-transform">
+                        <i class="fas fa-layer-group text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="block text-lg font-black text-white tracking-tighter">SRP ENGINE</span>
+                        <span class="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">v2.0 Admin Pro</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-4 py-4 space-y-1 custom-scrollbar">
+                <div class="px-6 py-2">
+                    <p class="text-[10px] uppercase font-black text-slate-600 tracking-[0.2em]">Core Operations</p>
+                </div>
+                <button onclick="nav('8.1', this)" class="sidebar-link w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl active">
+                    <i class="fas fa-boxes-stacked w-5"></i> <span class="text-sm font-bold tracking-tight">Product Center</span>
+                </button>
+                <button onclick="nav('8.2', this)" class="sidebar-link w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl">
+                    <i class="fas fa-receipt w-5"></i> <span class="text-sm font-bold tracking-tight">Order Engine</span>
+                </button>
+                <button onclick="nav('8.3', this)" class="sidebar-link w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl">
+                    <i class="fas fa-hand-holding-dollar w-5"></i> <span class="text-sm font-bold tracking-tight">Payout Gateway</span>
+                </button>
+
+                <div class="pt-6 pb-2 px-6">
+                    <p class="text-[10px] uppercase font-black text-slate-600 tracking-[0.2em]">Marketing & UX</p>
+                </div>
+                
+                <button onclick="nav('8.4', this)" class="sidebar-link w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl">
+                    <i class="fas fa-bolt-lightning w-5"></i> <span class="text-sm font-bold tracking-tight">Promotion System</span>
+                </button>
+                <button onclick="nav('8.5', this)" class="sidebar-link w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl">
+                    <i class="fas fa-star w-5"></i> <span class="text-sm font-bold tracking-tight">Featured Items</span>
+                </button>
+
+                <div class="pt-6 pb-2 px-6">
+                    <p class="text-[10px] uppercase font-black text-slate-600 tracking-[0.2em]">Security & Code</p>
+                </div>
+
+                <button onclick="nav('8.22', this)" class="sidebar-link w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <i class="fas fa-robot w-5"></i> <span class="text-sm font-bold tracking-tight">AI Diagnostic</span>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white transition-all font-black text-xs uppercase tracking-widest border border-red-500/20">
+                    <i class="fas fa-power-off"></i> Terminate Session
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 lg:ml-72 min-h-screen">
+        
+        <nav class="sticky top-0 z-40 w-full glass neo-shadow px-10 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <button onclick="toggleSidebar()" class="lg:hidden text-slate-800 p-2 bg-slate-100 rounded-xl">
+                    <i class="fas fa-bars-staggered"></i>
+                </button>
+                <div class="flex flex-col">
+                    <h2 id="current-section-title" class="text-xl font-black text-slate-900 leading-none">Product Inventory</h2>
+                    <span id="current-breadcrumb" class="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-tighter">Core Operations / Inventory</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-8">
+                <div class="hidden xl:flex items-center gap-4 border-l pl-8 border-slate-200">
+                    <div class="text-right">
+                        <p class="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Authenticated As</p>
+                        <p class="text-sm font-bold text-slate-900">SYSTEM MASTER</p>
+                    </div>
+                    <div class="relative group">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" class="w-12 h-12 rounded-2xl shadow-lg group-hover:scale-105 transition">
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="p-8 lg:p-12">
+
+            <section id="sec-8.1" class="section-content animate-section">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 mb-12">
+                    <div>
+                        <h3 class="text-4xl font-black text-slate-900 tracking-tighter">Global Catalog</h3>
+                        <p class="text-slate-500 font-medium mt-2">Manage all inventory items, pricing tiers, and stock logic.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="loadProducts()" class="w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition text-slate-600">
+                            <i class="fas fa-rotate"></i>
+                        </button>
+                        <button onclick="openProductModal()" class="btn-gradient text-white px-8 py-4 rounded-2xl shadow-xl font-bold flex items-center gap-3 tracking-tight">
+                            <i class="fas fa-plus-circle"></i> ADD NEW PRODUCT
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-100 neo-shadow">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                            <i class="fas fa-box-open text-xl"></i>
+                        </div>
+                        <p class="text-slate-400 text-xs font-black uppercase tracking-widest mb-1">Live Stock</p>
+                        <h4 id="stat-total-p" class="text-3xl font-black text-slate-900">--</h4>
+                    </div>
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-100 neo-shadow">
+                        <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-600 mb-6">
+                            <i class="fas fa-triangle-exclamation text-xl"></i>
+                        </div>
+                        <p class="text-slate-400 text-xs font-black uppercase tracking-widest mb-1">Shortage</p>
+                        <h4 id="stat-low-p" class="text-3xl font-black text-red-500">--</h4>
+                    </div>
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-100 neo-shadow">
+                        <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6">
+                            <i class="fas fa-tags text-xl"></i>
+                        </div>
+                        <p class="text-slate-400 text-xs font-black uppercase tracking-widest mb-1">Active Offers</p>
+                        <h4 id="stat-promo-p" class="text-3xl font-black text-emerald-600">--</h4>
+                    </div>
+                    <div class="bg-indigo-600 p-8 rounded-[32px] neo-shadow text-white relative overflow-hidden">
+                        <i class="fas fa-cloud-bolt absolute -right-4 -bottom-4 text-8xl opacity-10"></i>
+                        <p class="text-indigo-200 text-xs font-black uppercase tracking-widest mb-1">Sync Status</p>
+                        <h4 class="text-3xl font-black tracking-tight">Supabase Active</h4>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[40px] border border-slate-100 neo-shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-slate-50/50 text-[10px] text-slate-400 font-black uppercase tracking-[0.15em]">
+                                    <th class="px-10 py-6">Product & Identity</th>
+                                    <th class="px-8 py-6">Pricing Engine</th>
+                                    <th class="px-8 py-6">Stock Status</th>
+                                    <th class="px-8 py-6">Visibility</th>
+                                    <th class="px-10 py-6 text-right">Operational Tools</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-table-body" class="divide-y divide-slate-50">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<div id="p-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+    <div class="bg-white w-full max-w-6xl rounded-[40px] shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[92vh]">
+        <div class="w-full lg:w-2/5 bg-slate-50 p-12 border-r border-slate-100 flex flex-col">
+            <h4 class="text-xl font-black text-slate-900 mb-8">Asset Management</h4>
+            <div id="image-dropzone" class="w-full aspect-[4/3] bg-white border-2 border-dashed border-slate-200 rounded-[32px] flex flex-col items-center justify-center relative hover:border-indigo-400 transition-all cursor-pointer overflow-hidden group shadow-inner">
+                <input type="file" id="prod-file" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="handleImgPreview(event)">
+                <div id="preview-placeholder" class="text-center group-hover:scale-110 transition-transform">
+                    <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-500">
+                        <i class="fas fa-cloud-arrow-up text-3xl"></i>
+                    </div>
+                    <p class="text-sm font-black text-slate-700 uppercase tracking-tighter">Upload Visuals</p>
+                </div>
+                <img id="prod-preview" class="hidden absolute inset-0 w-full h-full object-cover">
+            </div>
+        </div>
+        
+        <div class="flex-1 p-12 overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-start mb-10">
+                <div>
+                    <h2 id="modal-heading" class="text-3xl font-black text-slate-900 tracking-tight">Register New Unit</h2>
+                    <p class="text-slate-400 font-medium">Input critical product parameters below.</p>
+                </div>
+                <button onclick="closeProductModal()" class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition text-slate-500">
+                    <i class="fas fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="product-form" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-500 uppercase ml-1">Universal Title *</label>
+                        <input type="text" id="p-title" required class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-indigo-500 outline-none font-bold transition">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-500 uppercase ml-1">Primary Category *</label>
+                        <select id="p-cat" required class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none font-bold">
+                            <option value="Electronics">Consumer Electronics</option>
+                            <option value="Fashion">Fashion & Apparel</option>
+                            <option value="Home Decor">Interior & Home</option>
+                            <option value="Utility">Professional Utility</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-500 uppercase ml-1">Market Valuation (MRP) *</label>
+                        <input type="number" id="p-mrp" required class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none font-bold" placeholder="₹">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-500 uppercase ml-1">SRP Sale Price *</label>
+                        <input type="number" id="p-sale" required class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none font-bold text-indigo-600" placeholder="₹">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-500 uppercase ml-1">Initial Inventory *</label>
+                        <input type="number" id="p-qty" required class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none font-bold" placeholder="Units">
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-xs font-black text-slate-500 uppercase ml-1">Technical Specification</label>
+                    <textarea id="p-desc" rows="5" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none font-medium text-sm leading-relaxed"></textarea>
+                </div>
+
+                <div class="flex justify-end items-center gap-6 pt-6">
+                    <button type="button" onclick="closeProductModal()" class="text-sm font-black text-slate-400 uppercase tracking-widest hover:text-slate-800 transition">Discard</button>
+                    <button type="submit" id="submit-btn" class="btn-gradient px-12 py-5 rounded-2xl text-white font-black shadow-2xl shadow-indigo-500/30 uppercase tracking-widest text-xs">Authorize & Sync</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * SRP SHOPPING PRO - ENGINE CORE v2.0
+ * SUPABASE IMPLEMENTATION
+ */
+
+// 1. SUPABASE CONFIG
+const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let editingProductId = null;
+
+// 2. NAVIGATION ENGINE
+function nav(id, btn) {
+    document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+    const target = document.getElementById(`sec-${id}`);
+    if(target) target.classList.remove('hidden');
+    
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    btn.classList.add('active');
+
+    const meta = {
+        '8.1': { title: 'Product Center', bread: 'Core Operations / Inventory' },
+        '8.2': { title: 'Order Engine', bread: 'Logistics / Fulfillment' }
+    };
+
+    document.getElementById('current-section-title').innerText = meta[id]?.title || 'Module';
+    document.getElementById('current-breadcrumb').innerText = meta[id]?.bread || 'System';
+
+    if(id === '8.1') loadProducts();
+}
+
+function toggleSidebar() {
+    document.getElementById('main-sidebar').classList.toggle('-translate-x-full');
+}
+
+// 3. PRODUCT LOGIC
+function openProductModal() {
+    editingProductId = null;
+    document.getElementById('product-form').reset();
+    document.getElementById('prod-preview').classList.add('hidden');
+    document.getElementById('preview-placeholder').classList.remove('hidden');
+    document.getElementById('p-modal').classList.remove('hidden');
+}
+
+function closeProductModal() {
+    document.getElementById('p-modal').classList.add('hidden');
+}
+
+function handleImgPreview(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (re) => {
+            const prev = document.getElementById('prod-preview');
+            prev.src = re.target.result;
+            prev.classList.remove('hidden');
+            document.getElementById('preview-placeholder').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+async function loadProducts() {
+    const table = document.getElementById('product-table-body');
+    table.innerHTML = `<tr><td colspan="5" class="py-20 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest">PULLING SUPABASE DATA...</td></tr>`;
+    
+    const { data, error } = await supabase.from('products').select('*').order('timestamp', { ascending: false });
+
+    if (error) return alert("Database Error: " + error.message);
+
+    table.innerHTML = "";
+    let total = 0, low = 0, promo = 0;
+
+    data.forEach(p => {
+        total++;
+        if(p.stock < 10) low++;
+        if(p.mrp > p.discount_price) promo++;
+
+        table.innerHTML += `
+            <tr class="hover:bg-slate-50/50 transition-colors group">
+                <td class="px-10 py-6">
+                    <div class="flex items-center gap-6">
+                        <img src="${p.image_url}" class="w-16 h-16 rounded-2xl object-cover shadow-sm group-hover:scale-110 transition-all">
+                        <div>
+                            <p class="font-extrabold text-slate-900 text-sm leading-none mb-1">${p.name}</p>
+                            <p class="text-[10px] font-bold text-slate-400 font-mono tracking-tighter">ID: ${p.id.substring(0,8)}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-8 py-6">
+                    <div class="text-[10px] text-slate-400 font-black line-through">₹${p.mrp}</div>
+                    <div class="text-lg font-black text-indigo-600 tracking-tighter">₹${p.discount_price}</div>
+                </td>
+                <td class="px-8 py-6">
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex justify-between w-24">
+                            <span class="text-[10px] font-black uppercase text-slate-400">Stock</span>
+                            <span class="text-[10px] font-black ${p.stock < 10 ? 'text-red-500' : 'text-slate-900'}">${p.stock}</span>
+                        </div>
+                        <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500" style="width: ${Math.min(p.stock, 100)}%"></div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-8 py-6">
+                    <span class="status-pill ${p.stock > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}">
+                        ${p.stock > 0 ? 'Visible' : 'OOS'}
+                    </span>
+                </td>
+                <td class="px-10 py-6 text-right">
+                    <div class="flex justify-end gap-3">
+                        <button onclick="editProduct('${p.id}')" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition"><i class="fas fa-pen-nib text-xs"></i></button>
+                        <button onclick="deleteProduct('${p.id}')" class="w-10 h-10 rounded-xl bg-slate-100 text-red-500 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash-can text-xs"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('stat-total-p').innerText = total;
+    document.getElementById('stat-low-p').innerText = low;
+    document.getElementById('stat-promo-p').innerText = promo;
+}
+
+document.getElementById('product-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerText = "SYNCING...";
+
+    const file = document.getElementById('prod-file').files[0];
+    let imageUrl = document.getElementById('prod-preview').src;
+
+    // Handle File Upload to Supabase Storage
+    if (file) {
+        const fileName = `${Date.now()}_${file.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('products')
+            .upload(fileName, file);
+        
+        if (uploadError) return alert("Upload Error: " + uploadError.message);
+        
+        const { data: publicData } = supabase.storage
+            .from('products')
+            .getPublicUrl(fileName);
+        
+        imageUrl = publicData.publicUrl;
+    }
+
+    const payload = {
+        name: document.getElementById('p-title').value,
+        category: document.getElementById('p-cat').value,
+        mrp: parseFloat(document.getElementById('p-mrp').value),
+        discount_price: parseFloat(document.getElementById('p-sale').value),
+        stock: parseInt(document.getElementById('p-qty').value),
+        description: document.getElementById('p-desc').value,
+        image_url: imageUrl
+    };
+
+    const { error } = editingProductId 
+        ? await supabase.from('products').update(payload).eq('id', editingProductId)
+        : await supabase.from('products').insert([payload]);
+
+    if (error) alert("Sync Error: " + error.message);
+    else {
+        closeProductModal();
+        loadProducts();
+        alert("Inventory Database Updated.");
+    }
+
+    btn.disabled = false;
+    btn.innerText = "Authorize & Sync";
+};
+
+async function deleteProduct(id) {
+    if(!confirm("Are you sure?")) return;
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    if(error) alert(error.message);
+    else loadProducts();
+}
+
+async function editProduct(id) {
+    editingProductId = id;
+    const { data } = await supabase.from('products').select('*').eq('id', id).single();
+    if(data) {
+        document.getElementById('p-title').value = data.name;
+        document.getElementById('p-cat').value = data.category;
+        document.getElementById('p-mrp').value = data.mrp;
+        document.getElementById('p-sale').value = data.discount_price;
+        document.getElementById('p-qty').value = data.stock;
+        document.getElementById('p-desc').value = data.description;
+        document.getElementById('prod-preview').src = data.image_url;
+        document.getElementById('prod-preview').classList.remove('hidden');
+        document.getElementById('preview-placeholder').classList.add('hidden');
+        document.getElementById('p-modal').classList.remove('hidden');
+    }
+}
+
+function logout() {
+    supabase.auth.signOut().then(() => window.location.href = 'index.html');
+}
+
+window.onload = () => loadProducts();
+</script>
+</body>
+</html>
