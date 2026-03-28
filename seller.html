@@ -279,21 +279,79 @@
 
 // Add this to your syncSellerData() function after the seller check
 async function syncSellerData() {
-    const { data, error } = await supabase
+    // 1. Fetch Seller Profile
+    const { data: seller, error } = await supabase
         .from('sellers')
         .select('*')
         .eq('id', currentUid)
         .single();
 
-    if (data) {
-        if (data.status === 'active') {
+    if (seller) {
+        if (seller.status === 'active') {
             activateSellerUI();
-            fetchInventory(); // <--- Add this line here
+            fetchInventory(); // Only fetch if they are an active seller
         } else {
             document.getElementById('status-badge').innerText = "Application Pending";
+            switchTab('onboarding');
         }
     }
 }
+
+async function fetchInventory() {
+    const container = document.getElementById('inventory-list');
+    if (!container) return;
+
+    // Reset container with the header
+    container.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase px-2">Recently Listed</p>';
+
+    // 2. Fetch products for this specific seller
+    const { data: products, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('seller_id', currentUid)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error fetching inventory:", error);
+        return;
+    }
+
+    if (products.length === 0) {
+        container.innerHTML += `
+            <div class="text-center py-10 opacity-40">
+                <i class="fas fa-box-open text-2xl mb-2"></i>
+                <p class="text-[10px] font-bold uppercase">No products found</p>
+            </div>`;
+        return;
+    }
+
+    // 3. Loop and Display
+    products.forEach(item => {
+        container.innerHTML += `
+            <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-gray-100 card-shadow animate-in fade-in slide-in-from-bottom-2">
+                <div class="flex items-center gap-3">
+                    <img src="${item.image_url}" class="w-12 h-12 rounded-xl object-cover bg-gray-50" onerror="this.src='https://placehold.co/100?text=Error'">
+                    <div>
+                        <h4 class="text-xs font-black text-gray-800 line-clamp-1">${item.name}</h4>
+                        <p class="text-[9px] font-bold ${item.stock > 0 ? 'text-green-600' : 'text-red-500'}">
+                            ₹${item.price} • ${item.stock} in stock
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                     <button onclick="deleteProduct(${item.id})" class="text-gray-300 hover:text-red-500 transition-colors p-2">
+                        <i class="fas fa-trash-can text-xs"></i>
+                    </button>
+                    <label class="switch">
+                        <input type="checkbox" ${item.stock > 0 ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        `;
+    });
+}
+
 
 // New function to fetch and display products
 async function fetchInventory() {
