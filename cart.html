@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SRP SHOPPING | Smart Cart v2.0</title>
@@ -126,6 +128,67 @@
 </main>
 
 <script>
+    // Add these variables at the top of your script
+const RAZORPAY_KEY_ID = "rzp_test_YOUR_KEY_HERE"; 
+
+async function initiateCheckout() {
+    if (cart.length === 0) return alert("Your cart is empty!");
+
+    // 1. Calculate final amount (Razorpay expects amount in PAISE, so * 100)
+    const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('₹', ''));
+    const shipping = parseFloat(document.getElementById('shipping').innerText.replace('₹', ''));
+    const totalAmount = (subtotal + shipping) * 100;
+
+    const options = {
+        "key": RAZORPAY_KEY_ID,
+        "amount": totalAmount,
+        "currency": "INR",
+        "name": "SRP SHOPPING",
+        "description": "Multi-Vendor Marketplace Purchase",
+        "image": "https://ui-avatars.com/api/?name=SRP&background=6366f1&color=fff",
+        "handler": async function (response) {
+            // This runs after successful payment
+            await handlePaymentSuccess(response, subtotal + shipping);
+        },
+        "prefill": {
+            "name": "System User", // Usually pulled from Supabase Auth
+            "email": "user@example.com",
+            "contact": "9999999999"
+        },
+        "theme": {
+            "color": "#6366f1" // Matches your Indigo UI
+        }
+    };
+
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+
+async function handlePaymentSuccess(response, finalAmount) {
+    try {
+        // 2. Save Order to Supabase
+        const { data, error } = await supabase
+            .from('orders')
+            .insert([{
+                payment_id: response.razorpay_payment_id,
+                amount: finalAmount,
+                status: 'paid',
+                items: cart // Saving current cart snapshot
+            }]);
+
+        if (error) throw error;
+
+        // 3. Clear Cart & Redirect
+        localStorage.removeItem('srp_cart');
+        alert("Payment Successful! Order ID: " + response.razorpay_payment_id);
+        window.location.href = "success.html"; // Create a simple thank you page
+
+    } catch (err) {
+        console.error("Order Sync Error:", err);
+        alert("Payment received, but order recording failed. Contact support.");
+    }
+}
+
     // 1. SUPABASE CONFIG
     const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // Use your key from previous prompt
