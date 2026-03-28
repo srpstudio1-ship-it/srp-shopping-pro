@@ -26,6 +26,7 @@
             overflow-x: hidden;
         }
 
+        /* UI Components */
         .glass-login {
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(15px);
@@ -33,14 +34,17 @@
         }
 
         .srp-gradient { background: linear-gradient(135deg, var(--srp-blue) 0%, var(--srp-accent) 100%); }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         .product-card {
             transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #e2e8f0;
         }
+        
         .product-card:active { transform: scale(0.96); }
 
+        /* Product Detail Slider */
         .detail-slider {
             display: flex;
             overflow-x: auto;
@@ -55,15 +59,26 @@
             background: white;
         }
 
+        /* Animations */
         @keyframes slideUp {
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
         }
+
         .animate-slide-up { animation: slideUp 0.4s ease-out; }
 
         #auth-screen { z-index: 9999; }
         #product-modal { z-index: 10000; }
+        
+        /* Bottom Nav shadow */
         .nav-shadow { box-shadow: 0 -4px 12px rgba(0,0,0,0.05); }
+
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading { to { background-position: -200% 0; } }
     </style>
 </head>
 <body class="pb-20">
@@ -74,19 +89,23 @@
                 <h1 class="text-4xl font-black tracking-tighter">SRP <span class="text-blue-500">SHOPPING</span></h1>
                 <p id="auth-sub" class="text-gray-400 mt-2">Sign in to start shopping</p>
             </div>
+
             <form id="login-form" class="space-y-4">
                 <input type="email" id="auth-email" placeholder="Email Address" class="w-full bg-white/10 border border-white/20 p-4 rounded-xl focus:outline-none focus:border-blue-500" required>
                 <input type="password" id="auth-pass" placeholder="Password" class="w-full bg-white/10 border border-white/20 p-4 rounded-xl focus:outline-none focus:border-blue-500" required>
                 <button type="submit" id="auth-btn" class="w-full py-4 srp-gradient rounded-xl font-bold uppercase tracking-widest hover:opacity-90 transition">Login</button>
             </form>
+
             <div class="relative my-8 text-center">
                 <hr class="border-gray-800">
                 <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-4 text-xs text-gray-500">OR</span>
             </div>
+
             <button id="google-auth" class="w-full py-4 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-3">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20">
                 Continue with Google
             </button>
+
             <p class="mt-8 text-center text-sm text-gray-400">
                 <span id="toggle-msg">New to SRP?</span>
                 <button onclick="toggleAuthMode()" id="toggle-btn" class="text-blue-500 font-bold ml-1">Create Account</button>
@@ -112,41 +131,46 @@
                     </div>
                 </div>
             </div>
+
             <div class="px-4 pb-4">
                 <div class="relative group">
                     <input type="text" id="main-search" onkeyup="filterProducts()" placeholder="Search mobile, shoes, electronics..." class="w-full py-3 px-5 pr-12 rounded-xl text-black focus:ring-4 focus:ring-blue-300 outline-none transition-all">
                     <i class="fas fa-search absolute right-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 </div>
             </div>
+
             <div class="flex gap-6 overflow-x-auto no-scrollbar px-4 pb-3 text-sm font-medium whitespace-nowrap border-t border-blue-400/30 pt-3">
                 <button onclick="categoryFilter('all')" class="cat-chip active text-white border-b-2 border-white pb-1">All Items</button>
-                <button onclick="categoryFilter('Mobiles')" class="cat-chip opacity-70">Mobiles</button>
-                <button onclick="categoryFilter('Electronics')" class="cat-chip opacity-70">Electronics</button>
-                <button onclick="categoryFilter('Fashion')" class="cat-chip opacity-70">Fashion</button>
-                <button onclick="categoryFilter('Home')" class="cat-chip opacity-70">Home</button>
-                <button onclick="categoryFilter('Beauty')" class="cat-chip opacity-70">Beauty</button>
+                <button onclick="categoryFilter('Mobiles')" class="cat-chip opacity-70 hover:opacity-100">Mobiles</button>
+                <button onclick="categoryFilter('Electronics')" class="cat-chip opacity-70 hover:opacity-100">Electronics</button>
+                <button onclick="categoryFilter('Fashion')" class="cat-chip opacity-70 hover:opacity-100">Fashion</button>
+                <button onclick="categoryFilter('Home')" class="cat-chip opacity-70 hover:opacity-100">Home & Kitchen</button>
+                <button onclick="categoryFilter('Beauty')" class="cat-chip opacity-70 hover:opacity-100">Beauty</button>
             </div>
         </div>
     </header>
 
     <main class="container mx-auto p-3">
-        <section class="mb-6 relative overflow-hidden rounded-2xl shadow-xl h-44 srp-gradient">
+        
+        <section id="banner-slider" class="mb-6 relative overflow-hidden rounded-2xl shadow-xl h-44 srp-gradient">
             <div class="absolute inset-0 p-8 flex flex-col justify-center text-white">
                 <span class="bg-white/20 backdrop-blur w-fit px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-2">SRP EXCLUSIVE</span>
                 <h2 class="text-3xl font-black italic leading-tight">SUMMER MEGA SALE</h2>
                 <p class="text-sm opacity-90 mt-1 font-medium">Extra 10% Discount via Wallet Payment</p>
-                <button class="mt-4 bg-white text-[#0047AB] w-fit px-6 py-2 rounded-full font-extrabold text-xs shadow-lg">CLAIM OFFER</button>
+                <button class="mt-4 bg-white text-[#0047AB] w-fit px-6 py-2 rounded-full font-extrabold text-xs shadow-lg transform active:scale-90 transition">CLAIM OFFER</button>
             </div>
+            <i class="fas fa-shopping-bag absolute -right-4 -bottom-4 text-9xl text-white/10 rotate-12"></i>
         </section>
 
         <div class="flex justify-between items-center px-1 mb-4">
             <h3 class="font-bold text-gray-800 flex items-center gap-2">
                 <i class="fas fa-bolt text-yellow-500"></i> Flash Deals
             </h3>
-            <span id="item-count" class="text-xs text-gray-500">20 Products Found</span>
+            <span id="item-count" class="text-xs text-gray-500">20 Products</span>
         </div>
 
-        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            </div>
     </main>
 
     <div id="product-modal" class="fixed inset-0 bg-white hidden overflow-y-auto animate-slide-up">
@@ -157,12 +181,18 @@
                 </button>
                 <span class="font-bold text-gray-800 truncate max-w-[200px]" id="modal-title-top">Product Info</span>
             </div>
-            <div class="flex gap-4"><i class="fas fa-share-alt text-gray-500"></i><i class="fas fa-heart text-gray-300"></i></div>
+            <div class="flex gap-4">
+                <i class="fas fa-share-alt text-gray-500"></i>
+                <i class="fas fa-heart text-gray-300"></i>
+            </div>
         </header>
+
         <div class="detail-slider no-scrollbar relative">
             <img id="detail-img-1" src="" alt="View 1">
             <img id="detail-img-2" src="" alt="View 2">
+            <div class="absolute bottom-4 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full">1 / 2 Images</div>
         </div>
+
         <div class="p-5">
             <div class="flex justify-between items-start">
                 <div>
@@ -173,129 +203,352 @@
                     <span id="detail-rate-val">4.5</span> <i class="fas fa-star text-[10px]"></i>
                 </div>
             </div>
+
             <div class="mt-4 flex flex-col gap-1">
                 <div class="flex items-baseline gap-3">
                     <span class="text-red-600 text-2xl font-light" id="detail-disc-per">-50%</span>
                     <span class="text-3xl font-black">₹<span id="detail-price">0</span></span>
                 </div>
                 <p class="text-sm text-gray-500">M.R.P.: <span class="line-through" id="detail-mrp">₹0</span></p>
-                <p class="text-[10px] text-gray-400 font-medium">Seller: <span class="font-bold text-blue-600">Srpstudio1@gmail.com</span></p>
+                <p class="text-[10px] text-gray-400 font-medium">FREE delivery for SRP Prime members</p>
             </div>
-            <div class="grid grid-cols-2 gap-3 mt-8 mb-10">
-                <button onclick="handleCart()" class="py-4 bg-yellow-400 rounded-2xl font-black text-sm shadow-lg">ADD TO CART</button>
-                <button onclick="directBuy()" class="py-4 bg-orange-500 text-white rounded-2xl font-black text-sm shadow-lg">BUY NOW</button>
+
+            <div class="grid grid-cols-2 gap-4 my-8">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Select Color</label>
+                    <div class="flex gap-3">
+                        <button class="w-8 h-8 rounded-full bg-black ring-2 ring-blue-500 ring-offset-2"></button>
+                        <button class="w-8 h-8 rounded-full bg-gray-400"></button>
+                        <button class="w-8 h-8 rounded-full bg-blue-600"></button>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Quantity</label>
+                    <select id="detail-qty" class="w-full p-2 bg-gray-100 border-none rounded-lg text-sm font-bold">
+                        <option value="1">1 Unit</option>
+                        <option value="2">2 Units</option>
+                        <option value="3">3 Units</option>
+                        <option value="5">5 Units (Bulk)</option>
+                    </select>
+                </div>
             </div>
+
+            <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-4 items-center mb-8">
+                <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-truck-fast"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-blue-900">Standard Delivery</h4>
+                    <p class="text-xs text-blue-700">Receive between 7 to 15 days at your doorstep.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-10">
+                <button onclick="handleCart()" class="py-4 bg-yellow-400 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition">ADD TO CART</button>
+                <button onclick="directBuy()" class="py-4 bg-orange-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition">BUY NOW</button>
+            </div>
+
             <div class="border-t pt-6">
                 <h3 class="font-black text-gray-900 mb-3 uppercase tracking-tighter">Product Specifications</h3>
-                <div id="detail-description" class="text-sm text-gray-600 leading-relaxed space-y-4"></div>
+                <div id="detail-description" class="text-sm text-gray-600 leading-relaxed space-y-4">
+                    </div>
+            </div>
+
+            <div class="mt-10 bg-gray-50 p-6 rounded-2xl">
+                <h3 class="font-black text-gray-900 mb-4">Customer Reviews</h3>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="text-4xl font-black">4.5</div>
+                    <div>
+                        <div class="flex text-yellow-500 text-sm">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="text-xs text-gray-500">Global SRP Rating (1,240 verified)</p>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3 text-xs">
+                        <span class="w-10">5 Star</span>
+                        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-orange-400 h-full w-[70%]"></div></div>
+                        <span class="w-8 text-right">70%</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs">
+                        <span class="w-10">4 Star</span>
+                        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-orange-400 h-full w-[15%]"></div></div>
+                        <span class="w-8 text-right">15%</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white h-18 nav-shadow flex items-center justify-around px-2 z-50">
-        <button onclick="location.reload()" class="flex flex-col items-center gap-1 text-[#0047AB]">
-            <div class="p-2 rounded-xl bg-blue-50"><i class="fas fa-home text-lg"></i></div>
-            <span class="text-[9px] font-black uppercase">Home</span>
+        <button onclick="navSwitch('home')" class="nav-btn group flex flex-col items-center gap-1 text-[#0047AB]">
+            <div class="p-2 rounded-xl group-active:bg-blue-50"><i class="fas fa-home text-lg"></i></div>
+            <span class="text-[9px] font-black uppercase tracking-widest">Home</span>
         </button>
-        <button onclick="location.href='profile.html'" class="flex flex-col items-center gap-1 text-gray-400">
-            <div class="p-2 rounded-xl"><i class="fas fa-user text-lg"></i></div>
-            <span class="text-[9px] font-bold uppercase">Account</span>
+        <button onclick="location.href='profile.html'" class="nav-btn group flex flex-col items-center gap-1 text-gray-400">
+            <div class="p-2 rounded-xl group-active:bg-gray-100"><i class="fas fa-user text-lg"></i></div>
+            <span class="text-[9px] font-bold uppercase tracking-widest">Account</span>
         </button>
-        <button onclick="location.href='seller.html'" class="flex flex-col items-center gap-1 text-gray-400">
-            <div class="p-2 rounded-xl"><i class="fas fa-store text-lg"></i></div>
-            <span class="text-[9px] font-bold uppercase">Seller</span>
+        <button onclick="location.href='profile.html#wallet'" class="nav-btn group flex flex-col items-center gap-1 text-gray-400">
+            <div class="p-2 rounded-xl group-active:bg-gray-100"><i class="fas fa-wallet text-lg"></i></div>
+            <span class="text-[9px] font-bold uppercase tracking-widest">Wallet</span>
         </button>
-        <button onclick="location.href='cart.html'" class="relative flex flex-col items-center gap-1 text-gray-400">
-            <div class="p-2 rounded-xl"><i class="fas fa-shopping-cart text-lg"></i></div>
-            <span class="text-[9px] font-bold uppercase">Cart</span>
+        <button onclick="location.href='seller.html'" class="nav-btn group flex flex-col items-center gap-1 text-gray-400">
+            <div class="p-2 rounded-xl group-active:bg-gray-100"><i class="fas fa-store text-lg"></i></div>
+            <span class="text-[9px] font-bold uppercase tracking-widest">Seller</span>
+        </button>
+        <button onclick="location.href='cart.html'" class="nav-btn group flex flex-col items-center gap-1 text-gray-400 relative">
+            <div class="p-2 rounded-xl group-active:bg-gray-100"><i class="fas fa-shopping-cart text-lg"></i></div>
+            <span class="text-[9px] font-bold uppercase tracking-widest">Cart</span>
             <span id="cart-count" class="absolute top-1 right-1 bg-red-600 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
         </button>
-        <button onclick="alert('SRP AI Online')" class="flex flex-col items-center gap-1 text-blue-400">
-            <div class="p-2 rounded-xl"><i class="fas fa-robot text-lg"></i></div>
-            <span class="text-[9px] font-bold uppercase">AI Hub</span>
+        <button onclick="alert('SRP AI Assistant coming soon!')" class="nav-btn group flex flex-col items-center gap-1 text-blue-400">
+            <div class="p-2 rounded-xl group-active:bg-blue-50"><i class="fas fa-robot text-lg"></i></div>
+            <span class="text-[9px] font-bold uppercase tracking-widest">AI Hub</span>
         </button>
     </nav>
 
     <script>
+        // 1. CONFIG & SYSTEM VARIABLES
         const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
-        
-        let currentUserId = null;
-        let isLoginMode = true;
 
-        const globalProducts = [
-            { id: 'SRP_1', name: "Apple iPhone 15 Pro Max (256GB)", category: "Mobiles", price: 148900, mrp: 159900, image: "https://m.media-amazon.com/images/I/81Os1SDWpcL._SL1500_.jpg", rating: "4.9", seller: "Srpstudio1@gmail.com", desc: "Experience the pinnacle of mobile technology with the A17 Pro chip and titanium design." },
-            { id: 'SRP_2', name: "Sony WH-1000XM5 Wireless Headphones", category: "Electronics", price: 29990, mrp: 34990, image: "https://m.media-amazon.com/images/I/61+9m6v4WCL._SL1500_.jpg", rating: "4.8", seller: "Srpstudio1@gmail.com", desc: "Industry-leading noise cancellation with auto-optimizer technology." },
-            { id: 'SRP_3', name: "Samsung Galaxy S24 Ultra AI", category: "Mobiles", price: 129999, mrp: 144999, image: "https://m.media-amazon.com/images/I/71RVuS3q9QL._SL1500_.jpg", rating: "4.7", seller: "Srpstudio1@gmail.com", desc: "Unleash new levels of creativity and productivity with Galaxy AI." },
-            { id: 'SRP_4', name: "MacBook Air M3 Chip (13-inch)", category: "Electronics", price: 114900, mrp: 124900, image: "https://m.media-amazon.com/images/I/71S4sIPFvBL._SL1500_.jpg", rating: "4.9", seller: "Srpstudio1@gmail.com", desc: "The world's most popular laptop is better than ever with the M3 chip." },
-            { id: 'SRP_5', name: "Nike Air Jordan 1 Retro High", category: "Fashion", price: 16995, mrp: 18995, image: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/e6da373d-5364-4590-9742-f8f07cd1540f/air-jordan-1-retro-high-og-shoes-G974Pd.png", rating: "5.0", seller: "Srpstudio1@gmail.com", desc: "The sneaker that started it all. Iconic style and premium comfort." },
-            { id: 'SRP_6', name: "Ray-Ban Aviator Classic Sunglasses", category: "Fashion", price: 10490, mrp: 12490, image: "https://m.media-amazon.com/images/I/51A9I+LshlL._SL1500_.jpg", rating: "4.6", seller: "Srpstudio1@gmail.com", desc: "The original pilot style with crystal green lenses and gold frame." },
-            { id: 'SRP_7', name: "Dyson V15 Detect Vacuum", category: "Home", price: 59900, mrp: 65900, image: "https://m.media-amazon.com/images/I/51uIuYJvj5L._SL1500_.jpg", rating: "4.7", seller: "Srpstudio1@gmail.com", desc: "The most powerful, intelligent cordless vacuum with laser illumination." },
-            { id: 'SRP_8', name: "Nespresso Vertuo Coffee Machine", category: "Home", price: 18500, mrp: 22500, image: "https://m.media-amazon.com/images/I/61NfT+7vRKL._SL1500_.jpg", rating: "4.5", seller: "Srpstudio1@gmail.com", desc: "Authentic espresso with a rich crema at the touch of a button." },
-            { id: 'SRP_9', name: "Estée Lauder Advanced Night Repair", category: "Beauty", price: 8900, mrp: 10500, image: "https://m.media-amazon.com/images/I/510R98xatML._SL1200_.jpg", rating: "4.8", seller: "Srpstudio1@gmail.com", desc: "The #1 serum for radiant, younger-looking skin." },
-            { id: 'SRP_10', name: "Dior Sauvage Eau de Parfum", category: "Beauty", price: 12500, mrp: 14000, image: "https://m.media-amazon.com/images/I/61fW8-zYv8L._SL1500_.jpg", rating: "4.9", seller: "Srpstudio1@gmail.com", desc: "A raw and noble composition for the modern man." },
-            { id: 'SRP_11', name: "OnePlus 12 (16GB RAM)", category: "Mobiles", price: 64999, mrp: 69999, image: "https://m.media-amazon.com/images/I/7179P6SvnCL._SL1500_.jpg", rating: "4.6", seller: "Srpstudio1@gmail.com", desc: "Fast and smooth redefined with Snapdragon 8 Gen 3." },
-            { id: 'SRP_12', name: "GoPro HERO12 Black Action Cam", category: "Electronics", price: 37990, mrp: 45000, image: "https://m.media-amazon.com/images/I/51n8XNfO9lL._SL1500_.jpg", rating: "4.7", seller: "Srpstudio1@gmail.com", desc: "Best-in-class image quality with HDR and HyperSmooth 6.0." },
-            { id: 'SRP_13', name: "Logitech MX Master 3S Mouse", category: "Electronics", price: 9495, mrp: 10995, image: "https://m.media-amazon.com/images/I/61ni3t1ryQL._SL1500_.jpg", rating: "4.9", seller: "Srpstudio1@gmail.com", desc: "Ultimate productivity mouse with quiet clicks and 8K DPI tracking." },
-            { id: 'SRP_14', name: "Philips Hue Smart Bulb Kit", category: "Home", price: 12999, mrp: 15999, image: "https://m.media-amazon.com/images/I/61fI1QYpBPL._SL1500_.jpg", rating: "4.6", seller: "Srpstudio1@gmail.com", desc: "Transform your home lighting with 16 million colors." },
-            { id: 'SRP_15', name: "KitchenAid Artisan Stand Mixer", category: "Home", price: 42000, mrp: 49990, image: "https://m.media-amazon.com/images/I/719f2NnO0+L._SL1500_.jpg", rating: "4.8", seller: "Srpstudio1@gmail.com", desc: "The professional baker's choice for over 100 years." },
-            { id: 'SRP_16', name: "Adidas Ultraboost Light", category: "Fashion", price: 15999, mrp: 18999, image: "https://m.media-amazon.com/images/I/61N7U9nLNoL._SL1500_.jpg", rating: "4.7", seller: "Srpstudio1@gmail.com", desc: "Experience epic energy with our lightest Ultraboost ever." },
-            { id: 'SRP_17', name: "Levi's 501 Original Fit Jeans", category: "Fashion", price: 4599, mrp: 5499, image: "https://m.media-amazon.com/images/I/81xUe57SshL._UL1500_.jpg", rating: "4.5", seller: "Srpstudio1@gmail.com", desc: "The original blue jean since 1873. Iconic straight fit." },
-            { id: 'SRP_18', name: "Foreo Luna 4 Facial Brush", category: "Beauty", price: 21000, mrp: 24500, image: "https://m.media-amazon.com/images/I/61-T5U+rA+L._SL1500_.jpg", rating: "4.7", seller: "Srpstudio1@gmail.com", desc: "Deep cleansing and firming massage for healthy skin." },
-            { id: 'SRP_19', name: "Oral-B iO Series 9 Toothbrush", category: "Beauty", price: 19999, mrp: 25000, image: "https://m.media-amazon.com/images/I/71y0S8aW9jL._SL1500_.jpg", rating: "4.8", seller: "Srpstudio1@gmail.com", desc: "Artificial intelligence tracking for a professional clean feel." },
-            { id: 'SRP_20', name: "Canon EOS R5 Mirrorless Camera", category: "Electronics", price: 329995, mrp: 350000, image: "https://m.media-amazon.com/images/I/716mO-pQ0KL._SL1500_.jpg", rating: "4.9", seller: "Srpstudio1@gmail.com", desc: "8K video and 45MP stills for professional photographers." }
-        ];
+        const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
+        let isLoginMode = true;
+        let globalProducts = [];
+        let currentUserId = null;
+
+        // Initialize Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. AUTHENTICATION LOGIC
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                currentUserId = session.user.id;
+                syncUserData(session.user);
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+            }
+        });
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-btn').innerText = isLoginMode ? 'Login' : 'Create Account';
+            document.getElementById('auth-sub').innerText = isLoginMode ? 'Sign in to start shopping' : 'Join the SRP Shopping Community';
+            document.getElementById('toggle-msg').innerText = isLoginMode ? 'New to SRP?' : 'Already a member?';
+            document.getElementById('toggle-btn').innerText = isLoginMode ? 'Create Account' : 'Login';
+        }
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-pass').value;
+
+            try {
+                if (isLoginMode) {
+                    const { error } = await supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                } else {
+                    const { data, error } = await supabase.auth.signUp({ email, password });
+                    if (error) throw error;
+                    if (data.user) {
+                        await supabase.from('users').insert([{
+                            id: data.user.id,
+                            name: email.split('@')[0],
+                            email: email,
+                            wallet_balance: 450
+                        }]);
+                    }
+                    alert("Check your email for confirmation!");
+                }
+            } catch (err) { alert(err.message); }
+        };
+
+        document.getElementById('google-auth').onclick = async () => {
+            const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+            if (error) alert(error.message);
+        };
+
+        // 3. DATA & PRODUCT ENGINE
+        const CATEGORIES = ["Mobiles", "Electronics", "Fashion", "Home", "Beauty"];
+        
+        function generate20Products() {
+            const items = [];
+            const titles = [
+                "iPhone 15 Pro Max Clone", "Sony XM5 Headphones", "Nike Air Max 270", 
+                "Smart OLED Television", "Gaming Mechanical Keyboard", "Waterproof Bluetooth Speaker",
+                "Leather Executive Wallet", "Anti-Fog Sports Glasses", "Portable Coffee Maker",
+                "Ergonomic Office Chair", "Cotton Premium T-Shirt", "Wireless Gaming Mouse",
+                "DSLR Camera Kit", "Smart Fitness Tracker", "High-Speed Hair Dryer",
+                "Kitchen Mixer Grinder", "Drip Irrigation Kit", "Electric Toothbrush",
+                "Memory Foam Pillow", "Noise Cancelling Earbuds"
+            ];
+
+            for(let i=0; i<20; i++) {
+                const price = Math.floor(Math.random() * (15000 - 500) + 500);
+                items.push({
+                    id: 'SRP_'+i,
+                    name: titles[i],
+                    category: CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
+                    price: price,
+                    mrp: Math.floor(price * 1.8),
+                    image: `https://picsum.photos/600/600?random=${i}`,
+                    rating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1),
+                    reviews: Math.floor(Math.random() * 5000),
+                    desc: "This is a premium high-quality product curated by SRP SHOPPING. Features include durability, modern design, and industry-leading performance. ".repeat(150)
+                });
+            }
+            return items;
+        }
 
         function renderProducts(list) {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = list.map(p => `
                 <div onclick="openProduct('${p.id}')" class="product-card bg-white p-3 rounded-2xl shadow-sm cursor-pointer">
                     <div class="relative mb-3 bg-gray-50 rounded-xl overflow-hidden aspect-square">
-                        <img src="${p.image}" class="w-full h-full object-contain">
+                        <img src="${p.image}" class="w-full h-full object-contain" loading="lazy">
+                        <div class="absolute top-2 left-2 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Save ${Math.round(((p.mrp-p.price)/p.mrp)*100)}%</div>
                     </div>
-                    <p class="text-[10px] text-blue-600 font-bold uppercase mb-1">${p.category}</p>
+                    <p class="text-[10px] text-blue-600 font-bold uppercase tracking-wider mb-1">${p.category}</p>
                     <h4 class="text-xs font-semibold text-gray-800 line-clamp-2 h-8">${p.name}</h4>
                     <div class="flex items-center gap-1 mt-2">
-                        <span class="text-sm font-black">₹${p.price.toLocaleString('en-IN')}</span>
+                        <span class="text-sm font-black text-gray-900">₹${p.price.toLocaleString('en-IN')}</span>
                         <span class="text-[9px] line-through text-gray-400">₹${p.mrp.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t">
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-star text-yellow-400 text-[8px]"></i>
+                            <span class="text-[10px] font-bold text-gray-600">${p.rating}</span>
+                        </div>
+                        <button class="bg-blue-50 text-blue-600 p-1.5 rounded-lg active:bg-blue-600 active:text-white transition">
+                            <i class="fas fa-plus text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
             document.getElementById('item-count').innerText = `${list.length} Products Found`;
         }
 
+        // 4. UI INTERACTION & FILTERING
         function openProduct(id) {
             const p = globalProducts.find(x => x.id === id);
+            if(!p) return;
+
             document.getElementById('modal-title-top').innerText = p.name;
             document.getElementById('detail-name').innerText = p.name;
             document.getElementById('detail-category').innerText = p.category;
             document.getElementById('detail-price').innerText = p.price.toLocaleString('en-IN');
             document.getElementById('detail-mrp').innerText = '₹' + p.mrp.toLocaleString('en-IN');
+            document.getElementById('detail-rate-val').innerText = p.rating;
+            document.getElementById('detail-disc-per').innerText = `-${Math.round(((p.mrp-p.price)/p.mrp)*100)}%`;
             document.getElementById('detail-img-1').src = p.image;
-            document.getElementById('detail-img-2').src = p.image;
-            document.getElementById('detail-description').innerText = p.desc;
+            document.getElementById('detail-img-2').src = `https://picsum.photos/600/600?random=${id+100}`;
+            
+            document.getElementById('detail-description').innerHTML = `
+                <p>${p.desc.substring(0, 500)}...</p>
+                <div class="bg-gray-50 p-4 rounded-lg my-4 font-mono text-xs">
+                    Model No: SRP-X${id.split('_')[1]}<br>
+                    Warranty: 1 Year Limited<br>
+                    Origin: Made for SRP Enterprise
+                </div>
+                <p>${p.desc.substring(500, 1500)}...</p>
+            `;
+
             document.getElementById('product-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeProduct() { document.getElementById('product-modal').classList.add('hidden'); }
-
-        function categoryFilter(cat) {
-            renderProducts(cat === 'all' ? globalProducts : globalProducts.filter(p => p.category === cat));
+        function closeProduct() {
+            document.getElementById('product-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
         function filterProducts() {
             const q = document.getElementById('main-search').value.toLowerCase();
-            renderProducts(globalProducts.filter(p => p.name.toLowerCase().includes(q)));
+            const filtered = globalProducts.filter(p => p.name.toLowerCase().includes(q));
+            renderProducts(filtered);
         }
 
+        function categoryFilter(cat) {
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                btn.classList.remove('active', 'border-b-2', 'opacity-100');
+                btn.classList.add('opacity-70');
+            });
+            event.target.classList.add('active', 'border-b-2', 'opacity-100');
+
+            if(cat === 'all') renderProducts(globalProducts);
+            else renderProducts(globalProducts.filter(p => p.category === cat));
+        }
+
+        // 5. ADMIN & SECURITY
         async function adminSecurityCheck() {
-            const pin = prompt("SRP ADMIN PIN:");
-            if (pin === "1234") window.location.href = "admin.html";
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user && ADMIN_EMAILS.includes(user.email)) {
+                const pin = prompt("SRP ENTERPRISE ACCESS REQUIRED\nEnter Security PIN:");
+                if (pin === "1234") { 
+                    alert("Authentication successful. Redirecting to Master Console...");
+                    window.location.href = "admin.html";
+                } else {
+                    alert("Invalid PIN. Lockdown active.");
+                    location.reload();
+                }
+            } else {
+                location.reload();
+            }
         }
 
-        window.onload = () => renderProducts(globalProducts);
+        // 6. UTILITY FUNCTIONS
+        async function syncUserData(user) {
+            // Fetch Profile/Wallet
+            const { data, error } = await supabase
+                .from('users')
+                .select('wallet_balance')
+                .eq('id', user.id)
+                .single();
+
+            if (data) {
+                document.getElementById('user-wallet').innerText = `₹${(data.wallet_balance || 0).toLocaleString('en-IN')}`;
+            }
+
+            // Real-time Cart Count
+            const { count } = await supabase
+                .from('carts')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id);
+            
+            document.getElementById('cart-count').innerText = count || 0;
+        }
+
+        async function handleCart() {
+            if(!currentUserId) return alert("Please login first");
+            
+            // Logic for Supabase Table Insert
+            const { error } = await supabase.from('carts').insert([{ 
+                user_id: currentUserId, 
+                product_id: 'sample_id' 
+            }]);
+            
+            if (error) alert("Error adding to cart");
+            else alert("Success! Item added to SRP Cart.");
+            closeProduct();
+        }
+
+        function directBuy() {
+            window.location.href = "cart.html";
+        }
+
+        function navSwitch(page) {
+            console.log("Routing to internal component: " + page);
+        }
+
+        // Boot
+        window.onload = () => {
+            globalProducts = generate20Products();
+            renderProducts(globalProducts);
+            console.log("SRP Shopping Production Engine Online (Supabase Mode).");
+        };
     </script>
 </body>
 </html>
