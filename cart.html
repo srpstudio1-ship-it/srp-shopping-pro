@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SRP Shopping | Your Cart</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f3f4f6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .srp-blue-gradient { background: linear-gradient(135deg, #0047AB 0%, #007FFF 100%); }
+        
+        .item-card {
+            transition: transform 0.2s ease;
+        }
+        
+        .item-card:active { transform: scale(0.98); }
+
+        /* Animation for empty cart */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="pb-40">
+
+    <header class="bg-white border-b p-4 sticky top-0 z-50 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <button onclick="history.back()" class="text-gray-600"><i class="fas fa-chevron-left text-lg"></i></button>
+            <h1 class="text-lg font-black tracking-tight text-[#0047AB]">Shopping Bag</h1>
+        </div>
+        <div class="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
+            <i class="fas fa-wallet text-blue-600 text-xs"></i>
+            <span class="text-[10px] font-black text-blue-800">₹<span id="header-wallet">0.00</span></span>
+        </div>
+    </header>
+
+    <main id="cart-container" class="p-4 space-y-4">
+        <div id="cart-loader" class="space-y-4">
+            <div class="h-24 bg-gray-200 animate-pulse rounded-2xl"></div>
+            <div class="h-24 bg-gray-200 animate-pulse rounded-2xl"></div>
+        </div>
+
+        <div id="cart-items-list" class="space-y-3"></div>
+
+        <div id="empty-cart" class="hidden flex flex-col items-center justify-center py-20 text-center">
+            <div class="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mb-6 float-anim">
+                <i class="fas fa-shopping-basket text-5xl text-blue-200"></i>
+            </div>
+            <h2 class="text-xl font-black text-gray-800">Your bag is empty</h2>
+            <p class="text-xs text-gray-400 mt-2 max-w-[200px]">Looks like you haven't added anything to your cart yet.</p>
+            <button onclick="location.href='index.html'" class="mt-8 bg-[#0047AB] text-white px-8 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-lg">
+                Start Shopping
+            </button>
+        </div>
+    </main>
+
+    <section id="price-panel" class="hidden fixed bottom-20 left-0 right-0 bg-white border-t rounded-t-[32px] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-40">
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-ticket-alt text-orange-500"></i>
+                <span class="text-[10px] font-black text-gray-400 uppercase">Apply Promo Code</span>
+            </div>
+            <button onclick="applyCoupon()" class="text-[10px] font-black text-blue-600 uppercase">Select</button>
+        </div>
+
+        <div class="space-y-2 border-b border-dashed pb-4 mb-4">
+            <div class="flex justify-between text-xs text-gray-500">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-xs text-gray-500">
+                <span>Shipping Fee</span>
+                <span class="text-green-600 font-bold uppercase text-[9px]">Free</span>
+            </div>
+            <div class="flex justify-between text-xs text-gray-500">
+                <span>Tax (GST)</span>
+                <span>₹0.00</span>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-6">
+            <span class="text-sm font-black text-gray-800 uppercase">Grand Total</span>
+            <span class="text-2xl font-black text-[#0047AB]" id="grand-total">₹0.00</span>
+        </div>
+
+        <button onclick="processCheckout()" class="w-full srp-blue-gradient text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[2px] shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform">
+            Secure Checkout <i class="fas fa-arrow-right"></i>
+        </button>
+    </section>
+
+    <nav class="fixed bottom-0 w-full h-20 bg-white border-t flex items-center justify-around z-50">
+        <button onclick="location.href='index.html'" class="flex flex-col items-center text-gray-400"><i class="fas fa-home text-lg"></i><span class="text-[9px] font-bold">Home</span></button>
+        <button class="flex flex-col items-center text-blue-700 relative">
+            <i class="fas fa-shopping-bag text-lg"></i>
+            <span class="text-[9px] font-bold">Cart</span>
+            <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+        <button onclick="location.href='profile.html'" class="flex flex-col items-center text-gray-400"><i class="fas fa-user text-lg"></i><span class="text-[9px] font-bold">Profile</span></button>
+    </nav>
+
+    <script>
+        // 1. SUPABASE CONFIGURATION
+        const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUid = null;
+        let currentWallet = 0;
+        let cartItems = [];
+
+        // 2. AUTH & SYNC
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUid = session.user.id;
+                syncCart(currentUid);
+                syncWallet(currentUid);
+            } else {
+                location.href = 'index.html';
+            }
+        });
+
+        async function syncWallet(uid) {
+            // Fetch initial balance
+            const fetchBalance = async () => {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('wallet_balance')
+                    .eq('id', uid)
+                    .single();
+                
+                if (data) {
+                    currentWallet = data.wallet_balance || 0;
+                    document.getElementById('header-wallet').innerText = currentWallet.toFixed(2);
+                }
+            };
+
+            fetchBalance();
+
+            // Subscribe to real-time changes
+            supabase
+                .channel('wallet-sync')
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${uid}` }, 
+                payload => {
+                    currentWallet = payload.new.wallet_balance;
+                    document.getElementById('header-wallet').innerText = currentWallet.toFixed(2);
+                })
+                .subscribe();
+        }
+
+        async function syncCart(uid) {
+            const savedCart = JSON.parse(localStorage.getItem(`cart_${uid}`)) || [];
+            cartItems = savedCart;
+            renderCart();
+        }
+
+        // 3. RENDER LOGIC
+        function renderCart() {
+            const list = document.getElementById('cart-items-list');
+            const loader = document.getElementById('cart-loader');
+            const emptyState = document.getElementById('empty-cart');
+            const pricePanel = document.getElementById('price-panel');
+            const badge = document.getElementById('cart-badge');
+
+            loader.classList.add('hidden');
+            list.innerHTML = '';
+
+            if (cartItems.length === 0) {
+                emptyState.classList.remove('hidden');
+                pricePanel.classList.add('hidden');
+                badge.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            pricePanel.classList.remove('hidden');
+            badge.classList.remove('hidden');
+            badge.innerText = cartItems.length;
+
+            let total = 0;
+
+            cartItems.forEach((item, index) => {
+                total += item.price * (item.qty || 1);
+                list.innerHTML += `
+                    <div class="item-card bg-white p-4 rounded-3xl flex gap-4 border border-gray-100 shadow-sm relative overflow-hidden">
+                        <img src="${item.image}" class="w-20 h-20 rounded-2xl object-cover bg-gray-50" onerror="this.src='https://placehold.co/100?text=Item'">
+                        <div class="flex-1">
+                            <h3 class="text-xs font-black text-gray-800 line-clamp-1 uppercase">${item.name}</h3>
+                            <p class="text-[9px] text-gray-400 font-bold mt-1">Sold by: SRP Official</p>
+                            <div class="flex justify-between items-end mt-3">
+                                <div class="text-sm font-black text-[#0047AB]">₹${item.price}</div>
+                                <div class="flex items-center gap-3 bg-gray-50 px-3 py-1 rounded-full border">
+                                    <button onclick="updateQty(${index}, -1)" class="text-xs font-bold text-gray-400">-</button>
+                                    <span class="text-xs font-black">${item.qty || 1}</span>
+                                    <button onclick="updateQty(${index}, 1)" class="text-xs font-bold text-blue-600">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="removeItem(${index})" class="absolute top-3 right-3 text-gray-300 hover:text-red-500">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('subtotal').innerText = `₹${total.toFixed(2)}`;
+            document.getElementById('grand-total').innerText = `₹${total.toFixed(2)}`;
+        }
+
+        // 4. CART ACTIONS
+        function updateQty(index, delta) {
+            cartItems[index].qty = (cartItems[index].qty || 1) + delta;
+            if (cartItems[index].qty < 1) cartItems[index].qty = 1;
+            saveAndRefresh();
+        }
+
+        function removeItem(index) {
+            cartItems.splice(index, 1);
+            saveAndRefresh();
+        }
+
+        function saveAndRefresh() {
+            localStorage.setItem(`cart_${currentUid}`, JSON.stringify(cartItems));
+            renderCart();
+        }
+
+        function applyCoupon() {
+            const code = prompt("Enter Promo Code (Try: SRP10)");
+            if(code === "SRP10") {
+                alert("Coupon Applied! 10% Discount will be calculated at Payment.");
+            } else {
+                alert("Invalid or Expired Coupon.");
+            }
+        }
+
+        // 5. CHECKOUT SYSTEM (Supabase Logic)
+        async function processCheckout() {
+            const total = parseFloat(document.getElementById('grand-total').innerText.replace('₹', ''));
+            
+            if (currentWallet < total) {
+                alert(`Insufficient Balance!\nRequired: ₹${total}\nAvailable: ₹${currentWallet}\n\nPlease recharge your wallet from the Profile page.`);
+                return;
+            }
+
+            const confirmOrder = confirm(`Final Confirmation:\nOrder Total: ₹${total}\n\nPay using SRP Wallet?`);
+            
+            if (confirmOrder) {
+                const newBalance = currentWallet - total;
+
+                try {
+                    // 1. Deduct from Wallet (Profiles table)
+                    const { error: walletError } = await supabase
+                        .from('profiles')
+                        .update({ wallet_balance: newBalance })
+                        .eq('id', currentUid);
+
+                    if (walletError) throw walletError;
+
+                    // 2. Create Order in DB (Assumes orders table exists)
+                    const { error: orderError } = await supabase
+                        .from('orders')
+                        .insert([{
+                            user_id: currentUid,
+                            items_json: JSON.stringify(cartItems),
+                            total_amount: total,
+                            status: 'shipped'
+                        }]);
+
+                    if (orderError) throw orderError;
+
+                    // 3. Clear Cart
+                    localStorage.removeItem(`cart_${currentUid}`);
+                    
+                    alert("Order Placed Successfully! Your items will arrive in 3-5 business days.");
+                    location.href = 'profile.html';
+
+                } catch (err) {
+                    alert("Payment Failed: " + err.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
