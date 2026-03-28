@@ -7,169 +7,132 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>SRP SHOPPING | Home</title>
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .product-slider { scroll-snap-type: x mandatory; }
-        .product-slider img { scroll-snap-align: start; }
-        #product-detail-view { display: none; }
+        :root {
+            --srp-blue: #0047AB;
+            --srp-white: #ffffff;
+            --srp-light-bg: #f4f7f6;
+        }
+        body { background-color: var(--srp-light-bg); font-family: 'Inter', sans-serif; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--srp-white); border-top: 1px solid #e2e8f0; z-index: 1000; }
+        .admin-glow { box-shadow: 0 0 15px rgba(0, 71, 171, 0.2); }
+        .banner-gradient { background: linear-gradient(90deg, #0047AB 0%, #007FFF 100%); }
     </style>
 </head>
-<body class="bg-gray-100 pb-20">
+<body class="pb-20">
 
-    <header class="sticky top-0 bg-[#0047AB] text-white p-3 z-50">
-        <div class="flex justify-between items-center mb-2">
-            <h1 class="text-xl font-bold" onclick="location.reload()">SRP SHOPPING</h1>
-            <div class="flex gap-4 items-center">
-                <i class="fas fa-search" onclick="toggleSearch()"></i>
-                <i class="fas fa-filter" onclick="toggleFilters()"></i>
-                <div class="bg-white/20 px-2 py-1 rounded text-xs">₹<span id="header-wallet">450</span></div>
+    <header class="sticky top-0 bg-[#0047AB] text-white p-3 z-50 shadow-md">
+        <div class="container mx-auto flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <button onclick="handleLogoTap()" class="text-xl font-bold tracking-tighter">
+                    SRP SHOPPING
+                </button>
+                
+                <div class="flex items-center gap-4 text-sm">
+                    <button onclick="location.href='/privacy'" class="hover:underline">Privacy Policy</button>
+                    <div class="bg-white/20 px-3 py-1 rounded-full flex items-center gap-2">
+                        <i class="fas fa-wallet text-yellow-400"></i>
+                        <span id="wallet-balance">₹0.00</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="flex gap-4 overflow-x-auto no-scrollbar py-2 text-sm whitespace-nowrap border-t border-blue-400">
-            <button onclick="filterCategory('all')" class="font-bold border-b-2 border-white">All</button>
-            <button onclick="filterCategory('Electronics')">Electronics</button>
-            <button onclick="filterCategory('Fashion')">Fashion</button>
-            <button onclick="filterCategory('Mobiles')">Mobiles</button>
-            <button onclick="filterCategory('Home')">Home</button>
+
+            <div class="relative">
+                <input type="text" placeholder="Search products, brands and more..." 
+                       class="w-full py-2 px-4 pr-10 rounded text-black focus:outline-none">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+            </div>
         </div>
     </header>
 
-    <main id="home-view" class="p-2">
-        <div class="w-full h-32 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg mb-4 flex items-center justify-center text-white font-bold p-4">
-            <div class="text-center">
-                <p class="text-xs uppercase tracking-widest">SRP Exclusive</p>
-                <h2 class="text-lg">MEGA SALE: UP TO 70% OFF</h2>
+    <main class="container mx-auto p-4">
+        
+        <section id="promo-banner" class="mb-6">
+            <div class="banner-gradient rounded-xl p-6 text-white flex justify-between items-center shadow-lg">
+                <div>
+                    <h2 class="text-2xl font-black italic">SRP EXCLUSIVE</h2>
+                    <p class="text-sm opacity-90 font-medium">Get up to 60% OFF on all Tech Accessories</p>
+                    <button class="mt-3 bg-white text-[#0047AB] px-5 py-2 rounded-lg font-bold text-xs uppercase shadow-sm">
+                        Shop Now
+                    </button>
+                </div>
+                <div class="hidden sm:block">
+                    <i class="fas fa-shopping-bag text-6xl opacity-20"></i>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div id="product-grid" class="grid grid-cols-2 gap-2"></div>
+        <h3 class="font-bold text-gray-800 mb-4 px-1">Top Offers for You</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                <div class="h-40 bg-gray-100 rounded mb-2 flex items-center justify-center">
+                    <i class="fas fa-image text-gray-300 text-3xl"></i>
+                </div>
+                <p class="text-xs text-gray-500">Brand Name</p>
+                <h4 class="text-sm font-semibold truncate">Premium Wireless Headphones</h4>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-blue-700 font-bold">₹1,299</span>
+                    <span class="text-[10px] line-through text-gray-400">₹2,499</span>
+                </div>
+            </div>
+            </div>
     </main>
 
-    <div id="product-detail-view" class="fixed inset-0 bg-white z-[60] overflow-y-auto">
-        <nav class="p-4 flex items-center gap-4 border-b sticky top-0 bg-white">
-            <button onclick="closeDetail()" class="fas fa-arrow-left text-xl"></button>
-            <span class="font-bold truncate" id="detail-title-top">Product Details</span>
-        </nav>
-
-        <div class="flex overflow-x-auto product-slider no-scrollbar h-80 bg-gray-50">
-            <img id="main-img-1" src="" class="w-full h-full object-contain flex-shrink-0">
-            <img id="main-img-2" src="" class="w-full h-full object-contain flex-shrink-0">
-        </div>
-
-        <div class="p-4">
-            <h2 id="detail-name" class="text-lg font-medium text-gray-800"></h2>
-            <div class="flex items-center gap-2 my-2">
-                <span id="detail-rating" class="bg-green-700 text-white text-[10px] px-2 py-0.5 rounded">4.5 ★</span>
-                <span class="text-blue-600 text-xs">1,240 Ratings</span>
-            </div>
-
-            <hr class="my-4">
-
-            <div class="mb-4">
-                <div class="flex items-center gap-2">
-                    <span id="detail-discount" class="text-red-600 text-2xl font-light">-50%</span>
-                    <span class="text-2xl font-bold">₹<span id="detail-price"></span></span>
-                </div>
-                <p class="text-gray-500 text-sm">M.R.P.: <span class="line-through" id="detail-mrp"></span></p>
-                <p class="text-green-700 font-bold text-sm">Inclusive of all taxes</p>
-            </div>
-
-            <div class="flex flex-col gap-4 mb-6">
-                <div>
-                    <p class="text-sm font-bold mb-2">Color</p>
-                    <div class="flex gap-2">
-                        <div class="w-8 h-8 rounded-full border-2 border-blue-600 bg-black"></div>
-                        <div class="w-8 h-8 rounded-full border border-gray-300 bg-blue-500"></div>
-                        <div class="w-8 h-8 rounded-full border border-gray-300 bg-gray-200"></div>
-                    </div>
-                </div>
-                <div>
-                    <p class="text-sm font-bold mb-2">Quantity</p>
-                    <select class="w-full p-2 border rounded bg-gray-50">
-                        <option>1</option><option>2</option><option>3</option>
-                    </select>
-                </div>
-            </div>
-
-            <p class="text-sm text-gray-600 mb-6"><i class="fas fa-truck mr-2"></i>Delivery will be in 7 to 15 days</p>
-
-            <div class="flex flex-col gap-2 mb-8">
-                <button onclick="addToCart()" class="w-full py-3 bg-yellow-400 rounded-full font-bold">Add to Cart</button>
-                <button class="w-full py-3 bg-orange-500 text-white rounded-full font-bold">Buy Now</button>
-            </div>
-
-            <div>
-                <h3 class="font-bold border-b pb-2 mb-2">Product Description</h3>
-                <p id="detail-desc" class="text-sm text-gray-700 leading-relaxed"></p>
-            </div>
-        </div>
-    </div>
-
-    <nav class="fixed bottom-0 w-full h-16 bg-white border-t flex items-center justify-around z-50">
-        <button class="flex flex-col items-center text-blue-700"><i class="fas fa-home"></i><span class="text-[10px]">Home</span></button>
-        <button class="flex flex-col items-center text-gray-400"><i class="fas fa-wallet"></i><span class="text-[10px]">Wallet</span></button>
-        <button class="flex flex-col items-center text-gray-400"><i class="fas fa-store"></i><span class="text-[10px]">Seller</span></button>
-        <button class="flex flex-col items-center text-gray-400"><i class="fas fa-shopping-cart"></i><span class="text-[10px]">Cart</span></button>
-        <button class="flex flex-col items-center text-blue-400"><i class="fas fa-robot"></i><span class="text-[10px]">AI</span></button>
+    <nav class="bottom-nav h-16 flex items-center justify-around px-2">
+        <button onclick="navTo('home')" class="flex flex-col items-center gap-1 text-[#0047AB]">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button onclick="navTo('profile')" class="flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-user text-xl"></i>
+            <span class="text-[10px] font-medium">Account</span>
+        </button>
+        <button onclick="navTo('wallet')" class="flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-wallet text-xl"></i>
+            <span class="text-[10px] font-medium">Wallet</span>
+        </button>
+        <button onclick="navTo('seller')" class="flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-store text-xl"></i>
+            <span class="text-[10px] font-medium">Seller</span>
+        </button>
+        <button onclick="navTo('cart')" class="flex flex-col items-center gap-1 text-gray-500 relative">
+            <i class="fas fa-shopping-cart text-xl"></i>
+            <span class="text-[10px] font-medium">Cart</span>
+            <span class="absolute -top-1 right-0 bg-red-500 text-white text-[8px] rounded-full w-4 h-4 flex items-center justify-center">0</span>
+        </button>
+        <button onclick="navTo('ai')" class="flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-robot text-xl text-blue-400"></i>
+            <span class="text-[10px] font-medium">AI Support</span>
+        </button>
     </nav>
 
     <script>
-        // DATA: 20 Real-style Products
-        const products = Array.from({ length: 20 }, (_, i) => ({
-            id: i,
-            name: `SRP Premium Product ${i + 1}`,
-            category: i % 2 === 0 ? 'Electronics' : 'Fashion',
-            price: 499 + (i * 100),
-            mrp: 999 + (i * 100),
-            discount: "50%",
-            image: `https://picsum.photos/400/400?random=${i}`,
-            desc: "This is a high-quality product curated by SRP SHOPPING. ".repeat(200) // Simulating long description
-        }));
+        // ADMIN CONFIGURATION
+        const ADMIN_EMAILS = ['Srpstudio1@gmail.com', 'subhashrajpurohit10@gmail.com'];
+        let currentUserEmail = "subhashrajpurohit10@gmail.com"; // Replace with your Firebase Auth logic
 
-        function renderProducts(items) {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = items.map(p => `
-                <div onclick="openDetail(${p.id})" class="bg-white p-2 rounded shadow-sm border border-gray-100">
-                    <img src="${p.image}" class="w-full h-32 object-contain mb-2">
-                    <h3 class="text-xs font-medium truncate">${p.name}</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="text-sm font-bold">₹${p.price}</span>
-                        <span class="text-[8px] line-through text-gray-400">₹${p.mrp}</span>
-                    </div>
-                    <p class="text-[10px] text-green-600 font-bold">${p.discount} OFF</p>
-                </div>
-            `).join('');
+        function handleLogoTap() {
+            if (ADMIN_EMAILS.includes(currentUserEmail)) {
+                const pass = prompt("Enter Admin Security PIN:");
+                if (pass === "1234") { // Replace with your real logic
+                    alert("Welcome Admin. Opening Control Panel...");
+                    window.location.href = "/admin-dashboard";
+                } else {
+                    alert("Access Denied.");
+                    window.location.reload();
+                }
+            } else {
+                // Ordinary user behavior
+                window.location.reload();
+            }
         }
 
-        function openDetail(id) {
-            const p = products[id];
-            document.getElementById('detail-name').innerText = p.name;
-            document.getElementById('detail-price').innerText = p.price;
-            document.getElementById('detail-mrp').innerText = p.mrp;
-            document.getElementById('detail-discount').innerText = `-${p.discount}`;
-            document.getElementById('detail-desc').innerText = p.desc;
-            document.getElementById('main-img-1').src = p.image;
-            document.getElementById('main-img-2').src = `https://picsum.photos/400/400?random=${id + 50}`;
-            
-            document.getElementById('product-detail-view').style.display = 'block';
-            document.body.style.overflow = 'hidden';
+        function navTo(page) {
+            console.log("Navigating to: " + page);
+            // Link your routing logic here
         }
 
-        function closeDetail() {
-            document.getElementById('product-detail-view').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        function filterCategory(cat) {
-            if(cat === 'all') renderProducts(products);
-            else renderProducts(products.filter(p => p.category === cat));
-        }
-
-        function addToCart() {
-            alert("Added to SRP Cart!");
-        }
-
-        // Initial Load
-        renderProducts(products);
+        // Mock Wallet Update
+        document.getElementById('wallet-balance').innerText = "₹450.00";
     </script>
 </body>
 </html>
