@@ -166,11 +166,13 @@
             <h3 class="font-bold text-gray-800 flex items-center gap-2">
                 <i class="fas fa-bolt text-yellow-500"></i> Flash Deals
             </h3>
-            <span id="item-count" class="text-xs text-gray-500">20 Products</span>
+            <span id="item-count" class="text-xs text-gray-500">Loading Products...</span>
         </div>
 
-        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            </div>
+        <div id="product-grid" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div class="shimmer h-60 rounded-2xl"></div>
+            <div class="shimmer h-60 rounded-2xl"></div>
+        </div>
     </main>
 
     <div id="product-modal" class="fixed inset-0 bg-white hidden overflow-y-auto animate-slide-up">
@@ -190,7 +192,7 @@
         <div class="detail-slider no-scrollbar relative">
             <img id="detail-img-1" src="" alt="View 1">
             <img id="detail-img-2" src="" alt="View 2">
-            <div class="absolute bottom-4 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full">1 / 2 Images</div>
+            <div class="absolute bottom-4 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full">Gallery Mode</div>
         </div>
 
         <div class="p-5">
@@ -244,7 +246,7 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3 mb-10">
-                <button onclick="handleCart()" class="py-4 bg-yellow-400 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition">ADD TO CART</button>
+                <button id="add-to-cart-btn" class="py-4 bg-yellow-400 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition">ADD TO CART</button>
                 <button onclick="directBuy()" class="py-4 bg-orange-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition">BUY NOW</button>
             </div>
 
@@ -265,25 +267,13 @@
                         <p class="text-xs text-gray-500">Global SRP Rating (1,240 verified)</p>
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-xs">
-                        <span class="w-10">5 Star</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-orange-400 h-full w-[70%]"></div></div>
-                        <span class="w-8 text-right">70%</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-xs">
-                        <span class="w-10">4 Star</span>
-                        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="bg-orange-400 h-full w-[15%]"></div></div>
-                        <span class="w-8 text-right">15%</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white h-18 nav-shadow flex items-center justify-around px-2 z-50">
-        <button onclick="navSwitch('home')" class="nav-btn group flex flex-col items-center gap-1 text-[#0047AB]">
-            <div class="p-2 rounded-xl group-active:bg-blue-50"><i class="fas fa-home text-lg"></i></div>
+        <button onclick="location.reload()" class="nav-btn group flex flex-col items-center gap-1 text-[#0047AB]">
+            <div class="p-2 rounded-xl bg-blue-50"><i class="fas fa-home text-lg"></i></div>
             <span class="text-[9px] font-black uppercase tracking-widest">Home</span>
         </button>
         <button onclick="location.href='profile.html'" class="nav-btn group flex flex-col items-center gap-1 text-gray-400">
@@ -303,35 +293,42 @@
             <span class="text-[9px] font-bold uppercase tracking-widest">Cart</span>
             <span id="cart-count" class="absolute top-1 right-1 bg-red-600 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
         </button>
-        <button onclick="alert('SRP AI Assistant coming soon!')" class="nav-btn group flex flex-col items-center gap-1 text-blue-400">
-            <div class="p-2 rounded-xl group-active:bg-blue-50"><i class="fas fa-robot text-lg"></i></div>
-            <span class="text-[9px] font-bold uppercase tracking-widest">AI Hub</span>
-        </button>
     </nav>
 
     <script>
-        // 1. CONFIG & SYSTEM VARIABLES
+        // 1. SUPABASE CONNECTION
         const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const ADMIN_EMAILS = ["Srpstudio1@gmail.com", "subhashrajpurohit10@gmail.com"];
         let isLoginMode = true;
         let globalProducts = [];
         let currentUserId = null;
 
-        // Initialize Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // 2. AUTHENTICATION LOGIC
+        // 2. AUTH & USER DATA SYNC
         supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
                 document.getElementById('auth-screen').classList.add('hidden');
                 currentUserId = session.user.id;
                 syncUserData(session.user);
+                loadProductsFromSupabase();
             } else {
                 document.getElementById('auth-screen').classList.remove('hidden');
             }
         });
+
+        async function syncUserData(user) {
+            // Fetch Wallet Balance from Profiles
+            const { data } = await supabase.from('profiles').select('wallet_balance').eq('id', user.id).single();
+            if (data) {
+                document.getElementById('user-wallet').innerText = `₹${parseFloat(data.wallet_balance).toFixed(2)}`;
+            }
+
+            // Sync Cart Badge count from LocalStorage
+            const savedCart = JSON.parse(localStorage.getItem(`cart_${user.id}`)) || [];
+            document.getElementById('cart-count').innerText = savedCart.length;
+        }
 
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
@@ -353,111 +350,116 @@
                 } else {
                     const { data, error } = await supabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    if (data.user) {
-                        await supabase.from('users').insert([{
-                            id: data.user.id,
-                            name: email.split('@')[0],
-                            email: email,
-                            wallet_balance: 450
-                        }]);
-                    }
-                    alert("Check your email for confirmation!");
+                    // Note: RLS handles profile creation via triggers or manual insert
+                    alert("Success! Check your email if required.");
                 }
             } catch (err) { alert(err.message); }
         };
 
-        document.getElementById('google-auth').onclick = async () => {
-            const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-            if (error) alert(error.message);
-        };
+        // 3. PRODUCT ENGINE (REAL DATA)
+        async function loadProductsFromSupabase() {
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        // 3. DATA & PRODUCT ENGINE
-        const CATEGORIES = ["Mobiles", "Electronics", "Fashion", "Home", "Beauty"];
-        
-        function generate20Products() {
-            const items = [];
-            const titles = [
-                "iPhone 15 Pro Max Clone", "Sony XM5 Headphones", "Nike Air Max 270", 
-                "Smart OLED Television", "Gaming Mechanical Keyboard", "Waterproof Bluetooth Speaker",
-                "Leather Executive Wallet", "Anti-Fog Sports Glasses", "Portable Coffee Maker",
-                "Ergonomic Office Chair", "Cotton Premium T-Shirt", "Wireless Gaming Mouse",
-                "DSLR Camera Kit", "Smart Fitness Tracker", "High-Speed Hair Dryer",
-                "Kitchen Mixer Grinder", "Drip Irrigation Kit", "Electric Toothbrush",
-                "Memory Foam Pillow", "Noise Cancelling Earbuds"
-            ];
-
-            for(let i=0; i<20; i++) {
-                const price = Math.floor(Math.random() * (15000 - 500) + 500);
-                items.push({
-                    id: 'SRP_'+i,
-                    name: titles[i],
-                    category: CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
-                    price: price,
-                    mrp: Math.floor(price * 1.8),
-                    image: `https://picsum.photos/600/600?random=${i}`,
-                    rating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1),
-                    reviews: Math.floor(Math.random() * 5000),
-                    desc: "This is a premium high-quality product curated by SRP SHOPPING. Features include durability, modern design, and industry-leading performance. ".repeat(150)
-                });
+            if (error) {
+                console.error("Supabase Error:", error);
+                return;
             }
-            return items;
+
+            globalProducts = data;
+            renderProducts(globalProducts);
         }
 
         function renderProducts(list) {
             const grid = document.getElementById('product-grid');
-            grid.innerHTML = list.map(p => `
-                <div onclick="openProduct('${p.id}')" class="product-card bg-white p-3 rounded-2xl shadow-sm cursor-pointer">
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-400">No products found in this category.</div>`;
+                return;
+            }
+
+            grid.innerHTML = list.map(p => {
+                const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
+                return `
+                <div onclick="openProduct(${p.id})" class="product-card bg-white p-3 rounded-2xl shadow-sm cursor-pointer">
                     <div class="relative mb-3 bg-gray-50 rounded-xl overflow-hidden aspect-square">
-                        <img src="${p.image}" class="w-full h-full object-contain" loading="lazy">
-                        <div class="absolute top-2 left-2 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Save ${Math.round(((p.mrp-p.price)/p.mrp)*100)}%</div>
+                        <img src="${p.image_url}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/400?text=SRP+Product'">
+                        <div class="absolute top-2 left-2 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Save ${discount}%</div>
                     </div>
                     <p class="text-[10px] text-blue-600 font-bold uppercase tracking-wider mb-1">${p.category}</p>
                     <h4 class="text-xs font-semibold text-gray-800 line-clamp-2 h-8">${p.name}</h4>
                     <div class="flex items-center gap-1 mt-2">
-                        <span class="text-sm font-black text-gray-900">₹${p.price.toLocaleString('en-IN')}</span>
-                        <span class="text-[9px] line-through text-gray-400">₹${p.mrp.toLocaleString('en-IN')}</span>
+                        <span class="text-sm font-black text-gray-900">₹${p.price}</span>
+                        <span class="text-[9px] line-through text-gray-400">₹${p.mrp}</span>
                     </div>
                     <div class="flex items-center justify-between mt-3 pt-3 border-t">
                         <div class="flex items-center gap-1">
                             <i class="fas fa-star text-yellow-400 text-[8px]"></i>
-                            <span class="text-[10px] font-bold text-gray-600">${p.rating}</span>
+                            <span class="text-[10px] font-bold text-gray-600">4.5</span>
                         </div>
                         <button class="bg-blue-50 text-blue-600 p-1.5 rounded-lg active:bg-blue-600 active:text-white transition">
                             <i class="fas fa-plus text-[10px]"></i>
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             document.getElementById('item-count').innerText = `${list.length} Products Found`;
         }
 
-        // 4. UI INTERACTION & FILTERING
+        // 4. MODAL & FILTER LOGIC
         function openProduct(id) {
-            const p = globalProducts.find(x => x.id === id);
+            const p = globalProducts.find(x => x.id == id);
             if(!p) return;
 
             document.getElementById('modal-title-top').innerText = p.name;
             document.getElementById('detail-name').innerText = p.name;
             document.getElementById('detail-category').innerText = p.category;
-            document.getElementById('detail-price').innerText = p.price.toLocaleString('en-IN');
-            document.getElementById('detail-mrp').innerText = '₹' + p.mrp.toLocaleString('en-IN');
-            document.getElementById('detail-rate-val').innerText = p.rating;
+            document.getElementById('detail-price').innerText = p.price;
+            document.getElementById('detail-mrp').innerText = '₹' + p.mrp;
             document.getElementById('detail-disc-per').innerText = `-${Math.round(((p.mrp-p.price)/p.mrp)*100)}%`;
-            document.getElementById('detail-img-1').src = p.image;
-            document.getElementById('detail-img-2').src = `https://picsum.photos/600/600?random=${id+100}`;
+            document.getElementById('detail-img-1').src = p.image_url;
+            document.getElementById('detail-img-2').src = p.image_url; // Secondary image fallback
             
             document.getElementById('detail-description').innerHTML = `
-                <p>${p.desc.substring(0, 500)}...</p>
+                <p>Premium quality product in ${p.category} category. Stock available: ${p.stock} units.</p>
                 <div class="bg-gray-50 p-4 rounded-lg my-4 font-mono text-xs">
-                    Model No: SRP-X${id.split('_')[1]}<br>
-                    Warranty: 1 Year Limited<br>
-                    Origin: Made for SRP Enterprise
+                    Product SKU: SRP-P${p.id}<br>
+                    Seller ID: ${p.seller_id.substring(0,8)}...<br>
+                    Authenticity: Verified SRP Merchant
                 </div>
-                <p>${p.desc.substring(500, 1500)}...</p>
             `;
+
+            // Set dynamic cart button
+            document.getElementById('add-to-cart-btn').onclick = () => addToCart(p);
 
             document.getElementById('product-modal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+        }
+
+        function addToCart(product) {
+            if(!currentUserId) return;
+            const qty = parseInt(document.getElementById('detail-qty').value);
+            
+            let cart = JSON.parse(localStorage.getItem(`cart_${currentUserId}`)) || [];
+            
+            const existingIndex = cart.findIndex(item => item.id === product.id);
+            if(existingIndex > -1) {
+                cart[existingIndex].qty += qty;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image_url,
+                    qty: qty
+                });
+            }
+
+            localStorage.setItem(`cart_${currentUserId}`, JSON.stringify(cart));
+            document.getElementById('cart-count').innerText = cart.length;
+            alert("Added to bag!");
+            closeProduct();
         }
 
         function closeProduct() {
@@ -482,73 +484,21 @@
             else renderProducts(globalProducts.filter(p => p.category === cat));
         }
 
-        // 5. ADMIN & SECURITY
         async function adminSecurityCheck() {
             const { data: { user } } = await supabase.auth.getUser();
             if (user && ADMIN_EMAILS.includes(user.email)) {
                 const pin = prompt("SRP ENTERPRISE ACCESS REQUIRED\nEnter Security PIN:");
                 if (pin === "1234") { 
-                    alert("Authentication successful. Redirecting to Master Console...");
                     window.location.href = "admin.html";
-                } else {
-                    alert("Invalid PIN. Lockdown active.");
-                    location.reload();
                 }
             } else {
-                location.reload();
+                alert("Restricted Access.");
             }
-        }
-
-        // 6. UTILITY FUNCTIONS
-        async function syncUserData(user) {
-            // Fetch Profile/Wallet
-            const { data, error } = await supabase
-                .from('users')
-                .select('wallet_balance')
-                .eq('id', user.id)
-                .single();
-
-            if (data) {
-                document.getElementById('user-wallet').innerText = `₹${(data.wallet_balance || 0).toLocaleString('en-IN')}`;
-            }
-
-            // Real-time Cart Count
-            const { count } = await supabase
-                .from('carts')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_id', user.id);
-            
-            document.getElementById('cart-count').innerText = count || 0;
-        }
-
-        async function handleCart() {
-            if(!currentUserId) return alert("Please login first");
-            
-            // Logic for Supabase Table Insert
-            const { error } = await supabase.from('carts').insert([{ 
-                user_id: currentUserId, 
-                product_id: 'sample_id' 
-            }]);
-            
-            if (error) alert("Error adding to cart");
-            else alert("Success! Item added to SRP Cart.");
-            closeProduct();
         }
 
         function directBuy() {
             window.location.href = "cart.html";
         }
-
-        function navSwitch(page) {
-            console.log("Routing to internal component: " + page);
-        }
-
-        // Boot
-        window.onload = () => {
-            globalProducts = generate20Products();
-            renderProducts(globalProducts);
-            console.log("SRP Shopping Production Engine Online (Supabase Mode).");
-        };
     </script>
 </body>
 </html>
