@@ -160,7 +160,9 @@
                 <span class="text-[10px] font-bold text-orange-500">Awaiting Logistics</span>
             </div>
             
-            <div class="space-y-3 mb-6">
+            <div class="space-y-3" id="inventory-list">
+    </div>
+
                 <div class="flex gap-4">
                     <img src="https://picsum.photos/100" class="w-12 h-12 rounded-xl object-cover">
                     <div>
@@ -275,21 +277,76 @@
             }
         });
 
-        async function syncSellerData() {
-            const { data, error } = await supabase
-                .from('sellers')
-                .select('*')
-                .eq('id', currentUid)
-                .single();
+// Add this to your syncSellerData() function after the seller check
+async function syncSellerData() {
+    const { data, error } = await supabase
+        .from('sellers')
+        .select('*')
+        .eq('id', currentUid)
+        .single();
 
-            if (data) {
-                if (data.status === 'active') {
-                    activateSellerUI();
-                } else {
-                    document.getElementById('status-badge').innerText = "Application Pending";
-                }
-            }
+    if (data) {
+        if (data.status === 'active') {
+            activateSellerUI();
+            fetchInventory(); // <--- Add this line here
+        } else {
+            document.getElementById('status-badge').innerText = "Application Pending";
         }
+    }
+}
+
+// New function to fetch and display products
+async function fetchInventory() {
+    const container = document.querySelector('#page-products .space-y-3');
+    // Keep the header, clear the rest
+    container.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase px-2">Recently Listed</p>';
+
+    const { data: products, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('seller_id', currentUid)
+        .order('created_at', { ascending: false });
+
+    if (error) return console.error(error);
+
+    if (products.length === 0) {
+        container.innerHTML += `<div class="text-center p-10 text-gray-400 text-[10px] font-bold uppercase">No products listed yet</div>`;
+        return;
+    }
+
+    products.forEach(item => {
+        const itemHtml = `
+            <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-gray-100 card-shadow">
+                <div class="flex items-center gap-3">
+                    <img src="${item.image_url}" class="w-10 h-10 rounded-lg object-cover">
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-800">${item.name}</h4>
+                        <p class="text-[9px] ${item.stock > 0 ? 'text-green-600' : 'text-red-500'} font-bold">
+                            ${item.stock} In Stock | ₹${item.price}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="deleteProduct(${item.id})" class="text-gray-300 hover:text-red-500 p-2"><i class="fas fa-trash-can text-xs"></i></button>
+                    <label class="switch">
+                        <input type="checkbox" ${item.stock > 0 ? 'checked' : ''} onchange="toggleAvailability(${item.id}, this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        `;
+        container.innerHTML += itemHtml;
+    });
+}
+
+// Function to delete a product
+async function deleteProduct(productId) {
+    if(!confirm("Are you sure you want to remove this product?")) return;
+    
+    const { error } = await supabase.from('products').delete().eq('id', productId);
+    if (error) alert(error.message);
+    else fetchInventory();
+}
 
         // 3. UI TAB NAVIGATION
         function switchTab(pageId) {
