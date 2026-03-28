@@ -1,175 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SRP SHOPPING | Secure Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SRP SHOPPING | Secure Access</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --srp-blue: #2563eb;
+            --srp-white: #ffffff;
+            --srp-glass: rgba(255, 255, 255, 0.85);
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: radial-gradient(circle at top left, #eff6ff, #ffffff);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins';}
+        .glass-card {
+            background: var(--srp-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.15);
+            border-radius: 40px;
+        }
 
-body{
-height:100vh;
-background:linear-gradient(135deg,#004aad,#00d4ff);
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-}
+        .input-field {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
 
-/* Glass Box */
-.container{
-width:90%;
-max-width:420px;
-background:rgba(255,255,255,0.1);
-backdrop-filter:blur(15px);
-border-radius:20px;
-padding:30px;
-text-align:center;
-box-shadow:0 20px 40px rgba(0,0,0,0.2);
-animation:fadeIn 0.6s ease;
-}
+        .input-field:focus {
+            border-color: var(--srp-blue);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
 
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(20px);}
-to{opacity:1;}
-}
+        .blue-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-/* Logo */
-.logo{
-font-size:2rem;
-font-weight:800;
-margin-bottom:10px;
-}
+        .blue-btn:active { transform: scale(0.96); }
 
-.status{
-margin-top:15px;
-font-size:14px;
-opacity:0.9;
-}
-
-/* Loader */
-.loader{
-width:50px;
-height:50px;
-border:5px solid rgba(255,255,255,0.3);
-border-top:5px solid white;
-border-radius:50%;
-margin:20px auto;
-animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-to{transform:rotate(360deg);}
-}
-
-/* Button */
-.btn{
-margin-top:20px;
-padding:12px 20px;
-background:white;
-color:#004aad;
-border:none;
-border-radius:10px;
-font-weight:700;
-cursor:pointer;
-}
-
-/* Hidden */
-.hidden{display:none;}
-
-</style>
+        /* Floating Animation for Brand Icon */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(12deg); }
+            50% { transform: translateY(-10px) rotate(15deg); }
+        }
+        .brand-icon { animation: float 4s ease-in-out infinite; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <div class="w-full max-w-md px-6">
+        <div class="glass-card p-10 relative overflow-hidden">
+            
+            <div class="text-center mb-10">
+                <div class="brand-icon w-20 h-20 bg-blue-600 rounded-[28px] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
+                    <i class="fas fa-shopping-bag text-white text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tighter">SRP SHOPPING</h1>
+                <p class="text-slate-400 font-bold text-sm mt-1">Premium Global Marketplace</p>
+            </div>
 
-<div class="logo">SRP SHOPPING</div>
-<p>Secure Access Gateway</p>
+            <div class="flex bg-slate-100/50 p-1.5 rounded-2xl mb-8 border border-slate-100">
+                <button id="loginTab" onclick="switchMode('login')" class="flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest bg-white text-blue-600 shadow-sm transition-all">Login</button>
+                <button id="signupTab" onclick="switchMode('signup')" class="flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-400 transition-all">Register</button>
+            </div>
 
-<div class="loader" id="loader"></div>
+            <form id="authForm" class="space-y-5">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Email Address</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input type="email" id="email" required class="input-field w-full pl-12 pr-6 py-4 rounded-2xl bg-white outline-none font-bold text-slate-700" placeholder="name@company.com">
+                    </div>
+                </div>
 
-<div class="status" id="status">
-Checking your session...
-</div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Security Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input type="password" id="password" required class="input-field w-full pl-12 pr-6 py-4 rounded-2xl bg-white outline-none font-bold text-slate-700" placeholder="••••••••">
+                    </div>
+                </div>
 
-<button class="btn hidden" id="loginBtn" onclick="goLogin()">
-Go to Login
-</button>
+                <button type="submit" id="submitBtn" class="blue-btn w-full py-5 rounded-2xl text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-500/30 mt-4">
+                    Access Account
+                </button>
+            </form>
 
-</div>
+            <div class="relative my-8">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                <div class="relative flex justify-center text-[10px] uppercase font-black text-slate-300"><span class="bg-white px-4">Social Connect</span></div>
+            </div>
 
-<script>
+            <button onclick="loginGoogle()" class="w-full py-4 rounded-2xl border border-slate-200 bg-white flex items-center justify-center gap-3 font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-5">
+                Continue with Google
+            </button>
+        </div>
+        
+        <p class="text-center mt-8 text-slate-400 text-xs font-medium">
+            Protected by SRP Security Systems &copy; 2026
+        </p>
+    </div>
 
-/* ======================
-SUPABASE CONFIG
-====================== */
-const supabase = window.supabase.createClient(
-"https://cmxlfxqtrguuzpqdgcxv.supabase.co",
-"YOUR_PUBLIC_ANON_KEY"
-);
+    <script>
+        // REPLACE WITH YOUR ACTUAL SUPABASE CREDENTIALS
+        const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
+        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY"; 
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ======================
-STATE
-====================== */
-let isProcessing = true;
+        let currentMode = 'login';
+        const adminEmails = ['Srpstudio1@gmail.com', 'subhashrajpurohit10@gmail.com'];
 
-/* ======================
-CHECK SESSION
-====================== */
-async function checkSession(){
+        function switchMode(mode) {
+            currentMode = mode;
+            const loginTab = document.getElementById('loginTab');
+            const signupTab = document.getElementById('signupTab');
+            const submitBtn = document.getElementById('submitBtn');
 
-document.getElementById('status').innerText="Validating session...";
+            if (mode === 'login') {
+                loginTab.className = "flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest bg-white text-blue-600 shadow-sm transition-all";
+                signupTab.className = "flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-400 transition-all";
+                submitBtn.innerText = "Access Account";
+            } else {
+                signupTab.className = "flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest bg-white text-blue-600 shadow-sm transition-all";
+                loginTab.className = "flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-400 transition-all";
+                submitBtn.innerText = "Create New Account";
+            }
+        }
 
-const { data, error } = await supabase.auth.getSession();
+        document.getElementById('authForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submitBtn');
 
-if(data.session){
-document.getElementById('status').innerText="Welcome back!";
-setTimeout(()=>{
-window.location.href="home.html";
-},1000);
-}else{
-document.getElementById('status').innerText="No active session found.";
-showLogin();
-}
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
 
-}
+            let result;
+            if (currentMode === 'login') {
+                result = await supabase.auth.signInWithPassword({ email, password });
+            } else {
+                result = await supabase.auth.signUp({ email, password });
+                if (!result.error) alert("Account created! Check your email for confirmation.");
+            }
 
-/* ======================
-SHOW LOGIN BUTTON
-====================== */
-function showLogin(){
-document.getElementById('loader').classList.add('hidden');
-document.getElementById('loginBtn').classList.remove('hidden');
-}
+            if (result.error) {
+                alert(result.error.message);
+                btn.disabled = false;
+                btn.innerText = currentMode === 'login' ? "Access Account" : "Create New Account";
+            } else {
+                // Successful Login! Check for admin
+                if (adminEmails.includes(email)) {
+                    localStorage.setItem('srp_role', 'admin');
+                } else {
+                    localStorage.setItem('srp_role', 'user');
+                }
+                window.location.href = 'index.html'; // Redirect to your main page
+            }
+        };
 
-/* ======================
-GO TO LOGIN
-====================== */
-function goLogin(){
-window.location.href="index.html";
-}
-
-/* ======================
-LISTEN AUTH CHANGES
-====================== */
-supabase.auth.onAuthStateChange((event, session)=>{
-if(session){
-window.location.href="home.html";
-}
-});
-
-/* ======================
-INIT
-====================== */
-checkSession();
-
-</script>
-
+        async function loginGoogle() {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + '/index.html' }
+            });
+            if (error) alert(error.message);
+        }
+    </script>
 </body>
 </html>
