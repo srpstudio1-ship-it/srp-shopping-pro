@@ -3,1360 +3,904 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRP SHOPPING | Enterprise Multi-Vendor Platform</title>
+    <title>SRP SHOPPING | Global Retail Hub Marketplace</title>
     <style>
         /* ==========================================================================
-           1. DESIGN SYSTEM, CORE VARIABLES & RESET CONFIGURATIONS
+           1. PROFESSIONAL CSS RESET & GLOBAL ARCHITECTURE VARIABLES
            ========================================================================== */
         :root {
-            --color-amazon-dark: #131921;
-            --color-amazon-light: #232f3e;
-            --color-amazon-bg: #0f1111;
-            --color-accent-gold: #febd69;
-            --color-accent-orange: #f3a847;
-            --color-text-main: #ffffff;
-            --color-text-muted: #aaaaaa;
-            --color-card-bg: #1a1f26;
-            --color-border: #2d3440;
-            --color-success: #2ec4b6;
-            --color-danger: #e71d36;
-            --color-info: #00b4d8;
-            --font-stack: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --amazon-dark: #131921;
+            --amazon-light: #232f3e;
+            --amazon-background: #eaeded;
+            --amazon-text: #0f1111;
+            --amazon-orange: #e47911;
+            --amazon-gold: #febd69;
+            --amazon-yellow: #f0c14b;
+            --amazon-yellow-hover: #eeb933;
+            --amazon-blue: #007185;
+            --card-white: #ffffff;
+            --border-gray: #ddd;
+            --text-muted: #565959;
+            --success-green: #007600;
+            --danger-red: #b12704;
+            --premium-font: "Amazon Ember", Arial, sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-stack);
-            -webkit-font-smoothing: antialiased;
+            font-family: var(--premium-font);
         }
 
         body {
-            background-color: var(--color-amazon-bg);
-            color: var(--color-text-main);
+            background-color: var(--amazon-background);
+            color: var(--amazon-text);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Smooth scrolling configuration */
-        html {
-            scroll-behavior: smooth;
+        a {
+            text-decoration: none;
+            color: var(--amazon-blue);
         }
 
-        /* Custom Scrollbar styling for a premium look */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--color-amazon-bg);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--color-border);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--color-accent-gold);
-        }
-
-        /* ==========================================================================
-           2. GLOBAL LAYOUT FRAMEWORK UTILITIES
-           ========================================================================== */
-        .app-container {
-            display: flex;
-            flex: 1;
-            max-width: 1500px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            gap: 25px;
-        }
-
-        .view-section {
-            display: none;
-            width: 100%;
-            animation: fadeIn 0.3s ease-in-out forwards;
-        }
-
-        .view-section.active-view {
-            display: flex;
-            flex-direction: row;
-            gap: 25px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .text-center { text-align: center; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .mt-10 { margin-top: 10px; }
-        .mt-20 { margin-top: 20px; }
-        .mb-10 { margin-bottom: 10px; }
-        .mb-20 { margin-bottom: 20px; }
-
-        /* Generic UI Button Classes */
-        .btn-primary {
-            background-color: var(--color-accent-gold);
-            color: #111111;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-        .btn-primary:hover { background-color: var(--color-accent-orange); }
-        .btn-primary:active { transform: scale(0.98); }
-
-        .btn-secondary {
-            background-color: var(--color-amazon-light);
-            color: var(--color-accent-gold);
-            border: 1px solid var(--color-accent-gold);
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover {
-            background-color: var(--color-accent-gold);
-            color: #111111;
-        }
-
-        .badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .badge-success { background-color: rgba(46, 196, 182, 0.2); color: var(--color-success); border: 1px solid var(--color-success); }
-        .badge-danger { background-color: rgba(231, 29, 54, 0.2); color: var(--color-danger); border: 1px solid var(--color-danger); }
-
-        /* ==========================================================================
-           3. PREMIUM HEADER & SUB-NAVIGATION BAR
-           ========================================================================== */
-        header {
-            background-color: var(--color-amazon-dark);
-            position: sticky;
-            top: 0;
-            z-index: 500;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .main-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1500px;
-            margin: 0 auto;
-            padding: 12px 20px;
-            gap: 25px;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
-
-        .logo-text {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--color-accent-gold);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .logo-extension {
-            font-size: 12px;
-            background-color: var(--color-accent-orange);
-            color: #111111;
-            padding: 1px 5px;
-            border-radius: 3px;
-            font-weight: bold;
-            margin-top: -10px;
-        }
-
-        .search-container-engine {
-            flex: 1;
-            display: flex;
-            position: relative;
-            max-width: 750px;
-        }
-
-        .search-select-category {
-            background-color: #f3f3f3;
-            color: #333333;
-            border: none;
-            padding: 0 15px;
-            border-radius: 4px 0 0 4px;
-            outline: none;
-            cursor: pointer;
-            font-size: 14px;
-            border-right: 1px solid #cccccc;
-        }
-
-        .search-main-input {
-            width: 100%;
-            padding: 11px 15px;
-            border: none;
-            background-color: #ffffff;
-            color: #111111;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-action-trigger {
-            background-color: var(--color-accent-gold);
-            border: none;
-            padding: 0 22px;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-
-        .search-action-trigger:hover {
-            background-color: var(--color-accent-orange);
-        }
-
-        .header-actions-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .action-node {
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .action-node .line-top {
-            font-size: 12px;
-            color: var(--color-text-muted);
-        }
-
-        .action-node .line-bottom {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--color-text-main);
-        }
-
-        .interactive-cart-badge-trigger {
-            position: relative;
-            background-color: rgba(255,255,255,0.05);
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: 1px solid var(--color-border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.2s;
-        }
-
-        .interactive-cart-badge-trigger:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .header-global-cart-counter {
-            background-color: var(--color-accent-orange);
-            color: var(--color-amazon-dark);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        /* Secondary Sub-Navbar row architecture */
-        .sub-nav-bar {
-            background-color: var(--color-amazon-light);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding: 8px 20px;
-        }
-
-        .sub-nav-content {
-            max-width: 1500px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .links-group {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .links-group span {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .links-group span:hover {
-            color: var(--color-accent-gold);
-        }
-
-        .platform-mode-btn-node {
-            background-color: rgba(254, 189, 105, 0.1);
-            color: var(--color-accent-gold);
-            border: 1px solid rgba(254, 189, 105, 0.3);
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .platform-mode-btn-node:hover {
-            background-color: var(--color-accent-gold);
-            color: #111111;
-        }
-
-        /* ==========================================================================
-           4. CUSTOMER STOREFRONT LAYOUT & CORRESPONDING ELEMENTS
-           ========================================================================== */
-        aside.storefront-sidebar {
-            width: 280px;
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 20px;
-            height: fit-content;
-        }
-
-        .sidebar-block {
-            margin-bottom: 25px;
-        }
-
-        .sidebar-block h3 {
-            font-size: 16px;
-            color: var(--color-accent-gold);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 6px;
-        }
-
-        .category-filter-links {
-            list-style: none;
-        }
-
-        .category-filter-links li {
-            padding: 8px 10px;
-            margin-bottom: 4px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #dddddd;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .category-filter-links li:hover {
-            background-color: rgba(255,255,255,0.05);
-            color: var(--color-accent-gold);
-        }
-
-        .category-filter-links li.active-category-node {
-            background-color: var(--color-accent-gold);
-            color: #111111;
-            font-weight: bold;
-        }
-
-        .filter-price-inputs-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-price-input {
-            width: 100%;
-            padding: 8px;
-            background-color: rgba(0,0,0,0.2);
-            border: 1px solid var(--color-border);
-            color: white;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        .main-storefront-content-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Promo Hero Graphic Banner Panel */
-        .promo-hero-card {
-            background: linear-gradient(135deg, #232f3e 0%, #131921 100%);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 35px;
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .promo-hero-card h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .promo-hero-card p {
-            color: #cccccc;
-            max-width: 600px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .promo-coupon-pill {
-            display: inline-block;
-            background-color: rgba(243, 168, 71, 0.15);
-            border: 1px dashed var(--color-accent-orange);
-            color: var(--color-accent-orange);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-top: 15px;
-            font-size: 13px;
-        }
-
-        .storefront-products-grid-wrapper {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        /* Marketplace High Fidelity Product Cards */
-        .marketplace-product-card {
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .marketplace-product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            border-color: rgba(254, 189, 105, 0.4);
-        }
-
-        .product-card-image-canvas {
-            height: 190px;
-            background-color: #202731;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 52px;
-            position: relative;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-        }
-
-        .product-card-category-tag {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background-color: var(--color-amazon-dark);
-            color: #cccccc;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            border: 1px solid var(--color-border);
-        }
-
-        .product-card-details-box {
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .product-card-title-node {
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            line-height: 1.4;
-            margin-bottom: 8px;
-            height: 44px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .product-card-stars-row {
-            color: #ffa41c;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 12px;
-        }
-
-        .product-card-metrics-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: auto;
-            padding-top: 10px;
-        }
-
-        .product-card-price-display {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-        }
-
-        .product-card-stock-indicator {
-            font-size: 12px;
-            margin-top: 6px;
-            font-weight: 500;
-        }
-
-        /* ==========================================================================
-           5. MULTI-VENDOR SELLER MASTER CONSOLE
-           ========================================================================== */
-        .seller-console-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .seller-console-header-row {
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 20px 25px;
-        }
-
-        .seller-analytical-metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .analytics-card-node {
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            padding: 22px;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .analytics-card-node::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-        }
-        .card-blue::before { background-color: var(--color-info); }
-        .card-gold::before { background-color: var(--color-accent-gold); }
-        .card-success::before { background-color: var(--color-success); }
-        .card-danger::before { background-color: var(--color-danger); }
-
-        .analytics-card-title {
-            color: var(--color-text-muted);
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-
-        .analytics-card-value {
-            font-size: 26px;
-            font-weight: 800;
-            color: white;
-        }
-
-        .analytics-card-subtext {
-            font-size: 12px;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .subtext-positive { color: var(--color-success); }
-        .subtext-neutral { color: var(--color-text-muted); }
-
-        .seller-workcenter-split-layout {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .seller-form-panel-card {
-            flex: 1;
-            min-width: 380px;
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            padding: 25px;
-            border-radius: 8px;
-            height: fit-content;
-        }
-
-        .seller-form-panel-card h3 {
-            font-size: 18px;
-            color: var(--color-accent-gold);
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 8px;
-        }
-
-        .form-input-group {
-            margin-bottom: 18px;
-        }
-
-        .form-input-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 13px;
-            color: #dddddd;
-            font-weight: 500;
-        }
-
-        .form-input-element {
-            width: 100%;
-            padding: 11px 14px;
-            background-color: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--color-border);
-            color: white;
-            border-radius: 5px;
-            outline: none;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        .form-input-element:focus {
-            border-color: var(--color-accent-gold);
-        }
-
-        textarea.form-input-element {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-select-element {
-            width: 100%;
-            padding: 11px 14px;
-            background-color: rgba(0,0,0,0.25);
-            border: 1px solid var(--color-border);
-            color: white;
-            border-radius: 5px;
-            outline: none;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .seller-inventory-table-panel-card {
-            flex: 1.8;
-            min-width: 500px;
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            padding: 25px;
-            border-radius: 8px;
-        }
-
-        .seller-inventory-table-panel-card h3 {
-            font-size: 18px;
-            color: var(--color-accent-gold);
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 8px;
-        }
-
-        .inventory-data-table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .merchant-inventory-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            text-align: left;
-        }
-
-        .merchant-inventory-table th {
-            background-color: rgba(0,0,0,0.2);
-            color: var(--color-accent-gold);
-            font-weight: 600;
-            padding: 12px;
-            border-bottom: 2px solid var(--color-border);
-        }
-
-        .merchant-inventory-table td {
-            padding: 14px 12px;
-            border-bottom: 1px solid var(--color-border);
-            color: #eeeeee;
-        }
-
-        .merchant-inventory-table tr:hover {
-            background-color: rgba(255,255,255,0.02);
-        }
-
-        .action-icon-btn-delete {
-            background-color: rgba(231, 29, 54, 0.15);
-            color: var(--color-danger);
-            border: 1px solid rgba(231, 29, 54, 0.3);
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .action-icon-btn-delete:hover {
-            background-color: var(--color-danger);
-            color: white;
-        }
-
-        /* ==========================================================================
-           6. SLIDING CART DRAWER SYSTEM COMPONENTS
-           ========================================================================== */
-        .cart-sliding-drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .cart-sliding-drawer-overlay.visible-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .cart-sliding-drawer-panel {
-            position: fixed;
-            top: 0;
-            right: -460px;
-            width: 460px;
-            height: 100%;
-            background-color: var(--color-card-bg);
-            box-shadow: -8px 0 25px rgba(0,0,0,0.6);
-            z-index: 2500;
-            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid var(--color-border);
-        }
-
-        @media (max-width: 480px) {
-            .cart-sliding-drawer-panel {
-                width: 100%;
-                right: -100%;
-            }
-        }
-
-        .cart-sliding-drawer-panel.open-drawer {
-            right: 0;
-        }
-
-        .cart-drawer-header-box {
-            background-color: var(--color-amazon-dark);
-            padding: 20px;
-            border-bottom: 1px solid var(--color-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-drawer-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-        }
-
-        .cart-drawer-close-btn-node {
-            background: none;
-            border: none;
-            color: var(--color-accent-gold);
-            font-size: 28px;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .cart-items-scroll-zone {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .cart-item-functional-row {
-            background-color: rgba(0,0,0,0.15);
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .cart-item-graphic-avatar {
-            font-size: 32px;
-            background-color: rgba(255,255,255,0.03);
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            border: 1px solid var(--color-border);
-        }
-
-        .cart-item-structural-info {
-            flex: 1;
-        }
-
-        .cart-item-name-string {
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-
-        .cart-item-price-string {
-            font-size: 13px;
-            color: var(--color-accent-gold);
-            font-weight: 700;
-        }
-
-        .cart-item-interactive-controls {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background-color: var(--color-amazon-dark);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--color-border);
-        }
-
-        .cart-item-modifier-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            width: 20px;
-            font-weight: bold;
-        }
-        .cart-item-modifier-btn:hover {
-            color: var(--color-accent-gold);
-        }
-
-        .cart-item-quantity-readout {
-            font-size: 13px;
-            font-weight: 700;
-            min-width: 15px;
-            text-align: center;
-        }
-
-        .cart-drawer-footer-billing-box {
-            background-color: var(--color-amazon-dark);
-            padding: 20px;
-            border-top: 1px solid var(--color-border);
-        }
-
-        .coupon-injection-wrapper-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .coupon-text-field {
-            flex: 1;
-            padding: 8px 12px;
-            background-color: rgba(255,255,255,0.05);
-            border: 1px solid var(--color-border);
-            color: white;
-            border-radius: 4px;
-            font-size: 13px;
-            outline: none;
-        }
-        .coupon-text-field:focus { border-color: var(--color-accent-gold); }
-
-        .coupon-apply-btn {
-            background-color: var(--color-amazon-light);
-            border: 1px solid var(--color-border);
-            color: white;
-            padding: 0 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .coupon-apply-btn:hover { background-color: rgba(255,255,255,0.05); }
-
-        .billing-summary-statement {
-            font-size: 13px;
-            color: #b8b8b8;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .billing-breakdown-row {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .billing-grand-total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            font-weight: 800;
-            color: white;
-            border-top: 1px dashed var(--color-border);
-            padding-top: 10px;
-            margin-top: 4px;
-        }
-
-        .cart-checkout-action-trigger {
-            width: 100%;
-            background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
-            border: 1px solid #a88734;
-            color: #111111;
-            padding: 12px;
-            border-radius: 5px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background 0.2s;
-        }
-
-        .cart-checkout-action-trigger:hover {
-            background: linear-gradient(to bottom, #f5d78e, #eeb933);
-        }
-
-        /* ==========================================================================
-           7. COMPREHENSIVE FOOTER LAYOUT ELEMENTS
-           ========================================================================== */
-        footer {
-            background-color: var(--color-amazon-light);
-            border-top: 1px solid var(--color-border);
-            margin-top: auto;
-        }
-
-        .footer-top-back-to-top-anchor {
-            background-color: #37475a;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        .footer-top-back-to-top-anchor:hover {
-            background-color: #485769;
-        }
-
-        .footer-directories-matrix-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-        }
-
-        .footer-directory-column h4 {
-            color: white;
-            font-size: 15px;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .footer-directory-column ul {
-            list-style: none;
-        }
-
-        .footer-directory-column ul li {
-            color: #dddddd;
-            font-size: 13px;
-            margin-bottom: 8px;
-            cursor: pointer;
-        }
-
-        .footer-directory-column ul li:hover {
+        a:hover {
+            color: var(--amazon-orange);
             text-decoration: underline;
         }
 
-        .footer-bottom-copyright-strip {
-            background-color: var(--color-amazon-dark);
-            text-align: center;
-            padding: 25px 20px;
-            color: var(--color-text-muted);
+        /* ==========================================================================
+           2. ENTERPRISE-SCALE SCROLLBAR DESIGN SYSTEM
+           ========================================================================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--amazon-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #485769;
+            border: 2px solid var(--amazon-dark);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--amazon-gold);
+        }
+
+        /* ==========================================================================
+           3. TOP NAVIGATION LAYOUT SYSTEM (AMAZON EXACT VISUALS)
+           ========================================================================== */
+        header {
+            background-color: var(--amazon-dark);
+            color: #ffffff;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-main-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            gap: 12px;
+            height: 60px;
+        }
+
+        .header-nav-box {
+            border: 1px solid transparent;
+            padding: 6px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: border 0.15s;
+        }
+
+        .header-nav-box:hover {
+            border: 1px solid #ffffff;
+        }
+
+        .brand-logo-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text-main {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text-sub {
+            color: var(--amazon-gold);
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 4px;
+            margin-left: 2px;
+        }
+
+        .location-marker-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .location-icon {
+            font-size: 18px;
+            margin-top: 8px;
+        }
+
+        .text-line-1 {
+            font-size: 12px;
+            color: #cccccc;
+            font-weight: 400;
+            display: block;
+            white-space: nowrap;
+        }
+
+        .text-line-2 {
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 700;
+            display: block;
+            white-space: nowrap;
+        }
+
+        /* Predictive Real-time Global Search Assembly Block */
+        .global-search-engine-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #ffffff;
+            transition: box-shadow 0.2s;
+        }
+
+        .global-search-engine-bar:focus-within {
+            box-shadow: 0 0 0 2px var(--amazon-orange);
+        }
+
+        .search-category-dropdown {
+            background-color: #f3f3f3;
+            color: var(--text-muted);
+            border: none;
+            height: 100%;
+            padding: 0 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border-right: 1px solid var(--border-gray);
+            outline: none;
+        }
+
+        .search-category-dropdown:hover {
+            background-color: #e3e3e3;
+            color: var(--amazon-text);
+        }
+
+        .search-main-input-field {
+            flex: 1;
+            height: 100%;
+            border: none;
+            padding: 0 12px;
+            font-size: 15px;
+            color: var(--amazon-text);
+            outline: none;
+        }
+
+        .search-submit-action-button {
+            background-color: var(--amazon-gold);
+            border: none;
+            height: 100%;
+            width: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        .search-submit-action-button:hover {
+            background-color: var(--amazon-orange);
+        }
+
+        .search-submit-action-button text {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--amazon-dark);
+        }
+
+        .cart-metric-badge-node {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+        }
+
+        .cart-absolute-numerical-readout {
+            position: absolute;
+            top: -6px;
+            left: 12px;
+            background-color: var(--amazon-orange);
+            color: var(--amazon-dark);
+            border-radius: 50%;
+            font-weight: 800;
             font-size: 13px;
-            border-top: 1px solid rgba(255,255,255,0.02);
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Secondary Navigation Subbar */
+        .sub-nav-menu-bar {
+            background-color: var(--amazon-light);
+            height: 39px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .sub-nav-links-cluster {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sub-nav-link {
+            border: 1px solid transparent;
+            padding: 5px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .sub-nav-link:hover {
+            border: 1px solid #ffffff;
+        }
+
+        .secure-gateway-button {
+            background-color: rgba(254, 189, 105, 0.1);
+            color: var(--amazon-gold);
+            border: 1px solid rgba(254, 189, 105, 0.3);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .secure-gateway-button:hover {
+            background-color: var(--amazon-gold);
+            color: var(--amazon-dark);
+        }
+
+        /* ==========================================================================
+           4. DYNAMIC SYSTEM SECURITY SYSTEM LAYOUT MODEL (GATEWAY MODAL)
+           ========================================================================== */
+        .security-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .security-card-box {
+            background-color: var(--card-white);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #ccc;
+            animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .security-card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--amazon-dark);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-gray);
+            padding-bottom: 8px;
+        }
+
+        .security-form-group {
+            margin-bottom: 20px;
+        }
+
+        .security-input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #111;
+        }
+
+        .security-text-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #a6a9a9;
+            border-radius: 3px;
+            font-size: 14px;
+            outline: none;
+            transition: box-shadow 0.15s;
+        }
+
+        .security-text-input:focus {
+            border-color: var(--amazon-orange);
+            box-shadow: 0 0 3px rgba(228, 121, 17, 0.5);
+        }
+
+        .security-action-row {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background-color: #eff0f3;
+            border: 1px solid #cdced1;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .btn-cancel:hover { background-color: #e7e9ec; }
+
+        .btn-authenticate {
+            background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+            border: 1px solid #a88734;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .btn-authenticate:hover {
+            background: linear-gradient(to bottom, #f5d78e, #eeb933);
+        }
+
+        .security-error-alert {
+            color: var(--danger-red);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* ==========================================================================
+           5. HERO IMAGERY CAROUSEL ENGINE GRID
+           ========================================================================== */
+        .home-hero-carousel-frame {
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+            height: 600px;
+            position: relative;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .carousel-track-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            font-weight: 800;
+            position: relative;
+        }
+
+        .slide-1 { background: linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, var(--amazon-background) 100%), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1500&q=80') center/cover; }
+        .slide-2 { background: linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, var(--amazon-background) 100%), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1500&q=80') center/cover; }
+        .slide-3 { background: linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, var(--amazon-background) 100%), url('https://images.unsplash.com/photo-1468436139062-f60a71c5c892?auto=format&fit=crop&w=1500&q=80') center/cover; }
+
+        .carousel-gradient-shade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(to top, var(--amazon-background) 0%, transparent 100%);
+            z-index: 5;
+        }
+
+        .carousel-control-btn {
+            position: absolute;
+            top: 0;
+            height: 250px;
+            width: 80px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 44px;
+            z-index: 10;
+            outline: none;
+        }
+
+        .carousel-control-btn:hover {
+            border: 2px solid var(--amazon-blue);
+        }
+
+        .btn-prev-slide { left: 0; }
+        .btn-next-slide { right: 0; }
+
+        /* ==========================================================================
+           6. PRODUCT GRID SYSTEM MATRIX BLOCK (HOME INTERFACE)
+           ========================================================================== */
+        .home-grid-layout-container {
+            max-width: 1500px;
+            width: 100%;
+            margin: -350px auto 0 auto;
+            padding: 0 20px 40px 20px;
+            position: relative;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .amazon-grid-card {
+            background-color: var(--card-white);
+            padding: 20px;
+            border-radius: 0px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+        }
+
+        .card-heading-title {
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--amazon-text);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .card-quad-grid-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .quad-node {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .quad-node-image-frame {
+            height: 100px;
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .quad-node-caption-text {
+            font-size: 12px;
+            color: var(--amazon-text);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .card-single-showcase-frame {
+            flex: 1;
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            margin-bottom: 15px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .card-footer-anchor-link {
+            font-size: 13px;
+            color: var(--amazon-blue);
+            margin-top: auto;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* ==========================================================================
+           7. MASSIVE FOOTER FRAMEWORK LAYOUT
+           ========================================================================== */
+        footer {
+            background-color: var(--amazon-light);
+            color: #ffffff;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer-scroll-return-strip {
+            background-color: #37475a;
+            height: 49px;
+            text-align: center;
+            line-height: 49px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        .footer-scroll-return-strip:hover {
+            background-color: #485769;
+        }
+
+        .footer-columns-directory-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        .footer-column-stack h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: #ffffff;
+        }
+
+        .footer-column-stack ul {
+            list-style: none;
+        }
+
+        .footer-column-stack ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column-stack ul li a {
+            color: #dddddd;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .footer-column-stack ul li a:hover {
+            text-decoration: underline;
+            color: #ffffff;
+        }
+
+        .footer-branding-row-divider {
+            border-top: 1px solid #3a4553;
+            padding: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .footer-legal-copyright-strip {
+            background-color: var(--amazon-dark);
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #999999;
+        }
+
+        .footer-legal-links-row {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 10px;
+        }
+
+        .footer-legal-links-row a {
+            color: #ddd;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="main-header-row">
-            <div class="logo-area" onclick="RuntimeEngine.routing.switchView('storefront-view')">
-                <div class="logo-text">SRP Shopping</div>
-                <div class="logo-extension">PRO</div>
+        <div class="header-main-row">
+            
+            <div class="header-nav-box brand-logo-area" onclick="MainApplicationEngine.navigation.gotoRoute('home.html')">
+                <span class="logo-text-main">srp shopping</span>
+                <span class="logo-text-sub">.in</span>
             </div>
 
-            <div class="search-container-engine">
-                <select class="search-select-category" id="global-search-category-dropdown">
-                    <option value="All">All Categories</option>
+            <div class="header-nav-box location-marker-container" onclick="alert('Geolocational delivery coordinate tracking infrastructure initializing via system cache records.')">
+                <span class="location-icon">📍</span>
+                <div>
+                    <span class="text-line-1">Delivering to Jalore</span>
+                    <span class="text-line-2">Update location</span>
+                </div>
+            </div>
+
+            <div class="global-search-engine-bar">
+                <select class="search-category-dropdown" id="global-search-category-selection-node">
+                    <option value="All">All Departments</option>
                     <option value="Electronics">Electronics</option>
-                    <option value="Components">Components</option>
-                    <option value="Tools">Tools</option>
-                    <option value="Accessories">Accessories</option>
+                    <option value="Components">Components Hardware</option>
+                    <option value="Tools">Industrial Tools</option>
+                    <option value="Automotive">Automotive</option>
                 </select>
-                <input type="text" class="search-main-input" id="global-search-input-field" placeholder="Search items, components, listings...">
-                <button class="search-btn search-action-trigger" onclick="RuntimeEngine.storefront.executeFilteredQuerySearch()">Search</button>
+                <input type="text" class="search-main-input-field" id="global-search-query-string-node" placeholder="Search SRP Shopping marketplace catalog assets...">
+                <button class="search-submit-action-button" onclick="MainApplicationEngine.search.fireGlobalQueryRedirect()">
+                    <span style="font-weight:900; font-size:16px;">🔍</span>
+                </button>
             </div>
 
-            <div class="header-actions-wrapper">
-                <div class="action-node" onclick="RuntimeEngine.routing.switchView('seller-view')">
-                    <span class="line-top">Hello, Vendor Partner</span>
-                    <span class="line-bottom">Seller Central</span>
-                </div>
+            <div class="header-actions-wrapper" style="display:flex; align-items:center; gap:10px;">
                 
-                <div class="action-node" onclick="alert('Account profile authentication integration module is available in the cloud backend service extension tier.')">
-                    <span class="line-top">Returns</span>
-                    <span class="line-bottom">& Orders</span>
+                <div class="header-nav-box" onclick="MainApplicationEngine.navigation.gotoRoute('account.html')">
+                    <span class="text-line-1">Hello, Sign In</span>
+                    <span class="text-line-2">Account & Lists ▾</span>
                 </div>
 
-                <div class="interactive-cart-badge-trigger" onclick="RuntimeEngine.cart.toggleCartDrawerState(true)">
-                    <div class="action-node">
-                        <span class="line-top" style="margin-bottom: -2px;">Shopping</span>
-                        <span class="line-bottom">🛒 Cart</span>
-                    </div>
-                    <span class="header-global-cart-counter" id="global-header-cart-badge-counter">0</span>
+                <div class="header-nav-box" onclick="alert('Order transaction receipts ledger synchronization layer offline.')">
+                    <span class="text-line-1">Returns</span>
+                    <span class="text-line-2">& Orders</span>
                 </div>
+
+                <div class="header-nav-box" onclick="MainApplicationEngine.security.invokeSystemAuthorizationGate('seller')">
+                    <span class="text-line-1">Merchant Hub</span>
+                    <span class="text-line-2">Seller Dashboard</span>
+                </div>
+
+                <div class="header-nav-box" onclick="MainApplicationEngine.security.invokeSystemAuthorizationGate('admin')">
+                    <span class="text-line-1">Terminal Master</span>
+                    <span class="text-line-2" style="color:var(--amazon-gold);">Admin Panel</span>
+                </div>
+
+                <div class="header-nav-box cart-metric-badge-node" onclick="MainApplicationEngine.navigation.gotoRoute('cart.html')">
+                    <span class="cart-absolute-numerical-readout" id="global-header-cart-numerical-badge-counter">0</span>
+                    <span style="font-size:24px;">🛒</span>
+                    <span class="text-line-2" style="margin-top:10px;">Cart</span>
+                </div>
+
             </div>
         </div>
 
-        <div class="sub-nav-bar">
-            <div class="sub-nav-content">
-                <div class="links-group">
-                    <span style="font-weight: 700; color: var(--color-accent-gold);" onclick="RuntimeEngine.storefront.clearAllFiltersAndReset()"><i style="margin-right:4px;">📋</i> All Departments</span>
-                    <span onclick="RuntimeEngine.storefront.filterByCategoryShortcut('Electronics')">Consumer Electronics</span>
-                    <span onclick="RuntimeEngine.storefront.filterByCategoryShortcut('Components')">Hardware Components</span>
-                    <span onclick="RuntimeEngine.storefront.filterByCategoryShortcut('Tools')">Industrial Tools</span>
-                    <span onclick="RuntimeEngine.storefront.filterByCategoryShortcut('Accessories')">Device Accessories</span>
-                </div>
-                <button class="platform-mode-btn-node" id="global-platform-mode-view-switcher" onclick="RuntimeEngine.routing.toggleInterchangedPlatformViewMode()">
-                    Switch to Seller Console Dashboard
-                </button>
+        <div class="sub-nav-menu-bar">
+            <div class="sub-nav-links-cluster">
+                <div class="sub-nav-link" style="font-weight:700;" onclick="alert('Sidebar primary directory browser initialization trace.')">☰ All</div>
+                <div class="sub-nav-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Electronics')">Consumer Electronics</div>
+                <div class="sub-nav-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Components')">Hardware Microcomponents</div>
+                <div class="sub-nav-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Tools')">Industrial Tools</div>
+                <div class="sub-nav-link" onclick="alert('Corporate bulk purchasing discount tables active inside target models.')">Mobiles & Tablets</div>
+                <div class="sub-nav-link" onclick="alert('Direct synchronization pipeline link mapped.')">Customer Service</div>
+            </div>
+            <div>
+                <span style="font-size:14px; font-weight:700; color:var(--amazon-gold); cursor:pointer;" onclick="alert('Exclusive Prime access models active inside 2026 application runtime.')">SRP Prime Membership Options Active</span>
             </div>
         </div>
     </header>
 
-    <div class="app-container">
-        
-        <section id="storefront-view" class="view-section active-view">
-            <aside class="storefront-sidebar">
-                <div class="sidebar-block">
-                    <h3>Filter Departments</h3>
-                    <ul class="category-filter-links" id="sidebar-category-links-list">
-                        </ul>
-                </div>
-
-                <div class="sidebar-block">
-                    <h3>Refine Pricing (₹)</h3>
-                    <div class="filter-price-inputs-row">
-                        <input type="number" id="filter-price-min-box" class="filter-price-input" placeholder="Min">
-                        <span style="color:var(--color-text-muted)">-</span>
-                        <input type="number" id="filter-price-max-box" class="filter-price-input" placeholder="Max">
-                    </div>
-                    <button class="btn-primary mt-10" style="width:100%; padding:8px; font-size:13px;" onclick="RuntimeEngine.storefront.executeFilteredQuerySearch()">
-                        Apply Price Filter
-                    </button>
-                </div>
-
-                <div class="sidebar-block">
-                    <h3>Inventory Status</h3>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer;">
-                        <input type="checkbox" id="filter-instock-checkbox-toggle" onchange="RuntimeEngine.storefront.executeFilteredQuerySearch()"> Exclude Out of Stock
-                    </label>
-                </div>
-
-                <button class="btn-secondary" style="width:100%; padding:8px; font-size:12px;" onclick="RuntimeEngine.storefront.clearAllFiltersAndReset()">
-                    Clear Current Filters
-                </button>
-            </aside>
-
-            <div class="main-storefront-content-area">
-                <div class="promo-hero-card">
-                    <h1>SRP Multi-Vendor Development Environment</h1>
-                    <p>Welcome to your completely localized sandbox architecture. Test vendor publishing structures, item listings engines, real-time reactive cart updates, and persistent indexing caching inside your browser environment layer instantly.</p>
-                    <div class="promo-coupon-pill">🎟️ ACTIVE RUNTIME DISCOUNT COUPON CODE: SRPFREE (Save ₹150)</div>
-                </div>
-
-                <div class="flex-between mb-20">
-                    <h2 style="font-size: 20px; font-weight:600;" id="storefront-results-header-title">Trending Catalog Items</h2>
-                    <span style="font-size:14px; color:var(--color-text-muted);" id="storefront-results-count-tracker">Showing 0 matching elements</span>
-                </div>
-
-                <div class="storefront-products-grid-wrapper" id="live-storefront-products-injection-grid">
-                    </div>
-            </div>
-        </section>
-
-        <section id="seller-view" class="view-section">
-            <div class="seller-central-wrapper seller-console-wrapper">
-                <div class="seller-console-header-row flex-between">
-                    <div>
-                        <h2 style="font-size:22px; font-weight:700;">Seller Central Merchant Dashboard</h2>
-                        <p style="color:var(--color-text-muted); font-size:14px; margin-top:2px;">Manage live catalog inventories, track metrics performance, and expand open store profiles.</p>
-                    </div>
-                    <button class="btn-primary" onclick="RuntimeEngine.routing.switchView('storefront-view')">Return to Consumer Frontpage</button>
-                </div>
-
-                <div class="seller-analytical-metrics-grid">
-                    <div class="analytics-card-node card-blue">
-                        <div class="analytics-card-title">Aggregated Gross Sales</div>
-                        <div class="analytics-card-value">₹1,84,390.00</div>
-                        <div class="analytics-card-subtext subtext-positive">📈 +14.2% Growth trajectory this week</div>
-                    </div>
-                    <div class="analytics-card-node card-gold">
-                        <div class="analytics-card-title">Fulfillment Units Shipped</div>
-                        <div class="analytics-card-value">542 Items</div>
-                        <div class="analytics-card-subtext subtext-positive">📦 100% On-time dispatch rate matrix</div>
-                    </div>
-                    <div class="analytics-card-node card-success">
-                        <div class="analytics-card-title">Monitored Platform Catalog</div>
-                        <div class="analytics-card-value" id="seller-metrics-active-listings-count">0 Items</div>
-                        <div class="analytics-card-subtext subtext-neutral">🔄 Synced to active runtime state cluster</div>
-                    </div>
-                    <div class="analytics-card-node card-danger">
-                        <div class="analytics-card-title">System Out of Stock Alerts</div>
-                        <div class="analytics-card-value" id="seller-metrics-out-of-stock-count">0 Items</div>
-                        <div class="analytics-card-subtext" style="color:var(--color-danger)">⚠️ High urgency replenishment recommended</div>
-                    </div>
-                </div>
-
-                <div class="seller-workcenter-split-layout">
-                    <div class="seller-form-panel-card">
-                        <h3>Publish a New Catalog Listing</h3>
-                        <form id="merchant-product-creation-form" onsubmit="RuntimeEngine.sellerCentral.processProductListingCreation(event)">
-                            <div class="form-input-group">
-                                <label for="input-product-title">Listing Name / Description Title</label>
-                                <input type="text" id="input-product-title" class="form-input-element" placeholder="e.g. 12V High-Torque Coreless Servo Motor Pack" required>
-                            </div>
-                            
-                            <div class="form-input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                <div>
-                                    <label for="select-product-category">Target Category</label>
-                                    <select id="select-product-category" class="form-select-element">
-                                        <option value="Electronics">Electronics</option>
-                                        <option value="Components">Components</option>
-                                        <option value="Tools">Tools</option>
-                                        <option value="Accessories">Accessories</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="input-product-emoji">Graphic Identifier (Emoji)</label>
-                                    <input type="text" id="input-product-emoji" class="form-input-element" placeholder="e.g. ⚙️, 🔌, 🔋" maxlength="2" required>
-                                </div>
-                            </div>
-
-                            <div class="form-input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                <div>
-                                    <label for="input-product-price">Unit Valuation (₹ INR)</label>
-                                    <input type="number" id="input-product-price" class="form-input-element" min="1" placeholder="e.g. 899" required>
-                                </div>
-                                <div>
-                                    <label for="input-product-stock">Initial Stock Unit Allocation</label>
-                                    <input type="number" id="input-product-stock" class="form-input-element" min="0" placeholder="e.g. 25" required>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="submit-form-btn btn-primary" style="width: 100%; margin-top: 5px;">
-                                Authorize & Commit Product to Marketplace
-                            </button>
-                        </form>
-
-                        <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--color-border);">
-                        <button class="action-icon-btn-delete" style="width:100%; padding:10px; font-size:13px;" onclick="RuntimeEngine.storage.wipeCompleteApplicationStateCache()">
-                            ⚠️ Purge Application Memory / Reset to Seed State
-                        </button>
-                    </div>
-
-                    <div class="seller-inventory-table-panel-card">
-                        <h3>Active Inventory Catalog Matrix</h3>
-                        <div class="inventory-data-table-container">
-                            <table class="merchant-inventory-table">
-                                <thead>
-                                    <tr>
-                                        <th>Icon</th>
-                                        <th>Product Title Details</th>
-                                        <th>Category</th>
-                                        <th>Price Unit</th>
-                                        <th>Stock Balance</th>
-                                        <th>Operations</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="merchant-inventory-data-table-rows-target">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <div class="cart-sliding-drawer-overlay" id="global-cart-drawer-overlay-element" onclick="RuntimeEngine.cart.toggleCartDrawerState(false)"></div>
-    <div class="cart-sliding-drawer-panel" id="global-cart-drawer-sliding-panel-container">
-        <div class="cart-drawer-header-box">
-            <span class="cart-drawer-title">Shopping Cart Checkout Pipeline</span>
-            <button class="cart-drawer-close-btn-node" onclick="RuntimeEngine.cart.toggleCartDrawerState(false)">&times;</button>
-        </div>
-
-        <div class="cart-items-scroll-zone" id="cart-drawer-scroll-items-injection-target">
-            </div>
-
-        <div class="cart-drawer-footer-billing-box">
-            <div class="coupon-injection-wrapper-row">
-                <input type="text" id="cart-coupon-text-input-field" class="coupon-text-field" placeholder="Enter coupon code (e.g., SRPFREE)">
-                <button class="coupon-apply-btn" onclick="RuntimeEngine.cart.processCouponCodeApplication()">Apply Code</button>
-            </div>
-
-            <div class="billing-summary-statement">
-                <div class="billing-breakdown-row">
-                    <span>Items Subtotal Valuation:</span>
-                    <span id="billing-subtotal-readout-field">₹0.00</span>
-                </div>
-                <div class="billing-breakdown-row">
-                    <span>Applied Coupon Deductions:</span>
-                    <span id="billing-deductions-readout-field" style="color:var(--color-success)">-₹0.00</span>
-                </div>
-                <div class="billing-breakdown-row">
-                    <span>Estimated Processing & Shipping:</span>
-                    <span id="billing-shipping-readout-field" style="color:var(--color-success)">FREE Shipping</span>
-                </div>
-                <div class="billing-grand-total-row">
-                    <span>Grand Cumulative Total:</span>
-                    <span id="billing-grand-total-readout-field">₹0.00</span>
+    <div class="security-modal-overlay" id="global-system-security-modal-overlay-gateway">
+        <div class="security-card-box">
+            <div class="security-card-title" id="security-modal-dynamic-title-readout">System Authorization Challenge</div>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px; line-height:1.4;">
+                Warning: Entering a restricted platform boundary terminal environment. Authentication signature verification hash confirmation protocols required.
+            </p>
+            
+            <div class="security-form-group">
+                <label class="security-input-label" for="security-gateway-passcode-field">Enter Master Security Access Passcode Key</label>
+                <input type="password" id="security-gateway-passcode-field" class="security-text-input" placeholder="••••••••••••••••">
+                <div class="security-error-alert" id="security-gateway-error-message-node">
+                    ❌ Access Denied: Authentication validation credentials hash mismatch.
                 </div>
             </div>
 
-            <button class="cart-checkout-action-trigger" onclick="RuntimeEngine.cart.executeCheckoutPipelineOrderSubmission()">
-                Finalize Secure Placement Transaction Order
-            </button>
+            <div class="security-action-row">
+                <button class="btn-cancel" onclick="MainApplicationEngine.security.dismissSystemAuthorizationGate()">Cancel Escape</button>
+                <button class="btn-authenticate" onclick="MainApplicationEngine.security.verifySystemAuthorizationCredentials()">Submit Signature Verify</button>
+            </div>
         </div>
     </div>
+
+    <main style="flex:1; width:100%;">
+        <section class="home-hero-carousel-frame">
+            <div class="carousel-track-wrapper" id="home-hero-carousel-track-node">
+                <div class="carousel-slide slide-1"></div>
+                <div class="carousel-slide slide-2"></div>
+                <div class="carousel-slide slide-3"></div>
+            </div>
+            <div class="carousel-gradient-shade"></div>
+            
+            <button class="carousel-control-btn btn-prev-slide" onclick="MainApplicationEngine.carousel.shiftSlideIndexDelta(-1)">‹</button>
+            <button class="carousel-control-btn btn-next-slide" onclick="MainApplicationEngine.carousel.shiftSlideIndexDelta(1)">›</button>
+        </section>
+
+        <section class="home-grid-layout-container" id="home-dynamic-categories-cards-grid-target">
+            
+            <div class="amazon-grid-card">
+                <h3 class="card-heading-title">High-Torque DC Geared Motors</h3>
+                <div class="card-quad-grid-box">
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Brushless Motor')">
+                        <div class="quad-node-image-frame">⚡</div>
+                        <div class="quad-node-caption-text">5V Brushless Systems</div>
+                    </div>
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Servo')">
+                        <div class="quad-node-image-frame">⚙️</div>
+                        <div class="quad-node-caption-text">High Torque Servos</div>
+                    </div>
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Stepper')">
+                        <div class="quad-node-image-frame">🔲</div>
+                        <div class="quad-node-caption-text">NEMA Stepper Kits</div>
+                    </div>
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Coreless')">
+                        <div class="quad-node-image-frame">🔌</div>
+                        <div class="quad-node-caption-text">Micro Coreless Drive</div>
+                    </div>
+                </div>
+                <a href="#" class="card-footer-anchor-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Components')">See full technical catalog entries</a>
+            </div>
+
+            <div class="amazon-grid-card">
+                <h3 class="card-heading-title">Professional Test Lab Equipment</h3>
+                <div class="card-single-showcase-frame" onclick="MainApplicationEngine.search.filterByItemKeywords('Oscilloscope')">
+                    🔬
+                </div>
+                <a href="#" class="card-footer-anchor-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Electronics')">Explore elite analytical diagnostic tooling options</a>
+            </div>
+
+            <div class="amazon-grid-card">
+                <h3 class="card-heading-title">Bench Power & Multimeters</h3>
+                <div class="card-quad-grid-box">
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Linear Supply')">
+                        <div class="quad-node-image-frame">🔋</div>
+                        <div class="quad-node-caption-text">Linear Bench DC</div>
+                    </div>
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Multimeter')">
+                        <div class="quad-node-image-frame">📟</div>
+                        <div class="quad-node-caption-text">Digital Multimeters</div>
+                    </div>
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Heat Sink')">
+                        <div class="quad-node-image-frame">🧊</div>
+                        <div class="quad-node-caption-text">Thermal Dissipation</div>
+                    </div>
+                    <div class="quad-node" onclick="MainApplicationEngine.search.filterByItemKeywords('Solder')">
+                        <div class="quad-node-image-frame">🔥</div>
+                        <div class="quad-node-caption-text">Soldering Stations</div>
+                    </div>
+                </div>
+                <a href="#" class="card-footer-anchor-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Tools')">View industrial hardware sets</a>
+            </div>
+
+            <div class="amazon-grid-card">
+                <h3 class="card-heading-title">Device Armor & Shield Cases</h3>
+                <div class="card-single-showcase-frame" style="background-color:#eaeaea;" onclick="MainApplicationEngine.search.filterByItemKeywords('Case')">
+                    📱
+                </div>
+                <a href="#" class="card-footer-anchor-link" onclick="MainApplicationEngine.search.filterCategoryDirectly('Accessories')">Discover premium shockproof device wrappers</a>
+            </div>
+
+        </section>
+    </main>
 
     <footer>
-        <div class="footer-top-back-to-top-anchor" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
-            Back to Top Navigation Section
+        <div class="footer-scroll-return-strip" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            Back to Top of Page Navigation Context
         </div>
         
-        <div class="footer-directories-matrix-grid">
-            <div class="footer-directory-column">
+        <div class="footer-columns-directory-grid">
+            <div class="footer-column-stack">
                 <h4>Get to Know Us</h4>
                 <ul>
-                    <li>Careers</li>
-                    <li>About SRP Shopping</li>
-                    <li>Sustainability Initiatives</li>
-                    <li>Press Center Room</li>
+                    <li><a href="#">About SRP Studio Corporate</a></li>
+                    <li><a href="#">Sustainable Mechanical Architecture Engineering</a></li>
+                    <li><a href="#">Press Communiques Room</a></li>
+                    <li><a href="#">SRP Commerce Open Source Development Branch</a></li>
                 </ul>
             </div>
-            <div class="footer-directory-column">
+            <div class="footer-column-stack">
+                <h4>Connect with Our Engineers</h4>
+                <ul>
+                    <li><a href="#">Facebook Public Interfaces Portal</a></li>
+                    <li><a href="#">Twitter System Diagnostic Status Updates</a></li>
+                    <li><a href="#">Instagram Hardware Showcases</a></li>
+                </ul>
+            </div>
+            <div class="footer-column-stack">
                 <h4>Make Money with Us</h4>
                 <ul>
-                    <li>Sell on SRP Marketplace</li>
-                    <li>Supply Chain Merchant Hub</li>
-                    <li>Protect and Build Your Brand</li>
-                    <li>Become an Affiliate Marketer</li>
+                    <li><a href="#">Sell Custom Modules on SRP Shopping</a></li>
+                    <li><a href="#">Supply Chain Fulfillment Integration Network</a></li>
+                    <li><a href="#">Become a Verified Merchant Syndicate Node</a></li>
+                    <li><a href="#">Advertise Your Proprietary Component Frameworks</a></li>
                 </ul>
             </div>
-            <div class="footer-directory-column">
-                <h4>Payment Products Portfolio</h4>
+            <div class="footer-column-stack">
+                <h4>Let Us Help You Secure Transactions</h4>
                 <ul>
-                    <li>SRP Business Card Matrix</li>
-                    <li>Shop with Points Systems</li>
-                    <li>Reload Your Corporate Wallet</li>
-                    <li>Currency Conversion Engines</li>
-                </ul>
-            </div>
-            <div class="footer-directory-column">
-                <h4>Let Us Help You</h4>
-                <ul>
-                    <li>Your Account Panel Settings</li>
-                    <li>Fulfillment Shipping Policies</li>
-                    <li>Returns & Replacements Hub</li>
-                    <li>Customer Support Console</li>
+                    <li><a href="#">Your Account Control Parameters Core</a></li>
+                    <li><a href="#">Fulfillment Return Policies Matrices</a></li>
+                    <li><a href="#">Manage Digital Wallet Cryptographic Reserves</a></li>
+                    <li><a href="#">Technical Customer Support Escalation Queue</a></li>
                 </ul>
             </div>
         </div>
 
-        <div class="footer-bottom-copyright-strip">
-            &copy; 2026 SRP SHOPPING - Global Enterprise Open Marketplace Sandbox Simulation Module. Licensed Under Creative Commons Open Development Environment Framework Pipelines. Fully Free.
+        <div class="footer-branding-row-divider">
+            <div style="font-size:20px; font-weight:800; color:var(--amazon-gold);">srp shopping</div>
+            <div style="font-size:13px; color:#ccc; border:1px solid #565959; padding:6px 12px; border-radius:3px; cursor:pointer;">
+                🌐 English (Global Systems Dialect Configuration Context)
+            </div>
+            <div style="font-size:13px; color:#ccc; border:1px solid #565959; padding:6px 12px; border-radius:3px; cursor:pointer;">
+                🇮🇳 India (Primary Trade Distribution Registry Node)
+            </div>
+        </div>
+
+        <div class="footer-legal-copyright-strip">
+            <div class="footer-legal-links-row">
+                <a href="#">Conditions of Use</a>
+                <a href="#">Privacy Notice Matrix</a>
+                <a href="#">Interest-Based Ads Tracking Parameters Policy Statement</a>
+            </div>
+            <span>&copy; 2026, SRP Shopping Inc. or its designated administrative operational brand affiliates ("SRP Studio Master Registries Cluster Framework"). All Rights Reserved.</span>
         </div>
     </footer>
 
     <script>
         /**
          * --------------------------------------------------------------------------
-         * SYSTEM CORE NAMESPACE SCOPING ENCAPSULATION MODULE
+         * SYSTEM MAIN ARCHITECTURAL ENCAPSULATION WRAPPER ROUTING NAMESPACE
          * --------------------------------------------------------------------------
-         * Encapsulates logic frameworks cleanly into single isolated execution modules 
-         * mimicking an architectural component model framework.
+         * This standalone engine controls data structures, operational memory matrices,
+         * authorization profiles, cross-window redirection pipelines, and state synchants.
          */
-        const RuntimeEngine = (() => {
-            
-            // Core application state definitions
-            let activeUIStateChannel = "storefront-view";
-            let centralProductsCatalogArray = [];
-            let activeUserShoppingCartArray = [];
-            let activeAppliedDiscountCodeString = "";
-            let selectedFilteringCategoryString = "All";
+        const MainApplicationEngine = (() => {
 
-            // Static initialization fallback fallback catalog data array models 
-            const seedFactoryDefaultInventoryArrays = [
+            // Enforced Security Signature Token Key Const Match Parameters
+            const CRYPTOGRAPHIC_ACCESS_HASH_KEY = "SRP_SECURE_2026";
+
+            // Runtime App Internal State Cache Maps
+            let activeSecurityTargetViewIdentityString = "";
+            let coreProductsMemoryCatalogMatrix = [];
+            let activeUserShoppingCartStateArray = [];
+            let activeCarouselSlideIndexValue = 0;
+
+            // Seed Data Arrays Blueprint Framework Models Mapped Directly to Browser Storage Pools
+            const systemFallbackSeedCatalogDatabase = [
                 { id: 2001, title: "Premium 5V Brushless High-Torque DC Geared Motor Core", category: "Components", price: 450, stock: 42, rating: 4.5, emoji: "⚡" },
                 { id: 2002, title: "Ultra-Slim Shockproof Impact Case shell for Mobile Devices", category: "Accessories", price: 299, stock: 110, rating: 4.8, emoji: "📱" },
                 { id: 2003, title: "High-Accuracy Auto-Ranging Digital Multimeter Pro-Kit", category: "Tools", price: 1250, stock: 15, rating: 4.2, emoji: "📟" },
@@ -1367,560 +911,230 @@
 
             /**
              * --------------------------------------------------------------------------
-             * INTERNAL STORAGE AND SYNCHRONIZATION DATA TIER CONTROLLERS
+             * HARDWARE MEMORY STORAGE SYNCHRONIZATION PIPELINES DATA LAYER
              * --------------------------------------------------------------------------
              */
-            const storageControllerModule = {
-                loadSystemRegistryStates: () => {
+            const storageEngineDataSubTier = {
+                initializeLocalStorageTablesRegistry: () => {
                     try {
-                        const storedProducts = localStorage.getItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY");
-                        const storedCart = localStorage.getItem("SRP_ENTERPRISE_USER_CART_REGISTRY");
-                        const storedCoupon = localStorage.getItem("SRP_ENTERPRISE_ACTIVE_COUPON");
+                        const localProductsToken = localStorage.getItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY");
+                        const localCartToken = localStorage.getItem("SRP_ENTERPRISE_USER_CART_REGISTRY");
 
-                        if (storedProducts) {
-                            centralProductsCatalogArray = JSON.parse(storedProducts);
+                        if (!localProductsToken) {
+                            localStorage.setItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY", JSON.stringify(systemFallbackSeedCatalogDatabase));
+                            coreProductsMemoryCatalogMatrix = [...systemFallbackSeedCatalogDatabase];
                         } else {
-                            centralProductsCatalogArray = [...seedFactoryDefaultInventoryArrays];
-                            storageControllerModule.commitActiveRegistryStateToStorageChannels();
+                            coreProductsMemoryCatalogMatrix = JSON.parse(localProductsToken);
                         }
 
-                        activeUserShoppingCartArray = storedCart ? JSON.parse(storedCart) : [];
-                        activeAppliedDiscountCodeString = storedCoupon ? JSON.parse(storedCoupon) : "";
+                        if (!localCartToken) {
+                            localStorage.setItem("SRP_ENTERPRISE_USER_CART_REGISTRY", JSON.stringify([]));
+                            activeUserShoppingCartStateArray = [];
+                        } else {
+                            activeUserShoppingCartStateArray = JSON.parse(localCartToken);
+                        }
                     } catch (error) {
-                        console.error("Local Storage Pipeline processing execution error failure parsing registry keys:", error);
-                        centralProductsCatalogArray = [...seedFactoryDefaultInventoryArrays];
-                        activeUserShoppingCartArray = [];
+                        console.error("Critical State Storage Registry initialization fault mapping block maps:", error);
+                        coreProductsMemoryCatalogMatrix = [...systemFallbackSeedCatalogDatabase];
+                        activeUserShoppingCartStateArray = [];
                     }
                 },
 
-                commitActiveRegistryStateToStorageChannels: () => {
+                commitMemoryStateArraysToBrowserStorage: () => {
                     try {
-                        localStorage.setItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY", JSON.stringify(centralProductsCatalogArray));
-                        localStorage.setItem("SRP_ENTERPRISE_USER_CART_REGISTRY", JSON.stringify(activeUserShoppingCartArray));
-                        localStorage.setItem("SRP_ENTERPRISE_ACTIVE_COUPON", JSON.stringify(activeAppliedDiscountCodeString));
+                        localStorage.setItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY", JSON.stringify(coreProductsMemoryCatalogMatrix));
+                        localStorage.setItem("SRP_ENTERPRISE_USER_CART_REGISTRY", JSON.stringify(activeUserShoppingCartStateArray));
                     } catch (error) {
-                        console.error("Storage write transaction failure operation error matching state maps:", error);
-                    }
-                },
-
-                wipeCompleteApplicationStateCache: () => {
-                    if (confirm("Execute destructive action purge? This drops local tables and initializes empty default array sets immediately.")) {
-                        localStorage.removeItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY");
-                        localStorage.removeItem("SRP_ENTERPRISE_USER_CART_REGISTRY");
-                        localStorage.removeItem("SRP_ENTERPRISE_ACTIVE_COUPON");
-                        window.location.reload();
+                        console.error("Storage transactional commit error sequence matching data arrays maps:", error);
                     }
                 }
             };
 
             /**
              * --------------------------------------------------------------------------
-             * CLIENT CORE SPA INTERACTIVE APP SURFACE ROUTING INTERNALS
+             * CROSS VIEW ROUTING REDIRECTION INTERFACES ENGINE LAYER
              * --------------------------------------------------------------------------
              */
-            const routingControllerModule = {
-                switchView: (targetViewId) => {
-                    document.querySelectorAll('.view-section').forEach(element => {
-                        element.classList.remove('active-view');
-                    });
-                    
-                    const targetDOMNode = document.getElementById(targetViewId);
-                    if (targetDOMNode) {
-                        targetDOMNode.classList.add('active-view');
-                        activeUIStateChannel = targetViewId;
-                    }
-
-                    // Sync state variables across toggle views
-                    const platformModeToggleBtn = document.getElementById("global-platform-mode-view-switcher");
-                    if (activeUIStateChannel === "seller-view") {
-                        platformModeToggleBtn.innerText = "Switch to Customer Storefront Frontpage";
-                    } else {
-                        platformModeToggleBtn.innerText = "Switch to Seller Console Dashboard";
-                    }
-
-                    // Render views dynamically
-                    uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-                    uiRenderPipelineModule.refreshSellerDashboardPanelDOM();
-                },
-
-                toggleInterchangedPlatformViewMode: () => {
-                    if (activeUIStateChannel === "storefront-view") {
-                        routingControllerModule.switchView("seller-view");
-                    } else {
-                        routingControllerModule.switchView("storefront-view");
-                    }
+            const spatialNavigationRedirectionLayer = {
+                gotoRoute: (targetFileNameString) => {
+                    console.log(`Executing redirect link routing vector payload sequence tracking node: /${targetFileNameString}`);
+                    // Since views are physical split pages, we issue immediate window routing mutations
+                    window.location.href = targetFileNameString;
                 }
             };
 
             /**
              * --------------------------------------------------------------------------
-             * CUSTOMER FRONT STOREFRONT QUERY OPERATIONS PIPELINE MANAGEMENT MODULE
+             * DYNAMIC CONTENT QUERY BROKER ARCHITECTURE COMPONENT SYSTEM
              * --------------------------------------------------------------------------
              */
-            const storefrontControllerModule = {
-                executeFilteredQuerySearch: () => {
-                    const searchInputText = document.getElementById("global-search-input-field").value.toLowerCase().trim();
-                    const searchCategorySelection = document.getElementById("global-search-category-dropdown").value;
+            const clientSideQuerySearchBroker = {
+                fireGlobalQueryRedirect: () => {
+                    const queryBoxString = document.getElementById("global-search-query-string-node").value.trim();
+                    const dropdownCategoryString = document.getElementById("global-search-category-selection-node").value;
                     
-                    const priceMinVal = parseFloat(document.getElementById("filter-price-min-box").value) || 0;
-                    const priceMaxVal = parseFloat(document.getElementById("filter-price-max-box").value) || Infinity;
-                    const excludeOutOfStockToggle = document.getElementById("filter-instock-checkbox-toggle").checked;
+                    // Commit search context values to storage cache so home/results components capture context state matching rules
+                    localStorage.setItem("SRP_ACTIVE_QUERY_STRING_CACHE", queryBoxString);
+                    localStorage.setItem("SRP_ACTIVE_CATEGORY_FILTER_CACHE", dropdownCategoryString);
 
-                    // Sync categories selected inside cross layout controls components
-                    if (searchCategorySelection !== "All") {
-                        selectedFilteringCategoryString = searchCategorySelection;
-                    }
-
-                    const arrayFilteringPipelineStreamResult = centralProductsCatalogArray.filter(product => {
-                        const matchesSearchTerm = product.title.toLowerCase().includes(searchInputText);
-                        const matchesCategory = (selectedFilteringCategoryString === "All") || (product.category === selectedFilteringCategoryString);
-                        const matchesPriceRange = (product.price >= priceMinVal) && (product.price <= priceMaxVal);
-                        const matchesStockThreshold = !excludeOutOfStockToggle || (product.stock > 0);
-
-                        return matchesSearchTerm && matchesCategory && matchesPriceRange && matchesStockThreshold;
-                    });
-
-                    uiRenderPipelineModule.renderDynamicProductGridStream(arrayFilteringPipelineStreamResult);
-                    uiRenderPipelineModule.renderDynamicSidebarCategoryLinksList();
+                    // Re-route processing parameters context map to main homepage view to trigger layout transformation grids
+                    spatialNavigationRedirectionLayer.gotoRoute('home.html?search_trigger_event_active=true');
                 },
 
-                filterByCategoryShortcut: (categoryValueString) => {
-                    selectedFilteringCategoryString = categoryValueString;
-                    document.getElementById("global-search-category-dropdown").value = 
-                        ["Electronics", "Components", "Tools", "Accessories"].includes(categoryValueString) ? categoryValueString : "All";
-                    storefrontControllerModule.executeFilteredQuerySearch();
+                filterCategoryDirectly: (targetCategoryNameKey) => {
+                    localStorage.setItem("SRP_ACTIVE_QUERY_STRING_CACHE", "");
+                    localStorage.setItem("SRP_ACTIVE_CATEGORY_FILTER_CACHE", targetCategoryNameKey);
+                    spatialNavigationRedirectionLayer.gotoRoute('home.html?filter_injection_active=true');
                 },
 
-                clearAllFiltersAndReset: () => {
-                    document.getElementById("global-search-input-field").value = "";
-                    document.getElementById("global-search-category-dropdown").value = "All";
-                    document.getElementById("filter-price-min-box").value = "";
-                    document.getElementById("filter-price-max-box").value = "";
-                    document.getElementById("filter-instock-checkbox-toggle").checked = false;
-                    
-                    selectedFilteringCategoryString = "All";
-                    storefrontControllerModule.executeFilteredQuerySearch();
+                filterByItemKeywords: (keywordQueryString) => {
+                    localStorage.setItem("SRP_ACTIVE_QUERY_STRING_CACHE", keywordQueryString);
+                    localStorage.setItem("SRP_ACTIVE_CATEGORY_FILTER_CACHE", "All");
+                    spatialNavigationRedirectionLayer.gotoRoute('home.html?keyword_injection_active=true');
                 }
             };
 
             /**
              * --------------------------------------------------------------------------
-             * SHOPPING CART OPERATIONS AND TRANACTIONAL BILLING TIER ENGINE
+             * ROLE-BASED ACCESS GATEWAY INFRASTRUCTURE SYSTEMS TIER CONTROLLERS
              * --------------------------------------------------------------------------
              */
-            const shoppingCartControllerModule = {
-                toggleCartDrawerState: (openPanelActionRequested) => {
-                    const overlayDOMNode = document.getElementById("global-cart-drawer-overlay-element");
-                    const panelDOMNode = document.getElementById("global-cart-drawer-sliding-panel-container");
+            const accessGatewaySecurityController = {
+                invokeSystemAuthorizationGate: (targetRoleInterfaceIdentityKeyString) => {
+                    activeSecurityTargetViewIdentityString = targetRoleInterfaceIdentityKeyString;
+                    
+                    const modalOverlayNode = document.getElementById("global-system-security-modal-overlay-gateway");
+                    const titleTextNode = document.getElementById("security-modal-dynamic-title-readout");
+                    const inputFieldNode = document.getElementById("security-gateway-passcode-field");
+                    const errorBoxNode = document.getElementById("security-gateway-error-message-node");
 
-                    if (openPanelActionRequested) {
-                        overlayDOMNode.classList.add("visible-overlay");
-                        panelDOMNode.classList.add("open-drawer");
-                        uiRenderPipelineModule.refreshShoppingCartDrawerLayoutDOM();
-                    } else {
-                        overlayDOMNode.classList.remove("visible-overlay");
-                        panelDOMNode.classList.remove("open-drawer");
+                    inputFieldNode.value = "";
+                    errorBoxNode.style.display = "none";
+
+                    if (targetRoleInterfaceIdentityKeyString === "admin") {
+                        titleTextNode.innerText = "🔒 SYSTEM CHALLENGE: ENTER ADMINISTRATIVE ROOT TERMINAL";
+                    } else if (targetRoleInterfaceIdentityKeyString === "seller") {
+                        titleTextNode.innerText = "💼 SYSTEM CHALLENGE: ENTER VENDOR CONSOLE ACCOUNT BACKSTAGE";
                     }
+
+                    modalOverlayNode.style.display = "flex";
+                    inputFieldNode.focus();
                 },
 
-                addItemToCartRegistryArray: (targetProductId) => {
-                    const catalogItemObjectMatch = centralProductsCatalogArray.find(p => p.id === targetProductId);
-                    if (!catalogItemObjectMatch) return;
-
-                    if (catalogItemObjectMatch.stock <= 0) {
-                        alert("Transaction operational failure error boundary. Requested product element inventory tracking reports deplete status.");
-                        return;
-                    }
-
-                    const existingCartNodeMatch = activeUserShoppingCartArray.find(item => item.id === targetProductId);
-                    if (existingCartNodeMatch) {
-                        if (existingCartNodeMatch.quantity >= catalogItemObjectMatch.stock) {
-                            alert(`Cap threshold reached allocation limit match. Maximum items availability balance count is: ${catalogItemObjectMatch.stock}`);
-                            return;
-                        }
-                        existingCartNodeMatch.quantity += 1;
-                    } else {
-                        activeUserShoppingCartArray.push({ id: targetProductId, quantity: 1 });
-                    }
-
-                    storageControllerModule.commitActiveRegistryStateToStorageChannels();
-                    uiRenderPipelineModule.refreshGlobalHeaderBadgesAndCountTrackers();
-                    uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-                    
-                    // Automatically open drawer on item ingestion to improve user flow
-                    shoppingCartControllerModule.toggleCartDrawerState(true);
+                dismissSystemAuthorizationGate: () => {
+                    document.getElementById("global-system-security-modal-overlay-gateway").style.display = "none";
+                    activeSecurityTargetViewIdentityString = "";
                 },
 
-                modifyCartItemQuantityValue: (targetProductId, modificationAmountDelta) => {
-                    const existingCartNodeMatch = activeUserShoppingCartArray.find(item => item.id === targetProductId);
-                    if (!existingCartNodeMatch) return;
+                verifySystemAuthorizationCredentials: () => {
+                    const providedKeyString = document.getElementById("security-gateway-passcode-field").value.trim();
+                    const errorAlertDOMNode = document.getElementById("security-gateway-error-message-node");
 
-                    const originalProductCatalogObject = centralProductsCatalogArray.find(p => p.id === targetProductId);
-
-                    existingCartNodeMatch.quantity += modificationAmountDelta;
-                    
-                    if (originalProductCatalogObject && existingCartNodeMatch.quantity > originalProductCatalogObject.stock) {
-                        alert(`Cap inventory mismatch allocation bounds. Restricted item availability limit is: ${originalProductCatalogObject.stock}`);
-                        existingCartNodeMatch.quantity = originalProductCatalogObject.stock;
-                    }
-
-                    if (existingCartNodeMatch.quantity <= 0) {
-                        activeUserShoppingCartArray = activeUserShoppingCartArray.filter(item => item.id !== targetProductId);
-                    }
-
-                    storageControllerModule.commitActiveRegistryStateToStorageChannels();
-                    uiRenderPipelineModule.refreshGlobalHeaderBadgesAndCountTrackers();
-                    uiRenderPipelineModule.refreshShoppingCartDrawerLayoutDOM();
-                    uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-                },
-
-                processCouponCodeApplication: () => {
-                    const enteredValueCode = document.getElementById("cart-coupon-text-input-field").value.trim().toUpperCase();
-                    if (enteredValueCode === "SRPFREE") {
-                        activeAppliedDiscountCodeString = "SRPFREE";
-                        alert("Coupon validation success! ₹150 discount applied cleanly to this cart structure configuration.");
-                    } else if (enteredValueCode === "") {
-                        activeAppliedDiscountCodeString = "";
-                    } else {
-                        alert("Invalid code validation parameters. Try checking character parameters or typing 'SRPFREE'.");
-                    }
-                    storageControllerModule.commitActiveRegistryStateToStorageChannels();
-                    uiRenderPipelineModule.refreshShoppingCartDrawerLayoutDOM();
-                },
-
-                executeCheckoutPipelineOrderSubmission: () => {
-                    if (activeUserShoppingCartArray.length === 0) {
-                        alert("Destructive action block request context. Cart contains zero valid structural components.");
-                        return;
-                    }
-
-                    // Deduct stock levels locally to simulate actual ordering transitions
-                    activeUserShoppingCartArray.forEach(cartItem => {
-                        const originalProductMatch = centralProductsCatalogArray.find(p => p.id === cartItem.id);
-                        if (originalProductMatch) {
-                            originalProductMatch.stock = Math.max(0, originalProductMatch.stock - cartItem.quantity);
-                        }
-                    });
-
-                    // Clear state models safely on success step loops
-                    activeUserShoppingCartArray = [];
-                    activeAppliedDiscountCodeString = "";
-                    document.getElementById("cart-coupon-text-input-field").value = "";
-
-                    storageControllerModule.commitActiveRegistryStateToStorageChannels();
-                    
-                    alert("🎉 Transaction authorization successful! Mock invoice order generated via the local engine layer pipeline.");
-                    
-                    shoppingCartControllerModule.toggleCartDrawerState(false);
-                    uiRenderPipelineModule.refreshGlobalHeaderBadgesAndCountTrackers();
-                    uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-                    uiRenderPipelineModule.refreshSellerDashboardPanelDOM();
-                }
-            };
-
-            /**
-             * --------------------------------------------------------------------------
-             * SELLER CENTRAL MASTER CONSOLE DATA SUBMISSION CONTROLLER
-             * --------------------------------------------------------------------------
-             */
-            const sellerCentralControllerModule = {
-                processProductListingCreation: (formSubmitEventObj) => {
-                    formSubmitEventObj.preventDefault();
-
-                    const enteredTitleString = document.getElementById("input-product-title").value.trim();
-                    const selectedCategoryString = document.getElementById("select-product-category").value;
-                    const enteredEmojiString = document.getElementById("input-product-emoji").value.trim();
-                    const enteredValuationInt = parseInt(document.getElementById("input-product-price").value);
-                    const enteredStockAllocationInt = parseInt(document.getElementById("input-product-stock").value);
-
-                    const generatedUniqueCatalogId = Date.now();
-
-                    const newlyAssembledProductRecordObject = {
-                        id: generatedUniqueCatalogId,
-                        title: enteredTitleString,
-                        category: selectedCategoryString,
-                        price: enteredValuationInt,
-                        stock: enteredStockAllocationInt,
-                        rating: 5.0,
-                        emoji: enteredEmojiString || "📦"
-                    };
-
-                    centralProductsCatalogArray.push(newlyAssembledProductRecordObject);
-                    storageControllerModule.commitActiveRegistryStateToStorageChannels();
-
-                    document.getElementById("merchant-product-creation-form").reset();
-                    
-                    uiRenderPipelineModule.refreshSellerDashboardPanelDOM();
-                    uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-
-                    alert("Success! Product parsed and committed into global network data channels safely.");
-                },
-
-                deleteCatalogProductRecordNode: (targetProductRecordId) => {
-                    if (confirm("Confirm execution request boundary removal delete action on item object registry id reference?")) {
-                        centralProductsCatalogArray = centralProductsCatalogArray.filter(p => p.id !== targetProductRecordId);
-                        activeUserShoppingCartArray = activeUserShoppingCartArray.filter(item => item.id !== targetProductRecordId);
-
-                        storageControllerModule.commitActiveRegistryStateToStorageChannels();
-
-                        uiRenderPipelineModule.refreshGlobalHeaderBadgesAndCountTrackers();
-                        uiRenderPipelineModule.refreshSellerDashboardPanelDOM();
-                        uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-                    }
-                }
-            };
-
-            /**
-             * --------------------------------------------------------------------------
-             * UI GRAPHICS CORE RENDER PIPELINES LAYER MANAGEMENT (DOM MANIPULATION)
-             * --------------------------------------------------------------------------
-             */
-            const uiRenderPipelineModule = {
-                refreshGlobalHeaderBadgesAndCountTrackers: () => {
-                    const badgeTargetDOMElement = document.getElementById("global-header-cart-badge-counter");
-                    
-                    // Compute absolute items sum count aggregation mapping totals
-                    const absoluteItemsCount = activeUserShoppingCartArray.reduce((acc, obj) => acc + obj.quantity, 0);
-                    if (badgeTargetDOMElement) {
-                        badgeTargetDOMElement.innerText = absoluteItemsCount;
-                    }
-                },
-
-                renderDynamicProductGridStream: (filteredCatalogArrayDataset) => {
-                    const targetGridDOMElement = document.getElementById("live-storefront-products-injection-grid");
-                    const statusCountTrackerDOMElement = document.getElementById("storefront-results-count-tracker");
-
-                    if (!targetGridDOMElement) return;
-
-                    statusCountTrackerDOMElement.innerText = `Found ${filteredCatalogArrayDataset.length} available elements match parameters`;
-
-                    if (filteredCatalogArrayDataset.length === 0) {
-                        targetGridDOMElement.innerHTML = `
-                            <div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--color-text-muted)">
-                                <h3 style="color:white; margin-bottom:10px;">No Product Elements Match Active Query Criteria</h3>
-                                <p>Try checking keyword syntax filters, clearing active input boundaries or using department shortcuts instead.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    targetGridDOMElement.innerHTML = filteredCatalogArrayDataset.map(product => {
-                        const starGenerationMappingArrayStr = "★".repeat(Math.floor(product.rating)) + ("☆".repeat(5 - Math.floor(product.rating)));
+                    if (providedKeyString === CRYPTOGRAPHIC_ACCESS_HASH_KEY) {
+                        errorAlertDOMNode.style.display = "none";
+                        accessGatewaySecurityController.dismissSystemAuthorizationGate();
                         
-                        // Compute contextual indicators mapping logic variables 
-                        let computationalStockPillMarkup = "";
-                        if (product.stock === 0) {
-                            computationalStockPillMarkup = `<span class="badge badge-danger">Out of Stock</span>`;
-                        } else if (product.stock < 5) {
-                            computationalStockPillMarkup = `<span class="badge badge-danger" style="background-color:rgba(231,29,54,0.1)">Only ${product.stock} left in stock</span>`;
-                        } else {
-                            computationalStockPillMarkup = `<span class="badge badge-success">In Stock (${product.stock})</span>`;
+                        // Set runtime token validation signatures so target target sub-pages bypass loops
+                        sessionStorage.setItem("SRP_ROLE_VALIDATION_TOKEN_SIGNATURE", btoa(CRYPTOGRAPHIC_ACCESS_HASH_KEY));
+                        
+                        // Execute safe file redirect mappings structures targets profiles
+                        if (activeSecurityTargetViewIdentityString === "admin") {
+                            spatialNavigationRedirectionLayer.gotoRoute('admin.html');
+                        } else if (activeSecurityTargetViewIdentityString === "seller") {
+                            spatialNavigationRedirectionLayer.gotoRoute('seller.html');
                         }
-
-                        // Determine active disable action logic configurations state maps
-                        const isDisabledAttr = product.stock === 0 ? "disabled style='background-color:#4a5568; cursor:not-allowed; opacity:0.5'" : "";
-
-                        return `
-                            <div class="marketplace-product-card">
-                                <div class="product-card-image-canvas">
-                                    <span class="product-card-category-tag">${product.category}</span>
-                                    ${product.emoji}
-                                </div>
-                                <div class="product-card-details-box">
-                                    <h4 class="product-card-title-node" title="${product.title}">${product.title}</h4>
-                                    <div class="product-card-stars-row">
-                                        <span>${starGenerationMappingArrayStr}</span>
-                                        <span style="color:var(--color-text-muted); font-size:12px;">(${product.rating})</span>
-                                    </div>
-                                    <div class="product-card-stock-indicator mb-10">
-                                        ${computationalStockPillMarkup}
-                                    </div>
-                                    <div class="product-card-metrics-row">
-                                        <span class="product-card-price-display">₹${product.price.toLocaleString('en-IN')}</span>
-                                        <button class="btn-primary add-to-cart-action-btn" ${isDisabledAttr} onclick="RuntimeEngine.cart.addItemToCartRegistryArray(${product.id})">
-                                            Add to Cart
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                },
-
-                renderDynamicSidebarCategoryLinksList: () => {
-                    const targetSidebarUlDOMElement = document.getElementById("sidebar-category-links-list");
-                    if (!targetSidebarUlDOMElement) return;
-
-                    const structuralCategoryMappingKeys = ["All", "Electronics", "Components", "Tools", "Accessories"];
-                    
-                    targetSidebarUlDOMElement.innerHTML = structuralCategoryMappingKeys.map(categoryKey => {
-                        const itemsCountAggregate = categoryKey === "All" ? 
-                            centralProductsCatalogArray.length : 
-                            centralProductsCatalogArray.filter(p => p.category === categoryKey).length;
-
-                        const isActiveClassStr = (selectedFilteringCategoryString === categoryKey) ? "class='active-category-node'" : "";
-
-                        return `
-                            <li ${isActiveClassStr} onclick="RuntimeEngine.storefront.filterByCategoryShortcut('${categoryKey}')">
-                                <span>${categoryKey === 'All' ? '📁' : '🔹'} ${categoryKey}</span>
-                                <span style="font-size:12px; opacity:0.7;">(${itemsCountAggregate})</span>
-                            </li>
-                        `;
-                    }).join('');
-                },
-
-                refreshStorefrontGridLayerDOM: () => {
-                    storefrontControllerModule.executeFilteredQuerySearch();
-                },
-
-                refreshShoppingCartDrawerLayoutDOM: () => {
-                    const targetScrollInjectionDOMElement = document.getElementById("cart-drawer-scroll-items-injection-target");
-                    const subtotalReadoutElement = document.getElementById("billing-subtotal-readout-field");
-                    const deductionsReadoutElement = document.getElementById("billing-deductions-readout-field");
-                    const grandTotalReadoutElement = document.getElementById("billing-grand-total-readout-field");
-
-                    if (!targetScrollInjectionDOMElement) return;
-
-                    let computationalSubtotalAccumulatedSum = 0;
-
-                    if (activeUserShoppingCartArray.length === 0) {
-                        targetScrollInjectionDOMElement.innerHTML = `
-                            <div style="text-align:center; padding:40px 10px; color:var(--color-text-muted)">
-                                <span style="font-size:48px; display:block; margin-bottom:10px;">🛒</span>
-                                <h4 style="color:white; margin-bottom:4px;">Your Cart is Empty</h4>
-                                <p style="font-size:13px;">Browse our structural lists catalog and inject product entries to build transactions.</p>
-                            </div>
-                        `;
-                        subtotalReadoutElement.innerText = "₹0.00";
-                        deductionsReadoutElement.innerText = "-₹0.00";
-                        grandTotalReadoutElement.innerText = "₹0.00";
-                        return;
+                    } else {
+                        errorAlertDOMNode.style.display = "block";
+                        document.getElementById("security-gateway-passcode-field").select();
                     }
-
-                    targetScrollInjectionDOMElement.innerHTML = activeUserShoppingCartArray.map(cartNodeItem => {
-                        const correspondingProductCatalogItem = centralProductsCatalogArray.find(p => p.id === cartNodeItem.id);
-                        if (!correspondingProductCatalogItem) return "";
-
-                        const productLineCostSumCalculation = correspondingProductCatalogItem.price * cartNodeItem.quantity;
-                        computationalSubtotalAccumulatedSum += productLineCostSumCalculation;
-
-                        return `
-                            <div class="cart-item-functional-row">
-                                <div class="cart-item-graphic-avatar">
-                                    ${correspondingProductCatalogItem.emoji}
-                                </div>
-                                <div class="cart-item-structural-info">
-                                    <h4 class="cart-item-name-string" title="${correspondingProductCatalogItem.title}">${correspondingProductCatalogItem.title}</h4>
-                                    <div class="cart-item-price-string">₹${correspondingProductCatalogItem.price.toLocaleString('en-IN')}</div>
-                                </div>
-                                <div class="cart-item-interactive-controls">
-                                    <button class="cart-item-modifier-btn" onclick="RuntimeEngine.cart.modifyCartItemQuantityValue(${cartNodeItem.id}, -1)">-</button>
-                                    <span class="cart-item-quantity-readout">${cartNodeItem.quantity}</span>
-                                    <button class="cart-item-modifier-btn" onclick="RuntimeEngine.cart.modifyCartItemQuantityValue(${cartNodeItem.id}, 1)">+</button>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-
-                    // Execute algorithmic deductions logic constraints transformations
-                    let computedDeductionsAmountValue = 0;
-                    if (activeAppliedDiscountCodeString === "SRPFREE") {
-                        computedDeductionsAmountValue = Math.min(150, computationalSubtotalAccumulatedSum);
-                    }
-
-                    const computedGrandTotalValueSum = Math.max(0, computationalSubtotalAccumulatedSum - computedDeductionsAmountValue);
-
-                    // Map textual values strings directly out to interface components nodes
-                    subtotalReadoutElement.innerText = `₹${computationalSubtotalAccumulatedSum.toLocaleString('en-IN')}.00`;
-                    deductionsReadoutElement.innerText = `-₹${computedDeductionsAmountValue.toLocaleString('en-IN')}.00`;
-                    grandTotalReadoutElement.innerText = `₹${computedGrandTotalValueSum.toLocaleString('en-IN')}.00`;
-                },
-
-                refreshSellerDashboardPanelDOM: () => {
-                    const activeCatalogCountDOMNode = document.getElementById("seller-metrics-active-listings-count");
-                    const outOfStockCountDOMNode = document.getElementById("seller-metrics-out-of-stock-count");
-                    const tableRowsTargetDOMNode = document.getElementById("merchant-inventory-data-table-rows-target");
-
-                    if (!tableRowsTargetDOMNode) return;
-
-                    // Calculate analytic variables metrics counters arrays
-                    const totalCatalogRecordsSize = centralProductsCatalogArray.length;
-                    const totalDepletedProductsCount = centralProductsCatalogArray.filter(p => p.stock === 0).length;
-
-                    activeCatalogCountDOMNode.innerText = `${totalCatalogRecordsSize} Items`;
-                    outOfStockCountDOMNode.innerText = `${totalDepletedProductsCount} Items`;
-
-                    if (centralProductsCatalogArray.length === 0) {
-                        tableRowsTargetDOMNode.innerHTML = `
-                            <tr>
-                                <td colspan="6" style="text-align:center; padding:30px; color:var(--color-text-muted)">
-                                    Active network catalog parameters are completely empty. Use the input console form to list items.
-                                </td>
-                            </tr>
-                        `;
-                        return;
-                    }
-
-                    tableRowsTargetDOMNode.innerHTML = centralProductsCatalogArray.map(product => {
-                        const stockTextWarningMarkup = product.stock === 0 ? 
-                            `<span style="color:var(--color-danger); font-weight:bold;">OUT OF STOCK</span>` : 
-                            `<span>${product.stock} Units</span>`;
-
-                        return `
-                            <tr>
-                                <td style="font-size:24px; padding:8px 12px; width:40px;">${product.emoji}</td>
-                                <td style="font-weight:600; max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${product.title}</td>
-                                <td><span style="font-size:12px; background-color:rgba(255,255,255,0.05); padding:3px 6px; border-radius:4px; border:1px solid var(--color-border);">${product.category}</span></td>
-                                <td style="color:var(--color-accent-gold); font-weight:700;">₹${product.price.toLocaleString('en-IN')}</td>
-                                <td>${stockTextWarningMarkup}</td>
-                                <td>
-                                    <button class="action-icon-btn-delete" onclick="RuntimeEngine.sellerCentral.deleteCatalogProductRecordNode(${product.id})">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                    }).join('');
                 }
             };
 
             /**
              * --------------------------------------------------------------------------
-             * ENTRYPOINT CORE BOOTSTRAPPING ORCHESTRATION LAYER PIPELINE
+             * PREMIUM HOME BILLBOARD GRAPHIC CAROUSEL ROTATION MATRIX SYSTEM
              * --------------------------------------------------------------------------
              */
-            const initializeSystemBootstrapPipelineRoutine = () => {
-                // Hook storage and load memory arrays states indexes
-                storageControllerModule.loadSystemRegistryStates();
-                
-                // Mount global rendering contexts loops 
-                uiRenderPipelineModule.refreshGlobalHeaderBadgesAndCountTrackers();
-                uiRenderPipelineModule.refreshStorefrontGridLayerDOM();
-                uiRenderPipelineModule.refreshSidebarCategoryLinksList();
+            const heroBannerCarouselAutomationLayer = {
+                shiftSlideIndexDelta: (directionalDeltaInteger) => {
+                    const trackDOMNode = document.getElementById("home-hero-carousel-track-node");
+                    if (!trackDOMNode) return;
 
-                // Setup default input listeners loops triggers
-                document.getElementById("global-search-input-field").addEventListener("keyup", (event) => {
-                    if (event.key === "Enter") {
-                        storefrontControllerModule.executeFilteredQuerySearch();
+                    activeCarouselSlideIndexValue += directionalDeltaInteger;
+
+                    if (activeCarouselSlideIndexValue > 2) activeCarouselSlideIndexValue = 0;
+                    if (activeCarouselSlideIndexValue < 0) activeCarouselSlideIndexValue = 2;
+
+                    const computationalPercentageOffsetValue = activeCarouselSlideIndexValue * -100;
+                    trackDOMNode.style.transform = `translateX(${computationalPercentageOffsetValue}%)`;
+                    trackDOMNode.style.transition = "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+                },
+
+                startAutomaticRotationLoopThread: () => {
+                    setInterval(() => {
+                        heroBannerCarouselAutomationLayer.shiftSlideIndexDelta(1);
+                    }, 6500);
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * DOM COMPONENT SYNC PIPELINE INTERFACES WRAPPER LAYOUT
+             * --------------------------------------------------------------------------
+             */
+            const graphicalUserInterfaceRenderSubtier = {
+                syncNavigationCartCounterReadoutsValues: () => {
+                    const badgeDOMNode = document.getElementById("global-header-cart-numerical-badge-counter");
+                    if (!badgeDOMNode) return;
+
+                    const absoluteAccumulatedItemsSum = activeUserShoppingCartStateArray.reduce((acc, currentObj) => {
+                        return acc + currentObj.quantity;
+                    }, 0);
+
+                    badgeDOMNode.innerText = absoluteAccumulatedItemsSum;
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * PIPELINE INITIALIZATION ESCALATION ROOT (BOOTSTRAP PROCESSOR)
+             * --------------------------------------------------------------------------
+             */
+            const executeCoreApplicationBootstrapPipelineLifecycle = () => {
+                console.log("SRP Shopping Application Index core framework initialization sequence online... [2026 Sandbox Model Deployment Cluster]");
+                
+                // Mount database registry states systems data records profiles mapping
+                storageEngineDataSubTier.initializeLocalStorageTablesRegistry();
+                
+                // Draw responsive components readouts variables metrics counts badges
+                graphicalUserInterfaceRenderSubtier.syncNavigationCartCounterReadoutsValues();
+
+                // Fire automation background loops tracking tasks
+                heroBannerCarouselAutomationLayer.startAutomaticRotationLoopThread();
+
+                // Attach escape hardware keystroke listeners loops matching challenges fields
+                document.getElementById("security-gateway-passcode-field").addEventListener("keyup", (eventObj) => {
+                    if (eventObj.key === "Enter") {
+                        accessGatewaySecurityController.verifySystemAuthorizationCredentials();
                     }
                 });
             };
 
-            // Return authorized programmatic public interface boundaries api routing vectors
+            // Return clean API configuration structures for the primary orchestration broker access
             return {
-                bootstrap: initializeSystemBootstrapPipelineRoutine,
-                storage: storageControllerModule,
-                routing: routingControllerModule,
-                storefront: storefrontControllerModule,
-                cart: shoppingCartControllerModule,
-                sellerCentral: sellerCentralControllerModule
+                bootstrap: executeCoreApplicationBootstrapPipelineLifecycle,
+                navigation: spatialNavigationRedirectionLayer,
+                search: clientSideQuerySearchBroker,
+                security: accessGatewaySecurityController,
+                carousel: heroBannerCarouselAutomationLayer,
+                ui: graphicalUserInterfaceRenderSubtier
             };
 
         })();
 
-        // Execute core application lifecycle thread start on content load
+        // Register application initialization on core thread completion
         document.addEventListener("DOMContentLoaded", () => {
-            RuntimeEngine.bootstrap();
+            MainApplicationEngine.bootstrap();
         });
     </script>
 </body>
