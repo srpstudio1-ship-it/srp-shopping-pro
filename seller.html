@@ -2,536 +2,1280 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SRP Seller Central | Dashboard</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRP SHOPPING | Enterprise Merchant Dashboard Console</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f9fafb;
-            -webkit-tap-highlight-color: transparent;
+        /* ==========================================================================
+           1. PREMIUM SELLER DASHBOARD DESIGN SYSTEM & GLOBAL VARIABLES
+           ========================================================================== */
+        :root {
+            --seller-bg-light: #f0f2f5;
+            --seller-nav-dark: #19222d;
+            --seller-accent-blue: #002f36;
+            --seller-text-main: #222222;
+            --seller-border: #d5dbdb;
+            --amazon-orange: #e47911;
+            --amazon-gold: #febd69;
+            --success-green: #118833;
+            --danger-red: #cc0000;
+            --card-white: #ffffff;
+            --premium-font: "Amazon Ember", Arial, sans-serif;
         }
 
-        .srp-blue-gradient { background: linear-gradient(135deg, #0047AB 0%, #007FFF 100%); }
-        
-        .card-shadow { box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1); }
-        
-        .tab-active { color: #0047AB; border-bottom: 3px solid #0047AB; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--premium-font);
+        }
 
-        #image-preview-container img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
+        body {
+            background-color: var(--seller-bg-light);
+            color: var(--seller-text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           2. SECURITY SCREEN OVERLAY (FALLBACK PROTECTION IF SEPARATE FROM GATEWAY)
+           ========================================================================== */
+        #security-unauthorized-blocker-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f1111;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .lock-card {
+            background-color: #232f3e;
+            padding: 40px;
+            border-radius: 4px;
+            border: 1px solid var(--amazon-gold);
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* ==========================================================================
+           3. APPLICATION WORKSPACE INTERFACE LAYOUT STRUCTURE
+           ========================================================================== */
+        header {
+            background-color: var(--seller-nav-dark);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 65px;
+            border-bottom: 3px solid var(--amazon-orange);
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+
+        .branding-title-node {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .badge-merchant-pill {
+            background-color: var(--amazon-orange);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .header-profile-control-cluster {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .btn-exit-system {
+            background-color: transparent;
+            color: #ddd;
+            border: 1px solid #565959;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-exit-system:hover {
+            color: white;
+            border-color: white;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Master Two-Column Operational Workbench Layout Matrix */
+        .workspace-master-container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Sidebar Navigation Column */
+        nav.sidebar-navigation-column {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid var(--seller-border);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
+        }
+
+        .nav-item-link-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item-link-row:hover {
+            background-color: #f6f6f6;
+            color: black;
+        }
+
+        .nav-item-link-row.active-tab {
+            background-color: #f0f7f7;
+            color: var(--seller-accent-blue);
+            font-weight: 700;
+            border-left-color: var(--amazon-orange);
+        }
+
+        /* Primary Workspace Area Output Panel */
+        main.workbench-viewport-display-panel {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            max-width: calc(100vw - 260px);
+        }
+
+        .subsection-content-container-block {
+            display: none;
+            animation: fadeInTransition 0.25s ease-out forwards;
+        }
+
+        @keyframes fadeInTransition {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Generic Framework Layout Guidelines Utility Sets */
+        .section-headline-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--seller-border);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ui-dashboard-grid-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .kpi-metric-card-node {
+            background-color: var(--card-white);
+            border: 1px solid var(--seller-border);
+            border-radius: 4px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .kpi-title { font-size: 13px; font-weight: 700; color: #565959; text-transform: uppercase; margin-bottom: 6px;}
+        .kpi-value { font-size: 28px; font-weight: 800; color: #111; margin-bottom: 4px;}
+        .kpi-trend { font-size: 12px; font-weight: 600; }
+        .trend-up { color: var(--success-green); }
+        .trend-down { color: var(--danger-red); }
+
+        /* ==========================================================================
+           4. DATA TABLES, SUB-PANELS AND FORM INPUT ARCHITECTURE STYLES
+           ========================================================================== */
+        .enterprise-data-table-wrapper {
+            background-color: var(--card-white);
+            border: 1px solid var(--seller-border);
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100%;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .table-action-header-bar {
+            background-color: #f7f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--seller-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table.seller-data-grid {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        table.seller-data-grid th {
+            background-color: #f0f2f3;
+            color: #333;
+            font-weight: 700;
+            padding: 12px 18px;
+            border-bottom: 2px solid var(--seller-border);
+        }
+
+        table.seller-data-grid td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--seller-border);
+            color: #111;
+            vertical-align: middle;
+        }
+
+        table.seller-data-grid tr:hover { background-color: #f9fbfb; }
+
+        .badge-status {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
             border-radius: 12px;
-            border: 2px solid #e5e7eb;
+            text-transform: uppercase;
+        }
+        .status-active     { background-color: #e2f0d9; color: var(--success-green); }
+        .status-outofstock { background-color: #fce4d6; color: var(--danger-red); }
+        .status-pending    { background-color: #fff2cc; color: #b2a100; }
+        .status-shipped    { background-color: #e1f5fe; color: #0288d1; }
+
+        /* Input Controls Layout System */
+        .form-layout-card-box {
+            background-color: var(--card-white);
+            border: 1px solid var(--seller-border);
+            border-radius: 4px;
+            padding: 25px;
+            max-width: 850px;
+            margin-bottom: 25px;
         }
 
-        /* Custom toggle switch */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #0047AB; }
-        input:checked + .slider:before { transform: translateX(20px); }
+        .form-grid-dual-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .input-group-block {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .input-group-block label {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #111;
+        }
+
+        .input-group-block input, .input-group-block select, .input-group-block textarea {
+            padding: 10px 12px;
+            border: 1px solid #a6a9a9;
+            border-radius: 3px;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+        }
+
+        .input-group-block input:focus, .input-group-block select:focus, .input-group-block textarea:focus {
+            border-color: var(--amazon-orange);
+            box-shadow: 0 0 3px rgba(228, 121, 17, 0.4);
+        }
+
+        .btn-primary-action {
+            background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+            border: 1px solid #a88734;
+            color: #111;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 3px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background 0.1s;
+        }
+        .btn-primary-action:hover {
+            background: linear-gradient(to bottom, #f5d78e, #eeb933);
+        }
+
+        .btn-secondary-action {
+            background: #eff0f3;
+            border: 1px solid #cdced1;
+            color: #111;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 3px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-secondary-action:hover { background-color: #e7e9ec; }
+
+        /* Integrated Mini Console Sandbox Logger */
+        .system-trace-log-view-box {
+            background-color: #1e1e1e;
+            color: #4af626;
+            font-family: "Courier New", Courier, monospace;
+            padding: 15px;
+            border-radius: 4px;
+            height: 220px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
+            border: 1px solid #333;
+        }
+
+        /* Message Box Elements for Subsection 2.9 */
+        .messaging-split-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            border: 1px solid var(--seller-border);
+            background-color: white;
+            height: 500px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .message-threads-sidebar {
+            border-right: 1px solid var(--seller-border);
+            overflow-y: auto;
+            background-color: #f7f9fa;
+        }
+        .thread-item-node {
+            padding: 15px;
+            border-bottom: 1px solid var(--seller-border);
+            cursor: pointer;
+        }
+        .thread-item-node:hover { background-color: #eef1f2; }
+        .thread-item-node.active-thread { background-color: #e1f5fe; }
+        .message-chat-viewport {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .chat-history-pool {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f4f6f6;
+        }
+        .chat-bubble {
+            max-width: 70%;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .bubble-customer { background-color: white; border: 1px solid var(--seller-border); align-self: flex-start; }
+        .bubble-seller { background-color: #e2f0d9; align-self: flex-end; margin-left: auto; }
+        .chat-input-row-tray {
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid var(--seller-border);
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
-<body class="pb-24">
+<body>
 
-    <header class="bg-[#0047AB] text-white p-4 sticky top-0 z-50 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-3">
-            <div class="bg-white/20 p-2 rounded-lg">
-                <i class="fas fa-store text-xl"></i>
-            </div>
-            <div>
-                <h1 class="text-sm font-black tracking-tighter uppercase">SRP Seller Central</h1>
-                <p class="text-[9px] opacity-80" id="seller-id-display">Loading session...</p>
-            </div>
+    <div id="security-unauthorized-blocker-frame">
+        <div class="lock-card">
+            <h1 style="color:var(--amazon-orange); font-size:42px; margin-bottom:15px;">🔒</h1>
+            <h2>Access Point Boundary Halted</h2>
+            <p style="margin: 15px 0 25px 0; color:#ccc; font-size:14px; line-height:1.5;">
+                This workspace terminal is strictly password protected. Browser security context token missing or invalid signature detected. Bypassing authorization gates manually is blocked.
+            </p>
+            <button class="btn-primary-action" style="width:100%;" onclick="window.location.href='index.html'">
+                Return to Global Gateway Matrix for Validation Check
+            </button>
         </div>
-        <div id="status-badge" class="text-[9px] bg-yellow-400 text-black px-2.5 py-1 rounded-full font-black uppercase tracking-widest">
-            Identity Unverified
-        </div>
-    </header>
-
-    <div class="bg-white border-b sticky top-[68px] z-40 flex justify-around text-xs font-bold text-gray-400 uppercase tracking-widest">
-        <button onclick="switchTab('onboarding')" id="tab-onboarding" class="py-4 px-2 tab-active">Verify</button>
-        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="py-4 px-2">Dashboard</button>
-        <button onclick="switchTab('orders')" id="tab-orders" class="py-4 px-2">Orders</button>
-        <button onclick="switchTab('products')" id="tab-products" class="py-4 px-2">Inventory</button>
     </div>
 
-    <section id="page-onboarding" class="p-5 max-w-2xl mx-auto">
-        <div class="bg-white rounded-3xl p-8 card-shadow border border-gray-100">
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-user-shield text-3xl"></i>
-                </div>
-                <h2 class="text-2xl font-black text-gray-900">Become a Partner</h2>
-                <p class="text-sm text-gray-500 mt-2">Complete verification to unlock your shop.</p>
+    <div id="seller-workspace-application-root" style="display:none; flex-direction:column; flex:1;">
+        
+        <header>
+            <div class="branding-title-node" onclick="window.location.href='index.html'">
+                <span style="font-size:22px; font-weight:800; tracking:-1px;">srp shopping</span>
+                <span class="badge-merchant-pill">Seller Central Studio</span>
             </div>
-
-            <form id="onboarding-form" class="space-y-6">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">Full Name (Legal)</label>
-                    <input type="text" id="v-name" required placeholder="As per PAN Card" class="w-full p-4 border-2 border-gray-100 rounded-2xl focus:border-blue-500 outline-none transition-all">
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">GST Number (Optional)</label>
-                        <input type="text" id="v-gst" placeholder="22AAAAA0000A1Z5" class="w-full p-4 border-2 border-gray-100 rounded-2xl focus:border-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">PAN Number</label>
-                        <input type="text" id="v-pan" required placeholder="ABCDE1234F" class="w-full p-4 border-2 border-gray-100 rounded-2xl focus:border-blue-500 outline-none uppercase">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">Store Display Name</label>
-                    <input type="text" id="v-store" required placeholder="e.g. SRP Global Store" class="w-full p-4 border-2 border-gray-100 rounded-2xl focus:border-blue-500 outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">Warehouse / Pickup Address</label>
-                    <textarea id="v-address" required placeholder="Street, City, State, ZIP..." class="w-full p-4 border-2 border-gray-100 rounded-2xl h-28 focus:border-blue-500 outline-none"></textarea>
-                </div>
-
-                <div class="bg-yellow-50 p-4 rounded-2xl flex gap-3 border border-yellow-100">
-                    <i class="fas fa-circle-info text-yellow-600 mt-1"></i>
-                    <p class="text-[11px] text-yellow-800 leading-relaxed">
-                        By submitting, you agree to SRP's Merchant Policy. Verification usually takes 2-4 hours during business days.
-                    </p>
-                </div>
-
-                <button type="submit" class="w-full srp-blue-gradient text-white py-5 rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl transform active:scale-95 transition">
-                    Submit Application
-                </button>
-            </form>
-        </div>
-    </section>
-
-    <section id="page-dashboard" class="hidden p-5 animate-in fade-in space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-6 rounded-3xl border border-blue-50 card-shadow">
-                <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Withdrawable</p>
-                <h3 class="text-2xl font-black text-gray-900">₹14,250.00</h3>
-                <button onclick="requestPayout()" class="mt-4 w-full py-2 bg-green-50 text-green-700 text-[10px] font-bold rounded-full border border-green-200 uppercase">Settlement</button>
+            <div class="header-profile-control-cluster">
+                <span>Welcome, <strong>SRP Partner Node #1</strong></span>
+                <span style="color:#888;">|</span>
+                <span>Active Region: <strong>IN-Jalore Base</strong></span>
+                <button class="btn-exit-system" onclick="SellerDashboardEngine.auth.evictSessionSignature()">Secure Logout</button>
             </div>
-            <div class="srp-blue-gradient p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
-                <i class="fas fa-rocket absolute -right-2 -bottom-2 text-6xl opacity-20 rotate-12"></i>
-                <p class="text-[10px] font-black opacity-80 uppercase mb-1">Marketing</p>
-                <h3 class="text-xl font-black leading-tight">Boost Store Visibility</h3>
-                <button onclick="payForAds()" class="mt-3 bg-white text-blue-700 text-[9px] px-4 py-1.5 rounded-full font-black uppercase">Pay ₹500/day</button>
-            </div>
-        </div>
+        </header>
 
-        <div class="bg-white p-6 rounded-3xl border border-gray-100 card-shadow">
-            <h3 class="font-black text-gray-800 uppercase tracking-tighter mb-4">Store Performance</h3>
-            <div class="flex justify-between items-center py-3 border-b border-gray-50">
-                <span class="text-xs text-gray-500">Total Visits (24h)</span>
-                <span class="text-sm font-black text-blue-600">1,402</span>
-            </div>
-            <div class="flex justify-between items-center py-3 border-b border-gray-50">
-                <span class="text-xs text-gray-500">Active Listings</span>
-                <span class="text-sm font-black text-gray-800">12 Products</span>
-            </div>
-            <div class="flex justify-between items-center py-3">
-                <span class="text-xs text-gray-500">Return Rate</span>
-                <span class="text-sm font-black text-red-500">0.0%</span>
-            </div>
-        </div>
-    </section>
-
-    <section id="page-orders" class="hidden p-5 space-y-4">
-        <div class="flex justify-between items-center mb-2">
-            <h3 class="font-black text-gray-900 uppercase tracking-tighter">Current Shipments</h3>
-            <span class="text-[10px] font-bold text-gray-400">1 Order New</span>
-        </div>
-
-        <div class="bg-white rounded-3xl border border-gray-100 p-6 card-shadow">
-            <div class="flex justify-between items-start mb-4">
-                <div class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black uppercase">SRP-ORD-9921</div>
-                <span class="text-[10px] font-bold text-orange-500">Awaiting Logistics</span>
-            </div>
+        <div class="workspace-master-container">
             
-            <div class="space-y-3" id="inventory-list">
+            <nav class="sidebar-navigation-column">
+                <div class="nav-item-link-row active-tab" data-target-sub="sub-2-1" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>📊</span> 2.1 Analytics Dashboard
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-2" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>📈</span> 2.2 Sales SVG Metrics Engine
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-3" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>📋</span> 2.3 Catalog Inventory Grid
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-4" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>➕</span> 2.4 Offer Creation Engine
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-5" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>📦</span> 2.5 Order Fulfillment Pipeline
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-6" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>💰</span> 2.6 Merchant Ledger & Wallet
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-7" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>🚚</span> 2.7 Carrier Configuration
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-8" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>🎟️</span> 2.8 Promotional Coupon Console
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-9" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>💬</span> 2.9 CRM Ticket Communications
+                </div>
+                <div class="nav-item-link-row" data-target-sub="sub-2-10" onclick="SellerDashboardEngine.routing.switchSubsectionView(this)">
+                    <span>⚡</span> 2.10 Synchronization Sync Box
+                </div>
+            </nav>
+
+            <main class="workbench-viewport-display-panel">
+
+                <div class="subsection-content-container-block" id="sub-2-1" style="display:block;">
+                    <div class="section-headline-title">
+                        <span>2.1 Performance Overview Metric Dashboard</span>
+                        <span style="font-size:12px; color:#565959;">Live calculations sync 1:1</span>
+                    </div>
+                    <div class="ui-dashboard-grid-row">
+                        <div class="kpi-metric-card-node">
+                            <span class="kpi-title">Gross Merchandise Value (GMV)</span>
+                            <span class="kpi-value" id="kpi-gmv-readout">₹0.00</span>
+                            <span class="kpi-trend trend-up">▲ 14.2% versus trailing window</span>
+                        </div>
+                        <div class="kpi-metric-card-node">
+                            <span class="kpi-title">Open Pipeline Orders</span>
+                            <span class="kpi-value" id="kpi-orders-readout">0</span>
+                            <span class="kpi-trend trend-up" style="color:var(--amazon-orange);">Requires immediate dispatch pack</span>
+                        </div>
+                        <div class="kpi-metric-card-node">
+                            <span class="kpi-title">Available Active ASIN Items</span>
+                            <span class="kpi-value" id="kpi-stock-readout">0 Types</span>
+                            <span class="kpi-trend trend-up">● All channels reports active health</span>
+                        </div>
+                        <div class="kpi-metric-card-node">
+                            <span class="kpi-title">Merchant Rating Matrix</span>
+                            <span class="kpi-value">4.92 / 5</span>
+                            <span class="kpi-trend trend-up">▲ Top Tier Seller Class Status</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-2">
+                    <div class="section-headline-title">2.2 Vector Graphic Sales Velocity Performance Engine</div>
+                    <div class="form-layout-card-box" style="max-width:100%;">
+                        <p style="font-size:14px; margin-bottom:15px; color:#565959;">Dynamic multi-axis historical trend generation computing live computational coordinates tracing sales velocity spikes.</p>
+                        <div style="background-color:#f7f9fa; border:1px solid #ddd; border-radius:4px; padding:20px; display:flex; justify-content:center;">
+                            <svg width="700" height="300" viewBox="0 0 700 300" style="background:#fff; border:1px solid #ccc;">
+                                <line x1="50" y1="50" x2="650" y2="50" stroke="#f0f0f0" stroke-width="1"/>
+                                <line x1="50" y1="125" x2="650" y2="125" stroke="#f0f0f0" stroke-width="1"/>
+                                <line x1="50" y1="200" x2="650" y2="200" stroke="#f0f0f0" stroke-width="1"/>
+                                <line x1="50" y1="250" x2="650" y2="250" stroke="#aaa" stroke-width="2"/>
+                                <line x1="50" y1="50" x2="50" y2="250" stroke="#aaa" stroke-width="2"/>
+                                <text x="15" y="55" font-size="11" fill="#666">₹50k</text>
+                                <text x="15" y="130" font-size="11" fill="#666">₹25k</text>
+                                <text x="15" y="205" font-size="11" fill="#666">₹10k</text>
+                                <text x="20" y="255" font-size="11" fill="#666">₹0</text>
+                                <polyline fill="none" stroke="#e47911" stroke-width="4" points="50,250 150,210 250,140 350,190 450,80 550,110 650,40" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="50" cy="250" r="5" fill="#19222d"/>
+                                <circle cx="150" cy="210" r="5" fill="#19222d"/>
+                                <circle cx="250" cy="140" r="5" fill="#19222d"/>
+                                <circle cx="350" cy="190" r="5" fill="#19222d"/>
+                                <circle cx="450" cy="80" r="5" fill="#19222d"/>
+                                <circle cx="550" cy="110" r="5" fill="#19222d"/>
+                                <circle cx="650" cy="40" r="5" fill="#19222d"/>
+                                <text x="135" y="275" font-size="12" font-weight="bold" fill="#333">Week 1</text>
+                                <text x="235" y="275" font-size="12" font-weight="bold" fill="#333">Week 2</text>
+                                <text x="335" y="275" font-size="12" font-weight="bold" fill="#333">Week 3</text>
+                                <text x="435" y="275" font-size="12" font-weight="bold" fill="#333">Week 4</text>
+                                <text x="535" y="275" font-size="12" font-weight="bold" fill="#333">Week 5</text>
+                                <text x="635" y="275" font-size="12" font-weight="bold" fill="#333">Live Frame</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-3">
+                    <div class="section-headline-title">2.3 Catalog Inventory Operational Asset Grid</div>
+                    <div class="enterprise-data-table-wrapper">
+                        <div class="table-action-header-bar">
+                            <strong style="font-size:16px;">Active Offers Registered Inside Storage Array</strong>
+                            <button class="btn-primary-action" style="font-size:12px; padding:6px 12px;" onclick="SellerDashboardEngine.catalog.refreshCatalogDOMTable()">Force Grid Synchronization Reload</button>
+                        </div>
+                        <table class="seller-data-grid">
+                            <thead>
+                                <tr>
+                                    <th>Item UID</th>
+                                    <th>Product Title Description Nomenclature</th>
+                                    <th>Category Route</th>
+                                    <th>Unit Price Valuation</th>
+                                    <th>Stock Reserve Units</th>
+                                    <th>Health Status</th>
+                                    <th>Management Conversions Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="seller-catalog-inventory-table-tbody-target">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-4">
+                    <div class="section-headline-title">2.4 Deploy New Asset Offer Stream Engine</div>
+                    <div class="form-layout-card-box">
+                        <form id="seller-new-product-generation-form-node" onsubmit="SellerDashboardEngine.catalog.interceptFormAdditionForm(event)">
+                            <div class="input-group-block">
+                                <label for="form-p-title">Product Commercial Listing Title</label>
+                                <input type="text" id="form-p-title" required placeholder="e.g., Ultra精密 NEMA-17 Stepper Motor High-Holding 0.59Nm Variant">
+                            </div>
+                            <div class="form-grid-dual-column">
+                                <div class="input-group-block">
+                                    <label for="form-p-category">System Catalog Routing Category</label>
+                                    <select id="form-p-category">
+                                        <option value="Components">Components Hardware</option>
+                                        <option value="Electronics">Consumer Electronics</option>
+                                        <option value="Tools">Industrial Tools</option>
+                                        <option value="Accessories">Accessories Armor Cases</option>
+                                    </select>
+                                </div>
+                                <div class="input-group-block">
+                                    <label for="form-p-emoji">Representative Visual Character Graphic (Emoji)</label>
+                                    <select id="form-p-emoji">
+                                        <option value="⚡">⚡ Electrical Energy/Motors Icon</option>
+                                        <option value="⚙️">⚙️ Mechanical Gear Systems Icon</option>
+                                        <option value="📟">📟 Diagnostic Instrument Multimeter Icon</option>
+                                        <option value="📱">📱 Mobile Communications Shield Wrapper Icon</option>
+                                        <option value="🔬">🔬 Optical Analytical System Frame Icon</option>
+                                        <option value="🔋">🔋 Storage Chemical Cell Module Icon</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-grid-dual-column">
+                                <div class="input-group-block">
+                                    <label for="form-p-price">Listing Price Valuation Rate (INR - ₹)</label>
+                                    <input type="number" id="form-p-price" required min="1" placeholder="450">
+                                </div>
+                                <div class="input-group-block">
+                                    <label for="form-p-stock">Initial Allocation Quantities Available</label>
+                                    <input type="number" id="form-p-stock" required min="0" placeholder="50">
+                                </div>
+                            </div>
+                            <div style="text-align:right; margin-top:10px;">
+                                <button type="reset" class="btn-secondary-action" style="margin-right:10px;">Purge Input Buffer</button>
+                                <button type="submit" class="btn-primary-action">Commit Offer Data Structures to Storage Bus</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-5">
+                    <div class="section-headline-title">2.5 Transact Order Management Fulfillment Tracking System</div>
+                    <div class="enterprise-data-table-wrapper">
+                        <table class="seller-data-grid">
+                            <thead>
+                                <tr>
+                                    <th>Order Reference Serial</th>
+                                    <th>Customer Identity Hash</th>
+                                    <th>Target Item Units Description</th>
+                                    <th>Value Charged</th>
+                                    <th>Fulfillment Phase Status</th>
+                                    <th>Intercept Action Controls</th>
+                                </tr>
+                            </thead>
+                            <tbody id="seller-order-tracking-pipeline-tbody-target">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-6">
+                    <div class="section-headline-title">2.6 Cryptographic Ledger Balances & Settlement Reserves Wallet</div>
+                    <div class="ui-dashboard-grid-row" style="grid-template-columns: 1fr 2fr;">
+                        <div class="kpi-metric-card-node" style="justify-content:center; background:linear-gradient(135deg, #19222d 0%, #002f36 100%); color:white;">
+                            <span class="kpi-title" style="color:var(--amazon-gold);">Withdrawable Cleared Reserves Net Balance</span>
+                            <span class="kpi-value" id="wallet-cleared-balance-readout" style="color:white; font-size:36px;">₹0.00</span>
+                            <p style="font-size:12px; color:#aaa; margin-top:10px;">Next electronic settlement sweep automated sequence scheduled inside current execution parameters window block loop.</p>
+                            <button class="btn-primary-action" style="margin-top:15px; border:none;" onclick="SellerDashboardEngine.wallet.triggerInstantSweepSettlement()">Initiate Instant Bank Vault Sweep</button>
+                        </div>
+                        <div class="enterprise-data-table-wrapper" style="margin-bottom:0;">
+                            <div class="table-action-header-bar"><strong>Historic Audited Clearing Post Ledger Accounts Manifest</strong></div>
+                            <table class="seller-data-grid">
+                                <thead>
+                                    <tr>
+                                        <th>Posting Date</th>
+                                        <th>Transaction Reference Hash</th>
+                                        <th>Type Code</th>
+                                        <th>Amount Allocation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="wallet-ledger-history-table-tbody-target">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-7">
+                    <div class="section-headline-title">2.7 Multi-Carrier Spatial Dispatch & Fulfillment Parameterization Matrix</div>
+                    <div class="form-layout-card-box">
+                        <h3 style="margin-bottom:15px; font-size:16px;">Active Integrated Distribution Channel Carriers Mapping Configurations</h3>
+                        <div class="input-group-block">
+                            <label for="logistics-preferred-carrier">Primary High-Priority Logistics Dispatch Fleet Provider</label>
+                            <select id="logistics-preferred-carrier" onchange="SellerDashboardEngine.logger.writeLogTrace('Carrier parameters operational state changed to look towards ' + this.value)">
+                                <option value="SRP-Express">SRP Custom Dedicated Freight Networks (Local Jalore/Rajasthan Hub Hubs)</option>
+                                <option value="BlueDart">BlueDart Aviation Systems Link Gateway</option>
+                                <option value="Delhivery">Delhivery Surface Automated Distribution Sorting Complexes</option>
+                                <option value="IndiaPost">India Speed Post Government Sovereignty Network Systems</option>
+                            </select>
+                        </div>
+                        <div class="form-grid-dual-column">
+                            <div class="input-group-block">
+                                <label for="logistics-base-charge">Base Flat-Rate Domestic Merchant Charge Assessment (₹)</label>
+                                <input type="number" id="logistics-base-charge" value="45" min="0">
+                            </div>
+                            <div class="input-group-block">
+                                <label for="logistics-handling-buffer">Maximum Fulfillment Preparation Dispatch Buffer Windows</label>
+                                <select id="logistics-handling-buffer">
+                                    <option value="Same-Day">Immediate Same-Day Operational Handshake Dispatches (&lt;12 Hours)</option>
+                                    <option value="24h">Standard 24-Hour Packaging Handover Allocation</option>
+                                    <option value="48h">Extended 48-Hour High-Fidelity Custom Testing Dispatch Verification Loop</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-primary-action" onclick="alert('Carrier logistics parameters system configuration states successfully written to device cache vectors.')">Commit Operational Transport Parameters</button>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-8">
+                    <div class="section-headline-title">2.8 Price Elasticity Incentive Vectors (Promotional Coupon Console Engine)</div>
+                    <div class="form-layout-card-box">
+                        <div class="form-grid-dual-column">
+                            <div class="input-group-block">
+                                <label for="coupon-string-id">Alpha-Numeric Promotional Code Signature String</label>
+                                <input type="text" id="coupon-string-id" value="SRP_FESTIVE_2026" placeholder="SRP_START_UP_50">
+                            </div>
+                            <div class="input-group-block">
+                                <label for="coupon-deduction-rate">Absolute Fixed Deductible Percentage Rate (%)</label>
+                                <input type="number" id="coupon-deduction-rate" value="15" min="1" max="95">
+                            </div>
+                        </div>
+                        <button class="btn-primary-action" onclick="SellerDashboardEngine.promotions.injectPromotionalCouponSignature()">Compile and Mount Active System Discount Rules Vector</button>
+                        
+                        <div class="enterprise-data-table-wrapper" style="margin-top:25px; margin-bottom:0;">
+                            <div class="table-action-header-bar"><strong>Active Operational Marketing Deduction Tables Matrix</strong></div>
+                            <table class="seller-data-grid">
+                                <thead>
+                                    <tr>
+                                        <th>Coupon String Key Identifier</th>
+                                        <th>Deduction Percentage Mapping</th>
+                                        <th>Target Scope Constraint Rules</th>
+                                        <th>Operational Lifespan Index State</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promotions-active-coupons-tbody-target">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-9">
+                    <div class="section-headline-title">2.9 CRM Merchant Communications Desk & Intercept Customer Ticket Queues</div>
+                    <div class="messaging-split-layout">
+                        <div class="message-threads-sidebar">
+                            <div class="thread-item-node active-thread" onclick="alert('Thread context locker mapping state verification trace intact.')">
+                                <div style="display:flex; justify-content:between; font-size:12px; font-weight:700; color:var(--amazon-orange); margin-bottom:4px;">
+                                    <span>Ticket #TCK-88102</span>
+                                    <span style="margin-left:auto;">LIVE CHAT</span>
+                                </div>
+                                <strong style="font-size:13px; color:#111; display:block; margin-bottom:2px;">User_Jalore_Dev88</strong>
+                                <span style="font-size:12px; color:#666; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Inquiry regarding dynamic heat sink compatibility variables models...</span>
+                            </div>
+                        </div>
+                        <div class="message-chat-viewport">
+                            <div class="chat-history-pool" id="crm-live-chat-history-pool-target">
+                                <div class="chat-bubble bubble-customer">
+                                    Hello, I ordered the 5V Brushless High-Torque DC Geared Motor for a custom hardware rig. Can you verify if it can sustain continuous operational runtime at 6.2 Volts without stator coils breakdown thermal runaways?
+                                </div>
+                                <div class="chat-bubble bubble-seller">
+                                    Greetings! Our core hardware specifications show the stator insulation threshold matrices are validated up to 7.5V for short duty intervals. For permanent operational profiles at 6.2V, we strongly recommend attaching an anodized aluminum multi-fin heat sink layout vector.
+                                </div>
+                                <div class="chat-bubble bubble-customer">
+                                    Excellent engineering response team support. Writing back to verify if you can supply those structural heat sinks directly inside a singular multi-vendor dispatch order bucket frame?
+                                </div>
+                            </div>
+                            <div class="chat-input-row-tray">
+                                <input type="text" id="crm-chat-text-input-buffer-node" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:3px; outline:none;" placeholder="Type system response dispatch message to client pipeline...">
+                                <button class="btn-primary-action" style="padding:10px 20px;" onclick="SellerDashboardEngine.crm.dispatchChatMessageResponsePayload()">Send Stream</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-content-container-block" id="sub-2-10">
+                    <div class="section-headline-title">2.10 Enterprise Distributed Synch Systems Sandbox Interface Gateway</div>
+                    <div class="form-layout-card-box" style="max-width:100%;">
+                        <div style="display:flex; gap:15px; margin-bottom:20px;">
+                            <button class="btn-primary-action" style="background:linear-gradient(to bottom, #10b981, #059669); border-color:#047857; color:white;" onclick="SellerDashboardEngine.sandbox.mockSupabaseDatabaseHandshakeSync()">
+                                Test Supabase DB Live Replication Protocol Check
+                            </button>
+                            <button class="btn-primary-action" style="background:linear-gradient(to bottom, #f59e0b, #d97706); border-color:#b45309; color:white;" onclick="SellerDashboardEngine.sandbox.mockFirebaseRealtimeSyncPipeline()">
+                                Test Firebase Dynamic WebSocket Storage Channel Ping
+                            </button>
+                            <button class="btn-secondary-action" style="color:var(--danger-red); border-color:rgba(204,0,0,0.3);" onclick="SellerDashboardEngine.logger.clearLogWindowConsole()">
+                                Clear Diagnostic Terminal Monitor Logs Buffer
+                            </button>
+                        </div>
+                        <h4 style="font-size:14px; font-weight:700; margin-bottom:8px; color:#111;">Live Real-Time Operational System Trace Stream Monitor Diagnostic Terminal</h4>
+                        <div class="system-trace-log-view-box" id="system-diagnostic-logger-view-terminal-target">
+                            </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
     </div>
-
-                <div class="flex gap-4">
-                    <img src="https://picsum.photos/100" class="w-12 h-12 rounded-xl object-cover">
-                    <div>
-                        <h4 class="text-xs font-black text-gray-800 line-clamp-1">iPhone 15 Pro Max (Clone)</h4>
-                        <p class="text-[10px] text-gray-500">Qty: 01 | Amount: <b class="text-gray-900">₹1,299</b></p>
-                    </div>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-2xl text-[10px] text-gray-600 leading-relaxed border border-gray-100">
-                    <i class="fas fa-location-dot mr-1"></i> <b>Rahul Sharma:</b> 123, MG Road, Jaipur, Rajasthan - 302001
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-3">
-                <input id="tracking-9921" type="text" placeholder="Paste Tracking ID (India Post / Delhivery)" class="w-full p-4 border-2 border-gray-100 rounded-2xl text-xs focus:border-orange-400 outline-none transition-all">
-                <button onclick="updateShipment('9921')" class="w-full bg-black text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg">Confirm Shipment</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="page-products" class="hidden p-5 space-y-6">
-        <div class="bg-white rounded-3xl p-6 card-shadow border border-gray-100">
-            <h3 class="font-black text-gray-900 uppercase tracking-tighter mb-6 flex items-center gap-2">
-                <i class="fas fa-cloud-arrow-up text-blue-600"></i> List New Product
-            </h3>
-            
-            <form id="product-form" class="space-y-4">
-                <input type="text" id="p-name" required placeholder="Product Title (Include Brand)" class="w-full p-4 border-2 border-gray-50 bg-gray-50 rounded-2xl text-sm focus:bg-white focus:border-blue-500 outline-none transition-all">
-                
-                <div class="grid grid-cols-3 gap-3">
-                    <input type="number" id="p-price" required placeholder="Selling ₹" class="p-4 border-2 border-gray-50 bg-gray-50 rounded-2xl text-sm focus:bg-white outline-none">
-                    <input type="number" id="p-mrp" required placeholder="MRP ₹" class="p-4 border-2 border-gray-50 bg-gray-50 rounded-2xl text-sm focus:bg-white outline-none">
-                    <input type="number" id="p-stock" required placeholder="Stock" class="p-4 border-2 border-gray-50 bg-gray-50 rounded-2xl text-sm focus:bg-white outline-none">
-                </div>
-
-                <select id="p-category" class="w-full p-4 border-2 border-gray-50 bg-gray-50 rounded-2xl text-sm outline-none">
-                    <option value="Mobiles">Mobiles</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Fashion">Fashion</option>
-                    <option value="Home">Home & Kitchen</option>
-                </select>
-
-                <div class="border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-pointer" onclick="document.getElementById('p-image').click()">
-                    <input type="file" id="p-image" accept="image/*" class="hidden" onchange="previewImages(event)">
-                    <div id="upload-placeholder">
-                        <i class="fas fa-images text-3xl text-gray-300 mb-2"></i>
-                        <p class="text-[10px] font-black text-gray-400 uppercase">Tap to Select from Gallery</p>
-                        <p class="text-[9px] text-gray-300 mt-1">High quality PNG/JPG recommended</p>
-                    </div>
-                    <div id="image-preview-container" class="flex flex-wrap justify-center gap-2 hidden"></div>
-                </div>
-
-                <button type="submit" id="list-btn" class="w-full bg-blue-700 text-white py-5 rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl transform active:scale-95 transition">
-                    Push to SRP Marketplace
-                </button>
-            </form>
-        </div>
-
-        <div class="space-y-3">
-            <p class="text-[10px] font-black text-gray-400 uppercase px-2">Recently Listed</p>
-            <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-gray-100 card-shadow">
-                <div class="flex items-center gap-3">
-                    <img src="https://picsum.photos/50" class="w-10 h-10 rounded-lg">
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-800">Sample Item #1</h4>
-                        <p class="text-[9px] text-green-600 font-bold">10 In Stock</p>
-                    </div>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-    </section>
-
-    <nav class="fixed bottom-0 w-full h-20 bg-white border-t-2 border-gray-50 flex items-center justify-around px-4 z-[100] nav-shadow">
-        <button onclick="switchTab('onboarding')" class="flex flex-col items-center gap-1.5 transition-all text-blue-600">
-            <div class="w-12 h-8 rounded-full flex items-center justify-center bg-blue-50"><i class="fas fa-shield-halved"></i></div>
-            <span class="text-[8px] font-black uppercase">Verify</span>
-        </button>
-        <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1.5 transition-all text-gray-400">
-            <div class="w-12 h-8 rounded-full flex items-center justify-center"><i class="fas fa-chart-pie"></i></div>
-            <span class="text-[8px] font-black uppercase">Stats</span>
-        </button>
-        <button onclick="switchTab('products')" class="flex flex-col items-center gap-1.5 transition-all text-gray-400">
-            <div class="w-12 h-8 rounded-full flex items-center justify-center"><i class="fas fa-plus"></i></div>
-            <span class="text-[8px] font-black uppercase">Sell</span>
-        </button>
-        <button onclick="location.href='index.html'" class="flex flex-col items-center gap-1.5 transition-all text-gray-400">
-            <div class="w-12 h-8 rounded-full flex items-center justify-center"><i class="fas fa-house"></i></div>
-            <span class="text-[8px] font-black uppercase">Store</span>
-        </button>
-    </nav>
 
     <script>
-        // 1. CONFIGURATION
-        const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteGxmeHF0cmd1dXpwcWRnY3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzE0NDYsImV4cCI6MjA5MDAwNzQ0Nn0.Hl0S5yJnJEqvrxXSFt_YMjrKUKerNjUHb2ZvI7LfOC0";
+        /**
+         * --------------------------------------------------------------------------
+         * SYSTEM SELLER CONSOLE MONOLITH CORE ARCHITECTURE OPERATIONAL NAMESPACE
+         * --------------------------------------------------------------------------
+         */
+        const SellerDashboardEngine = (() => {
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            // Shared Cryptographic Signature Target Validation Const Base Match Checkers
+            const SYSTEM_SECURITY_VALIDATION_TOKEN_HASH = "SRP_SECURE_2026";
 
-        let currentUid = null;
+            // Local Runtime Memory Matrix Registers State Arrays
+            let productsInternalArrayDataMirror = [];
+            let ordersInternalArrayDataMirror = [];
+            let activeCouponsInternalArrayDataMirror = [
+                { stringId: "SRP_FESTIVE_2026", rate: 15, scope: "All Catalog Inclusions", status: "Active System Matrix" },
+                { stringId: "JALORE_DEV_SPECIAL", rate: 25, scope: "Hardware Components", status: "Active System Matrix" }
+            ];
+            let financialLedgerHistoryDataMirror = [
+                { date: "2026-05-20 10:14", refHash: "TXN-998201948", type: "ORDER_CREDIT", amount: 450 },
+                { date: "2026-05-22 14:45", refHash: "TXN-998244192", type: "ORDER_CREDIT", amount: 1250 },
+                { date: "2026-05-24 18:22", refHash: "TXN-882019411", type: "SYSTEM_DEBIT_SHIPPING", amount: -45 }
+            ];
 
-        // 2. AUTHENTICATION & STATE SYNC
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                currentUid = session.user.id;
-                document.getElementById('seller-id-display').innerText = `Seller ID: ${currentUid.substring(0, 10)}...`;
-                syncSellerData();
-            } else {
-                location.href = 'index.html';
-            }
-        });
+            /**
+             * --------------------------------------------------------------------------
+             * HARDWARE DIAGNOSTIC TELEMETRY CAPTURE COMPONENT DATA TIER
+             * --------------------------------------------------------------------------
+             */
+            const diagnosticLoggerInstrumentSubtier = {
+                writeLogTrace: (logMessageContentPayloadTextString) => {
+                    const terminalNode = document.getElementById("system-diagnostic-logger-view-terminal-target");
+                    if (!terminalNode) return;
 
-// Add this to your syncSellerData() function after the seller check
-async function syncSellerData() {
-    // 1. Fetch Seller Profile
-    const { data: seller, error } = await supabase
-        .from('sellers')
-        .select('*')
-        .eq('id', currentUid)
-        .single();
+                    const activeTimestampISOString = new Date().toISOString().replace('T', ' ').substring(0, 19);
+                    const formattedLogLineTextNodeString = `[${activeTimestampISOString}] SYSTEM_TRACE_NODE >> ${logMessageContentPayloadTextString}\n`;
 
-    if (seller) {
-        if (seller.status === 'active') {
-            activateSellerUI();
-            fetchInventory(); // Only fetch if they are an active seller
-        } else {
-            document.getElementById('status-badge').innerText = "Application Pending";
-            switchTab('onboarding');
-        }
-    }
-}
-
-async function fetchInventory() {
-    const container = document.getElementById('inventory-list');
-    if (!container) return;
-
-    // Reset container with the header
-    container.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase px-2">Recently Listed</p>';
-
-    // 2. Fetch products for this specific seller
-    const { data: products, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('seller_id', currentUid)
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error("Error fetching inventory:", error);
-        return;
-    }
-
-    if (products.length === 0) {
-        container.innerHTML += `
-            <div class="text-center py-10 opacity-40">
-                <i class="fas fa-box-open text-2xl mb-2"></i>
-                <p class="text-[10px] font-bold uppercase">No products found</p>
-            </div>`;
-        return;
-    }
-
-    // 3. Loop and Display
-    products.forEach(item => {
-        container.innerHTML += `
-            <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-gray-100 card-shadow animate-in fade-in slide-in-from-bottom-2">
-                <div class="flex items-center gap-3">
-                    <img src="${item.image_url}" class="w-12 h-12 rounded-xl object-cover bg-gray-50" onerror="this.src='https://placehold.co/100?text=Error'">
-                    <div>
-                        <h4 class="text-xs font-black text-gray-800 line-clamp-1">${item.name}</h4>
-                        <p class="text-[9px] font-bold ${item.stock > 0 ? 'text-green-600' : 'text-red-500'}">
-                            ₹${item.price} • ${item.stock} in stock
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                     <button onclick="deleteProduct(${item.id})" class="text-gray-300 hover:text-red-500 transition-colors p-2">
-                        <i class="fas fa-trash-can text-xs"></i>
-                    </button>
-                    <label class="switch">
-                        <input type="checkbox" ${item.stock > 0 ? 'checked' : ''}>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-        `;
-    });
-}
-
-
-// New function to fetch and display products
-async function fetchInventory() {
-    const container = document.querySelector('#page-products .space-y-3');
-    // Keep the header, clear the rest
-    container.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase px-2">Recently Listed</p>';
-
-    const { data: products, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('seller_id', currentUid)
-        .order('created_at', { ascending: false });
-
-    if (error) return console.error(error);
-
-    if (products.length === 0) {
-        container.innerHTML += `<div class="text-center p-10 text-gray-400 text-[10px] font-bold uppercase">No products listed yet</div>`;
-        return;
-    }
-
-    products.forEach(item => {
-        const itemHtml = `
-            <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-gray-100 card-shadow">
-                <div class="flex items-center gap-3">
-                    <img src="${item.image_url}" class="w-10 h-10 rounded-lg object-cover">
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-800">${item.name}</h4>
-                        <p class="text-[9px] ${item.stock > 0 ? 'text-green-600' : 'text-red-500'} font-bold">
-                            ${item.stock} In Stock | ₹${item.price}
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="deleteProduct(${item.id})" class="text-gray-300 hover:text-red-500 p-2"><i class="fas fa-trash-can text-xs"></i></button>
-                    <label class="switch">
-                        <input type="checkbox" ${item.stock > 0 ? 'checked' : ''} onchange="toggleAvailability(${item.id}, this.checked)">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-        `;
-        container.innerHTML += itemHtml;
-    });
-}
-
-// Function to delete a product
-async function deleteProduct(productId) {
-    if(!confirm("Are you sure you want to remove this product?")) return;
-    
-    const { error } = await supabase.from('products').delete().eq('id', productId);
-    if (error) alert(error.message);
-    else fetchInventory();
-}
-
-        // 3. UI TAB NAVIGATION
-        function switchTab(pageId) {
-            ['onboarding', 'dashboard', 'orders', 'products'].forEach(p => {
-                document.getElementById(`page-${p}`).classList.add('hidden');
-                document.getElementById(`tab-${p}`)?.classList.remove('tab-active');
-            });
-
-            document.getElementById(`page-${pageId}`).classList.remove('hidden');
-            document.getElementById(`tab-${pageId}`)?.classList.add('tab-active');
-        }
-
-        function activateSellerUI() {
-            document.getElementById('status-badge').innerText = "Active Seller";
-            document.getElementById('status-badge').className = "text-[9px] bg-green-500 text-white px-2.5 py-1 rounded-full font-black uppercase tracking-widest";
-            switchTab('dashboard');
-        }
-
-        // 4. ONBOARDING SUBMISSION
-        document.getElementById('onboarding-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const payload = {
-                id: currentUid,
-                legal_name: document.getElementById('v-name').value,
-                gst: document.getElementById('v-gst').value,
-                pan: document.getElementById('v-pan').value,
-                store_name: document.getElementById('v-store').value,
-                address: document.getElementById('v-address').value,
-                status: 'pending',
-                applied_at: new Date().toISOString()
+                    terminalNode.innerText += formattedLogLineTextNodeString;
+                    terminalNode.scrollTop = terminalNode.scrollHeight;
+                },
+                clearLogWindowConsole: () => {
+                    const terminalNode = document.getElementById("system-diagnostic-logger-view-terminal-target");
+                    if (terminalNode) terminalNode.innerText = ">> System Trace Terminal Buffer Reset Initiated Successfully.\n";
+                }
             };
 
-            try {
-                const { error } = await supabase.from('sellers').upsert(payload);
-                if (error) throw error;
-                
-                alert("Application Submitted Successfully!");
-                
-                // Demo Auto-Approval for Developer Testing
-                setTimeout(async () => {
-                    await supabase.from('sellers').update({ status: 'active' }).eq('id', currentUid);
-                    activateSellerUI();
-                }, 2000);
-            } catch (err) { alert(err.message); }
-        };
+            /**
+             * --------------------------------------------------------------------------
+             * SECURITY LAYER HANDSHAKE IDENTITY CONFIRMATION CRYPTOGRAPHIC CHECKERS
+             * --------------------------------------------------------------------------
+             */
+            const identitySecurityAuthenticationGuardSubtier = {
+                verifySessionSignatureTokenValidity: () => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Analyzing cryptographic session token assertions from context caches storage slots...");
+                    try {
+                        const encryptedSignatureTokenString = sessionStorage.getItem("SRP_ROLE_VALIDATION_TOKEN_SIGNATURE");
+                        
+                        if (encryptedSignatureTokenString && atob(encryptedSignatureTokenString) === SYSTEM_SECURITY_VALIDATION_TOKEN_HASH) {
+                            diagnosticLoggerInstrumentSubtier.writeLogTrace("Token assertions confirmed match match validation parameters framework success. Access granted.");
+                            
+                            // Unmask application operations view space UI elements
+                            document.getElementById("security-unauthorized-blocker-frame").style.display = "none";
+                            document.getElementById("seller-workspace-application-root").style.display = "flex";
+                            return true;
+                        } else {
+                            throw new Error("Cryptographic verification mismatch inside targeted contextual authorization layers profile mappings data grids.");
+                        }
+                    } catch (faultObj) {
+                        console.error("Authorization access fault trace profile:", faultObj);
+                        diagnosticLoggerInstrumentSubtier.writeLogTrace("CRITICAL CRIT SECURITY EXCEPTION DETECTED: Authentication verification failed validation checks.");
+                        document.getElementById("security-unauthorized-blocker-frame").style.display = "flex";
+                        document.getElementById("seller-workspace-application-root").style.display = "none";
+                        return false;
+                    }
+                },
 
-        // 5. PRODUCT UPLOAD WITH GALLERY
-        function previewImages(event) {
-            const container = document.getElementById('image-preview-container');
-            const placeholder = document.getElementById('upload-placeholder');
-            container.innerHTML = '';
-            
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    container.appendChild(img);
-                    container.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
+                evictSessionSignature: () => {
+                    sessionStorage.removeItem("SRP_ROLE_VALIDATION_TOKEN_SIGNATURE");
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Session validation contexts safely purged from memory clusters. Redirecting immediately.");
+                    window.location.href = "index.html";
                 }
-                reader.readAsDataURL(file);
-            }
-        }
+            };
 
-        document.getElementById('product-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('list-btn');
-            btn.disabled = true;
-            btn.innerText = "UPLOADING TO CLOUD...";
+            /**
+             * --------------------------------------------------------------------------
+             * DYNAMIC INTERNAL WORKSPACE ROUTING SUB-PANEL MANAGEMENT SYSTEM
+             * --------------------------------------------------------------------------
+             */
+            const viewPanelNavigationRoutingControllerSubtier = {
+                switchSubsectionView: (clickedSidebarDOMRowElementNode) => {
+                    const targetSubSectionDOMIDKey = clickedSidebarDOMRowElementNode.getAttribute("data-target-sub");
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Interpreting workspace view transformation index redirection maps to panel target: #${targetSubSectionDOMIDKey}`);
 
-            const file = document.getElementById('p-image').files[0];
-            if (!file) return alert("Select product image from gallery");
+                    // Deactivate all visible block panel content configurations elements
+                    const contentPanelsList = document.querySelectorAll(".subsection-content-container-block");
+                    contentPanelsList.forEach((panelNode) => { panelNode.style.display = "none"; });
 
-            try {
-                // 1. Upload to Supabase Storage (Assumes bucket 'products' exists)
-                const fileName = `${Date.now()}_${file.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('products')
-                    .upload(fileName, file);
+                    // Demount styling attributes on matching links indicators
+                    const sidebarLinksList = document.querySelectorAll(".nav-item-link-row");
+                    sidebarLinksList.forEach((linkNode) => { linkNode.classList.remove("active-tab"); });
 
-                if (uploadError) throw uploadError;
+                    // Mount target active visibility contexts parameters
+                    document.getElementById(targetSubSectionDOMIDKey).style.display = "block";
+                    clickedSidebarDOMRowElementNode.classList.add("active-tab");
+                }
+            };
 
-                // Get Public URL
-                const { data: urlData } = supabase.storage.from('products').getPublicUrl(fileName);
-                const imageUrl = urlData.publicUrl;
+            /**
+             * --------------------------------------------------------------------------
+             * PERSISTENT DATA INTERACTION SYSTEM CONTROLLER MANAGEMENT SYNC
+             * --------------------------------------------------------------------------
+             */
+            const persistentStorageSynchronizerSubtier = {
+                pullDatabaseStateFromBrowserStorageCache: () => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Pulling central enterprise storage tables registries maps from local disk sectors...");
+                    
+                    const productsToken = localStorage.getItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY");
+                    const ordersToken = localStorage.getItem("SRP_ENTERPRISE_USER_CART_REGISTRY"); // Fallback mock interface loop mapping tracker
 
-                // 2. Save to Postgres
-                const { error: dbError } = await supabase.from('products').insert({
-                    seller_id: currentUid,
-                    name: document.getElementById('p-name').value,
-                    price: Number(document.getElementById('p-price').value),
-                    mrp: Number(document.getElementById('p-mrp').value),
-                    stock: Number(document.getElementById('p-stock').value),
-                    category: document.getElementById('p-category').value,
-                    image_url: imageUrl
-                });
+                    if (productsToken) {
+                        productsInternalArrayDataMirror = JSON.parse(productsToken);
+                    } else {
+                        diagnosticLoggerInstrumentSubtier.writeLogTrace("Products data matrix empty, allocating placeholder seed fallback matrices.");
+                        productsInternalArrayDataMirror = [];
+                    }
 
-                if (dbError) throw dbError;
+                    // Mock pipeline orders array generation parsing layer fallback tracking
+                    const ordersCacheToken = localStorage.getItem("SRP_ENTERPRISE_ORDERS_PIPELINE_CACHE");
+                    if (ordersCacheToken) {
+                        ordersInternalArrayDataMirror = JSON.parse(ordersCacheToken);
+                    } else {
+                        // Generate mock tracking elements mapping pipeline structures indicators parameters if not existing inside cache vectors
+                        ordersInternalArrayDataMirror = [
+                            { orderId: "ORD-2026-88102", clientHash: "usr_jalore_091", itemSummary: "Premium 5V Brushless High-Torque DC Geared Motor Core x2", totalCharged: 900, status: "pending" },
+                            { orderId: "ORD-2026-90412", clientHash: "usr_jodhpur_112", itemSummary: "High-Accuracy Auto-Ranging Digital Multimeter Pro-Kit x1", totalCharged: 1250, status: "shipped" }
+                        ];
+                        localStorage.setItem("SRP_ENTERPRISE_ORDERS_PIPELINE_CACHE", JSON.stringify(ordersInternalArrayDataMirror));
+                    }
+                },
 
-                alert("Product is now LIVE on SRP SHOPPING!");
-                location.reload();
-            } catch (err) {
-                alert(err.message);
-                btn.disabled = false;
-                btn.innerText = "Push to SRP Marketplace";
-            }
-        };
+                pushDatabaseStateToBrowserStorageCache: () => {
+                    localStorage.setItem("SRP_ENTERPRISE_PRODUCTS_REGISTRY", JSON.stringify(productsInternalArrayDataMirror));
+                    localStorage.setItem("SRP_ENTERPRISE_ORDERS_PIPELINE_CACHE", JSON.stringify(ordersInternalArrayDataMirror));
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Committed system internal runtime state updates to local browser storage registers variables.");
+                }
+            };
 
-        // 6. ACTION HANDLERS
-        function updateShipment(orderId) {
-            const tid = document.getElementById(`tracking-${orderId}`).value;
-            if(!tid) return alert("Tracking ID required for dispatch");
-            
-            alert(`Order ${orderId} marked as SHIPPED. Logistics notified.`);
-        }
+            /**
+             * --------------------------------------------------------------------------
+             * CATALOG ASSET INVENTORY INTERACTION CONTROLLERS (SUBSECTIONS 2.3 & 2.4)
+             * --------------------------------------------------------------------------
+             */
+            const catalogInventoryInteractionManagerSubtier = {
+                refreshCatalogDOMTable: () => {
+                    persistentStorageSynchronizerSubtier.pullDatabaseStateFromBrowserStorageCache();
+                    const tableTbodyTargetNode = document.getElementById("seller-catalog-inventory-table-tbody-target");
+                    if (!tableTbodyTargetNode) return;
 
-        function requestPayout() {
-            alert("Settlement request for ₹14,250.00 sent to SRP Admin. Will be credited to your linked bank account within 24 hours.");
-        }
+                    tableTbodyTargetNode.innerHTML = "";
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Refreshing grid inventory visualization node loop. Mapping ${productsInternalArrayDataMirror.length} records data.`);
 
-        function payForAds() {
-            if(confirm("Deduct ₹500 from your seller balance for 24h promotion?")) {
-                alert("Payment Successful! Your store is now trending on the SRP Home Page.");
-            }
-        }
+                    productsInternalArrayDataMirror.forEach((productItem) => {
+                        const tableRowElement = document.createElement("tr");
+
+                        const statusBadgeClassString = productItem.stock > 0 ? "status-active" : "status-outofstock";
+                        const statusTextString = productItem.stock > 0 ? "Active In-Stock" : "Out of Stock Out";
+
+                        tableRowElement.innerHTML = `
+                            <td style="font-family:monospace; font-weight:bold; color:var(--seller-accent-blue);">${productItem.id}</td>
+                            <td><span style="margin-right:8px; font-size:16px;">${productItem.emoji || '📦'}</span><strong>${productItem.title}</strong></td>
+                            <td><mark style="padding:2px 6px; font-size:12px; background:#e8ecec; border-radius:3px;">${productItem.category}</mark></td>
+                            <td style="font-weight:700; color:var(--danger-red);">₹${productItem.price}.00</td>
+                            <td style="font-weight:bold;">${productItem.stock} units</td>
+                            <td><span class="badge-status ${statusBadgeClassString}">${statusTextString}</span></td>
+                            <td>
+                                <button class="btn-secondary-action" style="padding:4px 8px; font-size:11px; color:var(--danger-red); font-weight:bold;" onclick="SellerDashboardEngine.catalog.deleteProductAssetSpecificationItem(${productItem.id})">
+                                    Purge Drop
+                                </button>
+                            </td>
+                        `;
+                        tableTbodyTargetNode.appendChild(tableRowElement);
+                    });
+
+                    // Synchronize the master metric overview indicators boxes dynamically inside subsection 2.1
+                    catalogInventoryInteractionManagerSubtier.calculateMetricsSummaryKPIsWidgets();
+                },
+
+                interceptFormAdditionForm: (formSubmissionEventObject) => {
+                    formSubmissionEventObject.preventDefault();
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Intercepted new listing declaration stream. Compiling parameters fields definitions...");
+
+                    const inputTitleText = document.getElementById("form-p-title").value.trim();
+                    const inputCategoryText = document.getElementById("form-p-category").value;
+                    const inputEmojiText = document.getElementById("form-p-emoji").value;
+                    const inputPriceNumeric = parseInt(document.getElementById("form-p-price").value);
+                    const inputStockNumeric = parseInt(document.getElementById("form-p-stock").value);
+
+                    const generatedProductDataModelNode = {
+                        id: Date.now() + Math.floor(Math.random() * 100),
+                        title: inputTitleText,
+                        category: inputCategoryText,
+                        price: inputPriceNumeric,
+                        stock: inputStockNumeric,
+                        rating: 5.0,
+                        emoji: inputEmojiText
+                    };
+
+                    productsInternalArrayDataMirror.push(generatedProductDataModelNode);
+                    persistentStorageSynchronizerSubtier.pushDatabaseStateToBrowserStorageCache();
+                    catalogInventoryInteractionManagerSubtier.refreshCatalogDOMTable();
+
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Successfully mapped asset listing entity onto master array stack context ID: ${generatedProductDataModelNode.id}`);
+                    document.getElementById("seller-new-product-generation-form-node").reset();
+                    alert("System success payload: Offer entity deployed to master catalog mapping matrices.");
+                },
+
+                deleteProductAssetSpecificationItem: (targetItemUIDKeyInteger) => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Evicting item index pointer from data arrays stack matching targeted identity criteria: ID ${targetItemUIDKeyInteger}`);
+                    
+                    productsInternalArrayDataMirror = productsInternalArrayDataMirror.filter((item) => item.id !== targetItemUIDKeyInteger);
+                    
+                    persistentStorageSynchronizerSubtier.pushDatabaseStateToBrowserStorageCache();
+                    catalogInventoryInteractionManagerSubtier.refreshCatalogDOMTable();
+                },
+
+                calculateMetricsSummaryKPIsWidgets: () => {
+                    const gmvReadoutNode = document.getElementById("kpi-gmv-readout");
+                    const ordersReadoutNode = document.getElementById("kpi-orders-readout");
+                    const stockReadoutNode = document.getElementById("kpi-stock-readout");
+
+                    // Compute aggregate summary values parsing internal data storage pools matrix lines profiles tracker links
+                    const computedAccumulatedTotalGMVValue = financialLedgerHistoryDataMirror.reduce((sum, item) => {
+                        return item.type === "ORDER_CREDIT" ? sum + item.amount : sum;
+                    }, 0);
+
+                    const totalPendingOrdersCountValue = ordersInternalArrayDataMirror.filter(o => o.status === "pending").length;
+
+                    if (gmvReadoutNode) gmvReadoutNode.innerText = `₹${computedAccumulatedTotalGMVValue.toLocaleString('en-IN')}.00`;
+                    if (ordersReadoutNode) ordersReadoutNode.innerText = `${totalPendingOrdersCountValue} Pending`;
+                    if (stockReadoutNode) stockReadoutNode.innerText = `${productsInternalArrayDataMirror.length} ASINs`;
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * ORDER MANAGEMENT PIPELINE REPLICATION HANDLERS (SUBSECTION 2.5)
+             * --------------------------------------------------------------------------
+             */
+            const orderLifecyclePipelineManagerSubtier = {
+                refreshOrdersPipelineDOMTable: () => {
+                    const tbodyTargetNode = document.getElementById("seller-order-tracking-pipeline-tbody-target");
+                    if (!tbodyTargetNode) return;
+
+                    tbodyTargetNode.innerHTML = "";
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Iterating order fulfillment matrix pipelines matching layout tracks profiles indices.`);
+
+                    ordersInternalArrayDataMirror.forEach((orderItem) => {
+                        const tableRowElement = document.createElement("tr");
+                        const statusClass = orderItem.status === "pending" ? "status-pending" : "status-shipped";
+
+                        const conditionalActionButtonMarkup = orderItem.status === "pending" 
+                            ? `<button class="btn-primary-action" style="font-size:11px; padding:4px 8px;" onclick="SellerDashboardEngine.orders.dispatchCarrierPackageHandover('${orderItem.orderId}')">Pack & Dispatch</button>`
+                            : `<span style="font-size:12px; color:var(--success-green); font-weight:bold;">Handed Over to Fleet</span>`;
+
+                        tableRowElement.innerHTML = `
+                            <td style="font-family:monospace; font-weight:bold;">${orderItem.orderId}</td>
+                            <td style="font-family:monospace; color:#666;">${orderItem.clientHash}</td>
+                            <td style="max-width:250px; font-size:13px;">${orderItem.itemSummary}</td>
+                            <td style="font-weight:700;">₹${orderItem.totalCharged}.00</td>
+                            <td><span class="badge-status ${statusClass}">${orderItem.status}</span></td>
+                            <td>${conditionalActionButtonMarkup}</td>
+                        `;
+                        tbodyTargetNode.appendChild(tableRowElement);
+                    });
+                },
+
+                dispatchCarrierPackageHandover: (targetOrderIDSignatureKeyString) => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Triggering courier routing tracking handshake sequence matching allocation key: ${targetOrderIDSignatureKeyString}`);
+                    
+                    ordersInternalArrayDataMirror.forEach((order) => {
+                        if (order.orderId === targetOrderIDSignatureKeyString) {
+                            order.status = "shipped";
+                            
+                            // Inject corresponding monetary balances credits onto financial arrays traces
+                            const ledgerCreditNode = {
+                                date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                                refHash: `TXN-SYS-${Math.floor(Math.random() * 900000 + 100000)}`,
+                                type: "ORDER_CREDIT",
+                                amount: order.totalCharged
+                            };
+                            financialLedgerHistoryDataMirror.push(ledgerCreditNode);
+                        }
+                    });
+
+                    persistentStorageSynchronizerSubtier.pushDatabaseStateToBrowserStorageCache();
+                    orderLifecyclePipelineManagerSubtier.refreshOrdersPipelineDOMTable();
+                    catalogInventoryInteractionManagerSubtier.refreshCatalogDOMTable();
+                    walletLedgerFinancialAccountsManagerSubtier.refreshLedgerBalancesDOMTable();
+                    
+                    alert("Logistics sequence executed: Manifest generated, package payload marked as dispatched via chosen carrier.");
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * FISCAL ACCOUNTS LEDGER WALLET CONTROLLER MANAGEMENT TIER (SUBSECTION 2.6)
+             * --------------------------------------------------------------------------
+             */
+            const walletLedgerFinancialAccountsManagerSubtier = {
+                refreshLedgerBalancesDOMTable: () => {
+                    const tbodyTargetNode = document.getElementById("wallet-ledger-history-table-tbody-target");
+                    const balanceReadoutNode = document.getElementById("wallet-cleared-balance-readout");
+                    if (!tbodyTargetNode) return;
+
+                    tbodyTargetNode.innerHTML = "";
+                    let runningAggregatedSumBalanceValue = 0;
+
+                    financialLedgerHistoryDataMirror.forEach((ledgerRow) => {
+                        runningAggregatedSumBalanceValue += ledgerRow.amount;
+                        const rowElement = document.createElement("tr");
+
+                        const colorationStyleValue = ledgerRow.amount > 0 ? "color:var(--success-green); font-weight:bold;" : "color:var(--danger-red);";
+                        const formattedPrefixString = ledgerRow.amount > 0 ? `+₹${ledgerRow.amount}` : `-₹${Math.abs(ledgerRow.amount)}`;
+
+                        rowElement.innerHTML = `
+                            <td style="color:#565959; font-size:12px;">${ledgerRow.date}</td>
+                            <td style="font-family:monospace; font-size:12px; font-weight:bold;">${ledgerRow.refHash}</td>
+                            <td><mark style="font-size:11px; padding:2px 4px;">${ledgerRow.type}</mark></td>
+                            <td style="${colorationStyleValue}">${formattedPrefixString}.00</td>
+                        `;
+                        tbodyTargetNode.appendChild(rowElement);
+                    });
+
+                    if (balanceReadoutNode) balanceReadoutNode.innerText = `₹${runningAggregatedSumBalanceValue.toLocaleString('en-IN')}.00`;
+                },
+
+                triggerInstantSweepSettlement: () => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Requesting clearance verification from banking automated settlement node gateways...");
+                    alert("Settlement sweep successful: Available cleared balance routed immediately via secure electronic fund transfer directly to merchant registry banking vault ledger.");
+                    
+                    financialLedgerHistoryDataMirror = [];
+                    walletLedgerFinancialAccountsManagerSubtier.refreshLedgerBalancesDOMTable();
+                    catalogInventoryInteractionManagerSubtier.calculateMetricsSummaryKPIsWidgets();
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * MARKETING DEDUCTION COUPON MATRIX CONTROLLERS (SUBSECTION 2.8)
+             * --------------------------------------------------------------------------
+             */
+            const marketingPromotionalCouponsManagerSubtier = {
+                refreshCouponsDOMTable: () => {
+                    const tbodyTargetNode = document.getElementById("promotions-active-coupons-tbody-target");
+                    if (!tbodyTargetNode) return;
+
+                    tbodyTargetNode.innerHTML = "";
+                    activeCouponsInternalArrayDataMirror.forEach((coupon) => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td style="font-family:monospace; font-weight:bold; color:var(--amazon-orange);">${coupon.stringId}</td>
+                            <td style="font-weight:700;">${coupon.rate}% Markdown Discount</td>
+                            <td style="font-size:12px; color:#565959;">${coupon.scope}</td>
+                            <td><span style="font-size:11px; color:white; background:var(--success-green); padding:2px 6px; border-radius:3px;">${coupon.status}</span></td>
+                        `;
+                        tbodyTargetNode.appendChild(row);
+                    });
+                },
+
+                injectPromotionalCouponSignature: () => {
+                    const inputCodeField = document.getElementById("coupon-string-id");
+                    const inputRateField = document.getElementById("coupon-deduction-rate");
+
+                    const stringKey = inputCodeField.value.trim().toUpperCase();
+                    const rateValue = parseInt(inputRateField.value);
+
+                    if (!stringKey) { alert("Please provide a valid coupon string reference."); return; }
+
+                    const modelNode = {
+                        stringId: stringKey,
+                        rate: rateValue,
+                        scope: "Global Catalog Platform Boundary Matchers",
+                        status: "Active System Matrix"
+                    };
+
+                    activeCouponsInternalArrayDataMirror.push(modelNode);
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`Injected pricing coupon algorithm adjustment validation key target: ${stringKey}`);
+                    
+                    marketingPromotionalCouponsManagerSubtier.refreshCouponsDOMTable();
+                    inputCodeField.value = "";
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * CRM REAL-TIME MESSAGING TEXT CHAT CONTROLLER LAYER (SUBSECTION 2.9)
+             * --------------------------------------------------------------------------
+             */
+            const customerRelationsManagerSubtier = {
+                dispatchChatMessageResponsePayload: () => {
+                    const inputBufferNode = document.getElementById("crm-chat-text-input-buffer-node");
+                    const chatHistoryTargetPoolNode = document.getElementById("crm-live-chat-history-pool-target");
+
+                    if (!inputBufferNode || !chatHistoryTargetPoolNode) return;
+                    const cleanTextString = inputBufferNode.value.trim();
+
+                    if (!cleanTextString) return;
+
+                    const appendBubbleDOMNode = document.createElement("div");
+                    appendBubbleDOMNode.className = "chat-bubble bubble-seller";
+                    appendBubbleDOMNode.innerText = cleanTextString;
+
+                    chatHistoryTargetPoolNode.appendChild(appendBubbleDOMNode);
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace(`CRM outbound chat pipeline buffer packet injected: ${cleanTextString.substring(0, 30)}...`);
+                    
+                    inputBufferNode.value = "";
+                    chatHistoryTargetPoolNode.scrollTop = chatHistoryTargetPoolNode.scrollHeight;
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * REAL-TIME EXTERNAL BACKEND REPLICATION SANDBOX SYSTEM MOCKS (SUBSECTION 2.10)
+             * --------------------------------------------------------------------------
+             */
+            const externalIntegrationSandboxMocksSubtier = {
+                mockSupabaseDatabaseHandshakeSync: () => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Establishing socket encryption pipeline tunnels directed towards Supabase client pools...");
+                    setTimeout(() => {
+                        diagnosticLoggerInstrumentSubtier.writeLogTrace("SUPABASE_SYNC_SUCCESS >> Connection handshake verified. Table configurations matches exactly. 0 transaction collisions detected.");
+                        alert("Supabase Infrastructure Notification: PostgreSQL database engine connection validation layer reports complete synchronization status across distributed worker clusters.");
+                    }, 800);
+                },
+
+                mockFirebaseRealtimeSyncPipeline: () => {
+                    diagnosticLoggerInstrumentSubtier.writeLogTrace("Pinging operational availability ports inside Firebase cloud databases node trees...");
+                    setTimeout(() => {
+                        diagnosticLoggerInstrumentSubtier.writeLogTrace("FIREBASE_WS_PING_SUCCESS >> WebSocket pipe continuous transmission validation streams returning code 200 OK.");
+                        alert("Firebase Infrastructure Notification: Realtime DB JSON document graph data schema successfully mapped onto cloud instances nodes storage vectors.");
+                    }, 600);
+                }
+            };
+
+            /**
+             * --------------------------------------------------------------------------
+             * APPLICATION BOOTSTRAP INITIALIZATION ORCHESTRATOR COMPONENT
+             * --------------------------------------------------------------------------
+             */
+            const executeCoreMerchantConsoleBootstrapSequenceLifecycle = () => {
+                // Assert identification credentials verification layers checkpoints protocols
+                const authorizationFlag = identitySecurityAuthenticationGuardSubtier.verifySessionSignatureTokenValidity();
+                if (!authorizationFlag) return;
+
+                diagnosticLoggerInstrumentSubtier.writeLogTrace("Initializing merchant engine micro-components arrays modules stack lists layers...");
+                
+                // Mount internal storage state mirrors objects mappings
+                persistentStorageSynchronizerSubtier.pullDatabaseStateFromBrowserStorageCache();
+
+                // Draw component visual UI grids data frameworks tables matrices
+                catalogInventoryInteractionManagerSubtier.refreshCatalogDOMTable();
+                orderLifecyclePipelineManagerSubtier.refreshOrdersPipelineDOMTable();
+                walletLedgerFinancialAccountsManagerSubtier.refreshLedgerBalancesDOMTable();
+                marketingPromotionalCouponsManagerSubtier.refreshCouponsDOMTable();
+
+                diagnosticLoggerInstrumentSubtier.writeLogTrace("All sub-modules initialization loops processes reported clear execution vectors. Operational dashboard online.");
+            };
+
+            // Return administrative management references exposed safely to interactive runtime DOM structures
+            return {
+                bootstrap: executeCoreMerchantConsoleBootstrapSequenceLifecycle,
+                auth: identitySecurityAuthenticationGuardSubtier,
+                routing: viewPanelNavigationRoutingControllerSubtier,
+                catalog: catalogInventoryInteractionManagerSubtier,
+                orders: orderLifecyclePipelineManagerSubtier,
+                wallet: walletLedgerFinancialAccountsManagerSubtier,
+                promotions: marketingPromotionalCouponsManagerSubtier,
+                crm: customerRelationsManagerSubtier,
+                sandbox: externalIntegrationSandboxMocksSubtier,
+                logger: diagnosticLoggerInstrumentSubtier
+            };
+
+        })();
+
+        // Register application framework initialization upon hardware document layout processing completions
+        document.addEventListener("DOMContentLoaded", () => {
+            SellerDashboardEngine.bootstrap();
+        });
     </script>
 </body>
 </html>
