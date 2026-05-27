@@ -5,117 +5,175 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SRP Shopping</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
+/* ================= GLOBAL ================= */
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Poppins;
+font-family:'Poppins',sans-serif;
 }
 
 body{
-background:#f5faff;
+background:linear-gradient(to bottom,#e6f7ff,#ffffff);
 color:#333;
+overflow-x:hidden;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 header{
+position:sticky;
+top:0;
 background:white;
-padding:10px;
 display:flex;
 align-items:center;
 justify-content:space-between;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-position:sticky;
-top:0;
-z-index:1000;
+padding:12px 20px;
+box-shadow:0 4px 20px rgba(0,0,0,0.08);
+z-index:999;
 }
 
 .logo{
-font-size:22px;
-font-weight:600;
+font-size:24px;
+font-weight:700;
 color:#00aaff;
-cursor:pointer;
-}
-
-.search-bar{
-flex:1;
-margin:0 10px;
-}
-
-.search-bar input{
-width:100%;
-padding:8px;
-border-radius:5px;
-border:1px solid #ccc;
-}
-
-.top-links span{
-margin:0 8px;
-cursor:pointer;
-font-size:14px;
-}
-
-/* BANNER */
-.banner{
-display:flex;
-overflow-x:auto;
-gap:10px;
-padding:10px;
-}
-
-.banner img{
-width:300px;
-height:150px;
-border-radius:10px;
-}
-
-/* CATEGORY */
-.categories{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
-gap:10px;
-padding:10px;
-}
-
-.category{
-background:white;
-padding:10px;
-text-align:center;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-cursor:pointer;
-}
-
-/* PRODUCTS */
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-gap:15px;
-padding:10px;
-}
-
-.product{
-background:white;
-padding:10px;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
 cursor:pointer;
 transition:0.3s;
 }
 
-.product:hover{
+.logo:hover{
 transform:scale(1.05);
+}
+
+.search{
+flex:1;
+margin:0 20px;
+position:relative;
+}
+
+.search input{
+width:100%;
+padding:10px 40px 10px 15px;
+border-radius:25px;
+border:1px solid #ddd;
+outline:none;
+transition:0.3s;
+}
+
+.search input:focus{
+border-color:#00aaff;
+box-shadow:0 0 10px rgba(0,170,255,0.2);
+}
+
+.search-icon{
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+color:#888;
+}
+
+.nav-links span{
+margin-left:15px;
+font-size:14px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.nav-links span:hover{
+color:#00aaff;
+}
+
+/* ================= BANNER ================= */
+.banner{
+display:flex;
+overflow-x:auto;
+scroll-behavior:smooth;
+gap:15px;
+padding:20px;
+}
+
+.banner::-webkit-scrollbar{
+display:none;
+}
+
+.banner img{
+height:180px;
+width:320px;
+border-radius:15px;
+object-fit:cover;
+box-shadow:0 6px 20px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.banner img:hover{
+transform:scale(1.05);
+}
+
+/* ================= CATEGORY ================= */
+.categories{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+gap:15px;
+padding:20px;
+}
+
+.category{
+background:white;
+border-radius:15px;
+padding:15px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+transition:0.3s;
+cursor:pointer;
+}
+
+.category:hover{
+transform:translateY(-5px);
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+.category img{
+width:50px;
+height:50px;
+margin-bottom:8px;
+}
+
+/* ================= PRODUCTS ================= */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.product{
+background:white;
+border-radius:15px;
+padding:15px;
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+transition:0.3s;
+cursor:pointer;
+position:relative;
+overflow:hidden;
+}
+
+.product:hover{
+transform:translateY(-8px);
 }
 
 .product img{
 width:100%;
-height:150px;
+height:180px;
 object-fit:cover;
-border-radius:8px;
+border-radius:10px;
+}
+
+.product h4{
+margin:10px 0 5px;
 }
 
 .price{
@@ -123,22 +181,56 @@ color:#00aaff;
 font-weight:600;
 }
 
-/* BOTTOM NAV */
+.qty{
+font-size:13px;
+color:#777;
+}
+
+/* badge */
+.badge{
+position:absolute;
+top:10px;
+left:10px;
+background:#00aaff;
+color:white;
+padding:3px 8px;
+font-size:12px;
+border-radius:10px;
+}
+
+/* ================= FOOTER NAV ================= */
 .bottom-nav{
 position:fixed;
 bottom:0;
+left:0;
 width:100%;
 background:white;
 display:flex;
 justify-content:space-around;
-padding:10px;
-box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+padding:10px 0;
+box-shadow:0 -4px 20px rgba(0,0,0,0.1);
+z-index:999;
 }
 
 .bottom-nav div{
 text-align:center;
 font-size:12px;
 cursor:pointer;
+transition:0.2s;
+}
+
+.bottom-nav div:hover{
+color:#00aaff;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.product,.category{
+animation:fadeIn 0.6s ease;
 }
 
 </style>
@@ -149,218 +241,113 @@ cursor:pointer;
 <header>
 <div class="logo" onclick="openAdmin()">SRP Shopping</div>
 
-<div class="search-bar">
+<div class="search">
 <input type="text" placeholder="Search products...">
+<span class="search-icon">🔍</span>
 </div>
 
-<div class="top-links">
+<div class="nav-links">
 <span>Privacy</span>
 <span>About</span>
 <span>Settings</span>
 </div>
 </header>
 
-<!-- BANNERS -->
+<!-- ================= BANNERS ================= -->
 <div class="banner">
-<img src="https://picsum.photos/300/150?1">
-<img src="https://picsum.photos/300/150?2">
-<img src="https://picsum.photos/300/150?3">
-<img src="https://picsum.photos/300/150?4">
-<img src="https://picsum.photos/300/150?5">
+<img src="https://picsum.photos/600/300?1">
+<img src="https://picsum.photos/600/300?2">
+<img src="https://picsum.photos/600/300?3">
+<img src="https://picsum.photos/600/300?4">
+<img src="https://picsum.photos/600/300?5">
+<img src="https://picsum.photos/600/300?6">
+<img src="https://picsum.photos/600/300?7">
 </div>
 
-<!-- CATEGORIES -->
+<!-- ================= CATEGORIES ================= -->
 <div class="categories">
-<div class="category">Electronics</div>
-<div class="category">Fashion</div>
-<div class="category">Mobiles</div>
-<div class="category">Shoes</div>
-<div class="category">Home</div>
-<div class="category">Beauty</div>
-<div class="category">Toys</div>
-<div class="category">Books</div>
-<div class="category">Sports</div>
-<div class="category">Fitness</div>
-<div class="category">Grocery</div>
-<div class="category">Furniture</div>
-<div class="category">Watches</div>
-<div class="category">Gaming</div>
-<div class="category">Accessories</div>
-</div>
 
-<!-- PRODUCTS -->
-<div class="products">
+<script>
+let catList=[
+"Electronics","Fashion","Mobiles","Shoes","Home","Beauty",
+"Toys","Books","Sports","Fitness","Grocery","Furniture",
+"Watches","Gaming","Accessories"
+];
 
-<!-- Repeat -->
-<div class="product" onclick="openProduct()">
-<img src="https://picsum.photos/200?1">
-<h4>Wireless Headphones</h4>
-<p class="price">₹1,999</p>
-<p>Qty: 20</p>
+catList.forEach(c=>{
+document.write(`
+<div class="category">
+<img src="https://picsum.photos/50?random=${Math.random()}">
+<p>${c}</p>
 </div>
-
-<div class="product">
-<img src="https://picsum.photos/200?2">
-<h4>Smart Watch</h4>
-<p class="price">₹2,499</p>
-<p>Qty: 15</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?3">
-<h4>Running Shoes</h4>
-<p class="price">₹1,299</p>
-<p>Qty: 10</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?4">
-<h4>Bluetooth Speaker</h4>
-<p class="price">₹999</p>
-<p>Qty: 25</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?5">
-<h4>Laptop Bag</h4>
-<p class="price">₹799</p>
-<p>Qty: 30</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?6">
-<h4>Gaming Mouse</h4>
-<p class="price">₹599</p>
-<p>Qty: 40</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?7">
-<h4>Mobile Cover</h4>
-<p class="price">₹299</p>
-<p>Qty: 50</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?8">
-<h4>LED Light</h4>
-<p class="price">₹499</p>
-<p>Qty: 60</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?9">
-<h4>Backpack</h4>
-<p class="price">₹1,099</p>
-<p>Qty: 22</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?10">
-<h4>Office Chair</h4>
-<p class="price">₹3,999</p>
-<p>Qty: 5</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?11">
-<h4>Keyboard</h4>
-<p class="price">₹899</p>
-<p>Qty: 35</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?12">
-<h4>Tablet</h4>
-<p class="price">₹12,999</p>
-<p>Qty: 8</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?13">
-<h4>Camera</h4>
-<p class="price">₹25,999</p>
-<p>Qty: 3</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?14">
-<h4>Power Bank</h4>
-<p class="price">₹699</p>
-<p>Qty: 28</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?15">
-<h4>Air Purifier</h4>
-<p class="price">₹4,999</p>
-<p>Qty: 6</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?16">
-<h4>Desk Lamp</h4>
-<p class="price">₹399</p>
-<p>Qty: 45</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?17">
-<h4>Fitness Band</h4>
-<p class="price">₹1,499</p>
-<p>Qty: 18</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?18">
-<h4>Water Bottle</h4>
-<p class="price">₹199</p>
-<p>Qty: 70</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?19">
-<h4>Headphones</h4>
-<p class="price">₹999</p>
-<p>Qty: 26</p>
-</div>
-
-<div class="product">
-<img src="https://picsum.photos/200?20">
-<h4>Speaker</h4>
-<p class="price">₹1,299</p>
-<p>Qty: 12</p>
-</div>
+`);
+});
+</script>
 
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- ================= PRODUCTS ================= -->
+<div class="products" id="products"></div>
+
+<!-- ================= BOTTOM NAV ================= -->
 <div class="bottom-nav">
-<div>Home</div>
-<div>Account</div>
+<div onclick="location.href='index.html'">Home</div>
+<div onclick="openLogin()">Account</div>
 <div onclick="openCart()">Cart</div>
-<div>Subh AI</div>
-<div>Seller</div>
+<div onclick="openAI()">Subh AI</div>
+<div onclick="openSeller()">Seller</div>
 </div>
 
 <script>
-function openCart(){
-window.location.href = "cart.html";
-}
+
+/* ================= ADMIN ================= */
 function openAdmin(){
-let pass = prompt("Enter Admin Password:");
-if(pass === "admin123"){
-alert("Welcome to Admin Panel");
-}
-else{
+let pass=prompt("Enter Admin Password:");
+if(pass==="admin123"){
+alert("Welcome Admin");
+}else{
 alert("Wrong Password");
 }
 }
+
+/* ================= NAVIGATION ================= */
+function openLogin(){ location.href="login.html"; }
+function openCart(){ location.href="cart.html"; }
+function openAI(){ location.href="ai.html"; }
+function openSeller(){ location.href="dashboard.html"; }
+
+/* ================= PRODUCTS ================= */
+let productsDiv=document.getElementById("products");
+
+let productData=[];
+
+for(let i=1;i<=20;i++){
+productData.push({
+name:"Product "+i,
+price:Math.floor(Math.random()*5000)+199,
+qty:Math.floor(Math.random()*50)+1,
+img:`https://picsum.photos/300?random=${i}`
+});
+}
+
+productData.forEach(p=>{
+productsDiv.innerHTML+=`
+<div class="product" onclick="openProduct()">
+<span class="badge">Hot</span>
+<img src="${p.img}">
+<h4>${p.name}</h4>
+<p class="price">₹${p.price}</p>
+<p class="qty">Qty: ${p.qty}</p>
+</div>
+`;
+});
+
+/* ================= PRODUCT NAV ================= */
 function openProduct(){
-window.location.href = "product.html";
-  }
+window.location.href="product.html";
+}
 
 </script>
 
 </body>
-                    </html>
+</html>
