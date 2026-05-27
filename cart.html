@@ -1,291 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html>
 <head>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<title>Cart - SRP Shopping</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRP SHOPPING | Smart Cart v2.0</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial;background:#f5faff}
 
-    <style>
-        :root {
-            --primary: #6366f1;
-            --dark-bg: #0f172a;
-            --glass-white: rgba(255, 255, 255, 0.9);
-        }
+.item{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
+img{
+width:100px;
+}
 
-        .glass-card {
-            backdrop-filter: blur(16px);
-            background: var(--glass-white);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
+button{
+padding:10px;
+margin-top:5px;
+}
+</style>
 
-        .neo-shadow {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-        }
-
-        .btn-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-            transition: all 0.3s ease;
-        }
-
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .animate-item { animation: slideIn 0.4s ease-out forwards; }
-    </style>
 </head>
-<body class="antialiased">
 
-<nav class="sticky top-0 z-50 w-full glass-card neo-shadow px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-            <i class="fas fa-shopping-bag text-white"></i>
-        </div>
-        <span class="text-xl font-black tracking-tighter">SRP <span class="text-indigo-600">CART</span></span>
-    </div>
-    <button onclick="window.history.back()" class="text-sm font-bold text-slate-500 hover:text-indigo-600 transition">
-        <i class="fas fa-arrow-left mr-2"></i> Continue Shopping
-    </button>
-</nav>
+<body onload="loadCart()">
 
-<main class="max-w-7xl mx-auto p-6 lg:p-12">
-    <div class="flex flex-col lg:flex-row gap-10">
-        
-        <div class="flex-1">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-8">Shopping Bag</h1>
-            
-            <div id="cart-items-container" class="space-y-6">
-                <div class="animate-pulse flex space-x-4 p-8 bg-white rounded-3xl">
-                    <div class="rounded-2xl bg-slate-200 h-24 w-24"></div>
-                    <div class="flex-1 space-y-4 py-1">
-                        <div class="h-4 bg-slate-200 rounded w-3/4"></div>
-                        <div class="h-4 bg-slate-200 rounded w-1/2"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<h2>🛒 Your Cart</h2>
 
-        <div class="w-full lg:w-[400px]">
-            <div class="glass-card rounded-[40px] p-8 sticky top-28 neo-shadow">
-                <h2 class="text-xl font-black text-slate-900 mb-6">Order Summary</h2>
-                
-                <div class="space-y-4 border-b border-slate-100 pb-6">
-                    <div class="flex justify-between text-sm font-bold text-slate-500">
-                        <span>Subtotal</span>
-                        <span id="subtotal">₹0.00</span>
-                    </div>
-                    <div class="flex justify-between text-sm font-bold text-slate-500">
-                        <span>Platform Fee</span>
-                        <span class="text-emerald-500">FREE</span>
-                    </div>
-                    <div class="flex justify-between text-sm font-bold text-slate-500">
-                        <span>Shipping</span>
-                        <span id="shipping">₹0.00</span>
-                    </div>
-                </div>
+<div id="cartItems"></div>
 
-                <div class="py-6 mb-4">
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Payable</p>
-                            <p id="total-amount" class="text-4xl font-black text-indigo-600 tracking-tighter">₹0.00</p>
-                        </div>
-                    </div>
-                </div>
+<h3 id="total"></h3>
 
-                <button onclick="initiateCheckout()" class="w-full btn-gradient py-5 rounded-2xl text-white font-black uppercase tracking-widest text-xs shadow-xl">
-                    Proceed to Checkout <i class="fas fa-arrow-right ml-2"></i>
-                </button>
+<button onclick="goCheckout()">Proceed to Checkout</button>
 
-                <div class="mt-6 flex items-center justify-center gap-4 opacity-40">
-                    <i class="fab fa-cc-visa text-2xl"></i>
-                    <i class="fab fa-cc-mastercard text-2xl"></i>
-                    <i class="fas fa-shield-halved text-xl"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+<script src="cart.js"></script>
 
-<script>
-    // Add these variables at the top of your script
-const RAZORPAY_KEY_ID = "rzp_test_YOUR_KEY_HERE"; 
-
-async function initiateCheckout() {
-    if (cart.length === 0) return alert("Your cart is empty!");
-
-    // 1. Calculate final amount (Razorpay expects amount in PAISE, so * 100)
-    const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('₹', ''));
-    const shipping = parseFloat(document.getElementById('shipping').innerText.replace('₹', ''));
-    const totalAmount = (subtotal + shipping) * 100;
-
-    const options = {
-        "key": RAZORPAY_KEY_ID,
-        "amount": totalAmount,
-        "currency": "INR",
-        "name": "SRP SHOPPING",
-        "description": "Multi-Vendor Marketplace Purchase",
-        "image": "https://ui-avatars.com/api/?name=SRP&background=6366f1&color=fff",
-        "handler": async function (response) {
-            // This runs after successful payment
-            await handlePaymentSuccess(response, subtotal + shipping);
-        },
-        "prefill": {
-            "name": "System User", // Usually pulled from Supabase Auth
-            "email": "user@example.com",
-            "contact": "9999999999"
-        },
-        "theme": {
-            "color": "#6366f1" // Matches your Indigo UI
-        }
-    };
-
-    const rzp1 = new Razorpay(options);
-    rzp1.open();
-}
-
-async function handlePaymentSuccess(response, finalAmount) {
-    try {
-        // 2. Save Order to Supabase
-        const { data, error } = await supabase
-            .from('orders')
-            .insert([{
-                payment_id: response.razorpay_payment_id,
-                amount: finalAmount,
-                status: 'paid',
-                items: cart // Saving current cart snapshot
-            }]);
-
-        if (error) throw error;
-
-        // 3. Clear Cart & Redirect
-        localStorage.removeItem('srp_cart');
-        alert("Payment Successful! Order ID: " + response.razorpay_payment_id);
-        window.location.href = "success.html"; // Create a simple thank you page
-
-    } catch (err) {
-        console.error("Order Sync Error:", err);
-        alert("Payment received, but order recording failed. Contact support.");
-    }
-}
-
-    // 1. SUPABASE CONFIG
-    const SUPABASE_URL = "https://cmxlfxqtrguuzpqdgcxv.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // Use your key from previous prompt
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // Mock Cart Storage (Usually from localStorage)
-    let cart = JSON.parse(localStorage.getItem('srp_cart')) || [];
-
-    async function loadCart() {
-        const container = document.getElementById('cart-items-container');
-        
-        if (cart.length === 0) {
-            container.innerHTML = `
-                <div class="text-center py-20 bg-white rounded-[40px] border-2 border-dashed border-slate-100">
-                    <i class="fas fa-cart-plus text-5xl text-slate-200 mb-4"></i>
-                    <p class="text-slate-400 font-bold uppercase text-xs tracking-widest">Your bag is empty</p>
-                </div>`;
-            updateSummary(0);
-            return;
-        }
-
-        // Fetch Fresh Data from Supabase for cart items
-        const itemIds = cart.map(item => item.id);
-        const { data: products, error } = await supabase
-            .from('products')
-            .select('*')
-            .in('id', itemIds);
-
-        if (error) return console.error(error);
-
-        container.innerHTML = "";
-        let runningSubtotal = 0;
-
-        products.forEach(p => {
-            const cartItem = cart.find(item => item.id === p.id);
-            const lineTotal = p.discount_price * cartItem.quantity;
-            runningSubtotal += lineTotal;
-
-            container.innerHTML += `
-                <div class="animate-item bg-white p-6 rounded-[32px] border border-slate-100 neo-shadow flex items-center gap-6 group">
-                    <div class="w-24 h-24 bg-slate-50 rounded-2xl overflow-hidden shrink-0">
-                        <img src="${p.image_url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                    </div>
-                    
-                    <div class="flex-1">
-                        <p class="text-[10px] font-black text-indigo-500 uppercase mb-1">${p.category}</p>
-                        <h3 class="font-bold text-slate-900 leading-tight">${p.name}</h3>
-                        <p class="text-sm font-black text-slate-400 mt-1">₹${p.discount_price} <span class="text-[10px] line-through ml-2">₹${p.mrp}</span></p>
-                    </div>
-
-                    <div class="flex items-center bg-slate-50 rounded-xl p-1 border border-slate-100">
-                        <button onclick="updateQty('${p.id}', -1)" class="w-8 h-8 flex items-center justify-center hover:bg-white rounded-lg transition text-slate-500"><i class="fas fa-minus text-[10px]"></i></button>
-                        <span class="w-10 text-center font-bold text-sm text-slate-900">${cartItem.quantity}</span>
-                        <button onclick="updateQty('${p.id}', 1)" class="w-8 h-8 flex items-center justify-center hover:bg-white rounded-lg transition text-slate-500"><i class="fas fa-plus text-[10px]"></i></button>
-                    </div>
-
-                    <div class="text-right min-w-[100px]">
-                        <p class="text-lg font-black text-slate-900 tracking-tighter">₹${lineTotal}</p>
-                        <button onclick="removeFromCart('${p.id}')" class="text-[10px] font-black text-red-400 uppercase tracking-widest hover:text-red-600 mt-2">Remove</button>
-                    </div>
-                </div>
-            `;
-        });
-
-        updateSummary(runningSubtotal);
-    }
-
-    function updateSummary(sub) {
-        const shipping = sub > 0 ? 49 : 0;
-        document.getElementById('subtotal').innerText = `₹${sub.toFixed(2)}`;
-        document.getElementById('shipping').innerText = `₹${shipping.toFixed(2)}`;
-        document.getElementById('total-amount').innerText = `₹${(sub + shipping).toFixed(2)}`;
-    }
-
-    function updateQty(id, change) {
-        let item = cart.find(i => i.id === id);
-        if (item) {
-            item.quantity += change;
-            if (item.quantity <= 0) return removeFromCart(id);
-            localStorage.setItem('srp_cart', JSON.stringify(cart));
-            loadCart();
-        }
-    }
-
-    function removeFromCart(id) {
-        cart = cart.filter(i => i.id !== id);
-        localStorage.setItem('srp_cart', JSON.stringify(cart));
-        loadCart();
-    }
-
-    function initiateCheckout() {
-        if(cart.length === 0) return alert("Add items to continue!");
-        // Transition to payment or address screen
-        alert("Redirecting to Secure Checkout Engine...");
-    }
-
-    window.onload = loadCart;
-</script>
 </body>
 </html>
