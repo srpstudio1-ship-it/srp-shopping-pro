@@ -1,1826 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRP SHOPPING - Enterprise Suite</title>
-    <style>
-        /* ==========================================================================
-           1. PREMIUM BLACK & GOLD / GLASSMORPHISM UI CORE STYLES
-           ========================================================================== */
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #121212;
-            --bg-tertiary: #1a1a1a;
-            --accent-gold: #d4af37;
-            --accent-gold-hover: #f3e5ab;
-            --text-primary: #ffffff;
-            --text-secondary: #aaaaaa;
-            --text-muted: #666666;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --glass-glow: rgba(212, 175, 55, 0.1);
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --warning: #f1c40f;
-            --info: #3498db;
-            --sidebar-width: 260px;
-            --header-height: 70px;
-            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: var(--font-family);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Scrollbar Optimization */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--bg-tertiary);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-gold);
-        }
-
-        /* Utility Typographies & Helpers */
-        .gold-text {
-            color: var(--accent-gold);
-            background: linear-gradient(45deg, #d4af37, #f3e5ab);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .glass-panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 12px;
-        }
-
-        .glass-panel:hover {
-            border-color: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 8px 32px 0 var(--glass-glow);
-        }
-
-        .btn {
-            background: transparent;
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-            box-shadow: 0 0 15px var(--accent-gold);
-        }
-
-        .btn-primary {
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-gold-hover);
-            box-shadow: 0 0 20px var(--accent-gold-hover);
-        }
-
-        .btn-danger {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        .btn-danger:hover {
-            background: var(--danger);
-            color: var(--text-primary);
-            box-shadow: 0 0 15px var(--danger);
-        }
-
-        /* ==========================================================================
-           2. APP LAYOUT STRUCTURE
-           ========================================================================== */
-        #app-container {
-            display: flex;
-            min-height: 100vh;
-            width: 100vw;
-        }
-
-        /* Sidebar Navigation */
-        #sidebar {
-            width: var(--sidebar-width);
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-brand {
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            border-bottom: 1px solid var(--glass-border);
-            letter-spacing: 1px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 20px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex-grow: 1;
-        }
-
-        .sidebar-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-item:hover, .sidebar-item.active {
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--accent-gold);
-            padding-left: 20px;
-        }
-
-        .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        /* Main Workspace Content */
-        #main-workspace {
-            margin-left: var(--sidebar-width);
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        /* Dynamic Top Navbar */
-        #top-navbar {
-            height: var(--header-height);
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-        }
-
-        .nav-search {
-            position: relative;
-            width: 300px;
-        }
-
-        .nav-search input {
-            width: 100%;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--glass-border);
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: var(--text-primary);
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .nav-search input:focus {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .wallet-pill {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            color: var(--accent-gold);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .user-profile-trigger {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--accent-gold);
-            color: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        /* Dynamic Route Target Panel */
-        #view-port {
-            padding: 32px;
-            flex-grow: 1;
-        }
-
-        /* View Container Framework */
-        .view-container {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
-        }
-
-        .view-container.active-view {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ==========================================================================
-           3. UI CORE COMPONENT DASHBOARD GRID SYSTEMS
-           ========================================================================== */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .metric-card {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .metric-title {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .metric-value {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .metric-trend {
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--danger); }
-
-        /* General Grid Management & Boards */
-        .dashboard-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard-row {
-                grid-template-columns: 1fr;
-            }
-            #sidebar {
-                transform: translateX(-100%);
-            }
-            #main-workspace {
-                margin-left: 0;
-            }
-        }
-
-        /* Form Controls */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            width: 100%;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--glass-border);
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: var(--text-primary);
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent-gold);
-        }
-
-        /* Custom Tables */
-        .table-container {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        .custom-table th {
-            padding: 16px;
-            border-bottom: 2px solid var(--glass-border);
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .custom-table td {
-            padding: 16px;
-            border-bottom: 1px solid var(--glass-border);
-            color: var(--text-primary);
-        }
-
-        .custom-table tr:hover td {
-            background: rgba(255, 255, 255, 0.01);
-        }
-
-        /* Badges */
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-success { background: rgba(46, 204, 113, 0.2); color: var(--success); }
-        .badge-warning { background: rgba(241, 196, 15, 0.2); color: var(--warning); }
-        .badge-danger { background: rgba(231, 76, 60, 0.2); color: var(--danger); }
-
-        /* Product Cards Structure */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .product-card {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            position: relative;
-        }
-
-        .product-image-placeholder {
-            height: 200px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 3rem;
-            border: 1px solid var(--glass-border);
-        }
-
-        .product-details h3 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-seller {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .product-meta-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-        }
-
-        .product-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-        }
-
-        /* Embedded System Architecture Visual Canvas */
-        #snake-canvas {
-            background: #000;
-            border: 2px solid var(--accent-gold);
-            display: block;
-            margin: 20px auto;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-        }
-
-        /* Toast Notifications */
-        #toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            background: var(--bg-secondary);
-            border-left: 4px solid var(--accent-gold);
-            color: var(--text-primary);
-            padding: 16px 24px;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease forwards;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Cart Slider Drawer */
-        #cart-drawer {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100vh;
-            background: var(--bg-secondary);
-            border-left: 1px solid var(--glass-border);
-            z-index: 2000;
-            transition: right 0.3s cubic-bezier(0.77, 0, 0.175, 1);
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #cart-drawer.open {
-            right: 0;
-        }
-
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 16px;
-            margin-bottom: 20px;
-        }
-
-        .cart-items-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .cart-item {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .cart-item-details {
-            flex-grow: 1;
-        }
-
-        .cart-summary {
-            border-top: 1px solid var(--glass-border);
-            padding-top: 16px;
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRP Shopping</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins;
+}
+
+body{
+background:#f5faff;
+color:#333;
+}
+
+/* HEADER */
+header{
+background:white;
+padding:10px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:22px;
+font-weight:600;
+color:#00aaff;
+cursor:pointer;
+}
+
+.search-bar{
+flex:1;
+margin:0 10px;
+}
+
+.search-bar input{
+width:100%;
+padding:8px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+.top-links span{
+margin:0 8px;
+cursor:pointer;
+font-size:14px;
+}
+
+/* BANNER */
+.banner{
+display:flex;
+overflow-x:auto;
+gap:10px;
+padding:10px;
+}
+
+.banner img{
+width:300px;
+height:150px;
+border-radius:10px;
+}
+
+/* CATEGORY */
+.categories{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
+gap:10px;
+padding:10px;
+}
+
+.category{
+background:white;
+padding:10px;
+text-align:center;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+cursor:pointer;
+}
+
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+gap:15px;
+padding:10px;
+}
+
+.product{
+background:white;
+padding:10px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+cursor:pointer;
+transition:0.3s;
+}
+
+.product:hover{
+transform:scale(1.05);
+}
+
+.product img{
+width:100%;
+height:150px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.price{
+color:#00aaff;
+font-weight:600;
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.bottom-nav div{
+text-align:center;
+font-size:12px;
+cursor:pointer;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div id="app-container">
-        <aside id="sidebar">
-            <div class="sidebar-brand">
-                <span class="gold-text">SRP SHOPPING</span>
-            </div>
-            <ul class="sidebar-menu">
-                <li class="sidebar-item active" data-target="marketplace-view">
-                    <i>🛒</i> Marketplace
-                </li>
-                <li class="sidebar-item" data-target="seller-view">
-                    <i>📦</i> Seller Dashboard
-                </li>
-                <li class="sidebar-item" data-target="admin-view">
-                    <i>🛡️</i> Admin Console
-                </li>
-                <li class="sidebar-item" data-target="arcade-view">
-                    <i>🎮</i> System Arcade AI
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                SRP Enterprise Suite v3.4.1
-            </div>
-        </aside>
-
-        <main id="main-workspace">
-            <header id="top-navbar">
-                <div class="nav-search">
-                    <input type="text" id="global-search-input" placeholder="Search marketplace assets...">
-                </div>
-                <div class="nav-actions">
-                    <div class="wallet-pill" id="user-wallet-display">
-                        <i>🪙</i> Balance: $0.00
-                    </div>
-                    <button class="btn" id="cart-trigger-btn">
-                        <i>🛒</i> Cart (<span id="cart-count-badge">0</span>)
-                    </button>
-                    <div class="user-profile-trigger" id="profile-identity-node">
-                        <div class="avatar" id="avatar-letters">JD</div>
-                        <span id="username-text">Guest Operator</span>
-                    </div>
-                </div>
-            </header>
-
-            <div id="view-port">
-                <div id="marketplace-view" class="view-container active-view">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
-                        <div>
-                            <h1 class="gold-text">Premium Asset Core</h1>
-                            <p style="color:var(--text-secondary);">Decentralized multi-vendor product pipeline ecosystem.</p>
-                        </div>
-                        <div style="display:flex; gap:12px;">
-                            <select id="filter-category" class="form-control" style="width:160px; padding:8px;">
-                                <option value="all">All Categories</option>
-                                <option value="electronics">Electronics</option>
-                                <option value="apparel">Apparel</option>
-                                <option value="digital">Digital Assets</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="products-grid" id="market-products-target">
-                        </div>
-                </div>
-
-                <div id="seller-view" class="view-container">
-                    <h1 class="gold-text" style="margin-bottom:8px;">Merchant Matrix Channel</h1>
-                    <p style="color:var(--text-secondary); margin-bottom:32px;">Manage inventory pipelines, price matrices, and fulfill consumer orders.</p>
-                    
-                    <div class="metrics-grid">
-                        <div class="metric-card glass-panel">
-                            <span class="metric-title">Merchant Revenue</span>
-                            <span class="metric-value" id="seller-revenue-val">$0.00</span>
-                            <span class="metric-trend trend-up">▲ 14.2% <span style="color:var(--text-muted)">vs last cycle</span></span>
-                        </div>
-                        <div class="metric-card glass-panel">
-                            <span class="metric-title">Active Outlets</span>
-                            <span class="metric-value" id="seller-items-count">0 Items</span>
-                            <span class="metric-trend" style="color:var(--text-secondary);">Live in Engine</span>
-                        </div>
-                        <div class="metric-card glass-panel">
-                            <span class="metric-title">Fulfillment Velocity</span>
-                            <span class="metric-value">99.4%</span>
-                            <span class="metric-trend trend-up">▲ 0.8% <span style="color:var(--text-muted)">optimal</span></span>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-row">
-                        <div class="glass-panel" style="padding:24px;">
-                            <h2 style="margin-bottom:20px;">Active Inventory Management</h2>
-                            <div class="table-container">
-                                <table class="custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Product Identity</th>
-                                            <th>Category</th>
-                                            <th>Price Unit</th>
-                                            <th>Stock Metrics</th>
-                                            <th>Control Operations</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="seller-inventory-table-body">
-                                        </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="glass-panel" style="padding:24px;">
-                            <h2>Provision Asset Pipeline</h2>
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:20px;">Inject novel units into the cluster ecosystem.</p>
-                            <form id="seller-add-product-form" onsubmit="event.preventDefault();">
-                                <div class="form-group">
-                                    <label>Asset Descriptor Label</label>
-                                    <input type="text" id="prod-title" class="form-control" placeholder="e.g., Quantum Core Matrix Processor" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ecosystem Category Classification</label>
-                                    <select id="prod-category" class="form-control">
-                                        <option value="electronics">Electronics</option>
-                                        <option value="apparel">Apparel</option>
-                                        <option value="digital">Digital Assets</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Valuation Pricing Unit (USD)</label>
-                                    <input type="number" step="0.01" id="prod-price" class="form-control" placeholder="299.99" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Stock Allocation Quantities</label>
-                                    <input type="number" id="prod-stock" class="form-control" placeholder="50" required>
-                                </div>
-                                <button type="button" class="btn btn-primary" style="width:100%;" id="seller-submit-product-btn">Deploy Asset Module</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="admin-view" class="view-container">
-                    <h1 class="gold-text" style="margin-bottom:8px;">Global Governance Center</h1>
-                    <p style="color:var(--text-secondary); margin-bottom:32px;">Master runtime controls, analytical system telemetry, and permission states.</p>
-                    
-                    <div class="metrics-grid">
-                        <div class="metric-card glass-panel">
-                            <span class="metric-title">Gross Ecosystem GMV</span>
-                            <span class="metric-value" id="admin-total-gmv">$0.00</span>
-                            <span class="metric-trend trend-up">▲ Complete Analytics Stack</span>
-                        </div>
-                        <div class="metric-card glass-panel">
-                            <span class="metric-title">System Transaction Load</span>
-                            <span class="metric-value" id="admin-tx-count">0</span>
-                            <span class="metric-trend style-info">Immutable Ledger Sync</span>
-                        </div>
-                        <div class="metric-card glass-panel">
-                            <span class="metric-title">Network Operator Population</span>
-                            <span class="metric-value" id="admin-user-count">4</span>
-                            <span class="metric-trend trend-up">Active Nodes</span>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel" style="padding:24px; margin-bottom:32px;">
-                        <h2 style="margin-bottom:20px;">System Transaction Ledger Audit</h2>
-                        <div class="table-container">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tx Hash Signature</th>
-                                        <th>Purchaser Entity</th>
-                                        <th>Valuation Amount</th>
-                                        <th>Timestamp Cycle</th>
-                                        <th>System Integrity Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-transactions-table-body">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel" style="padding:24px;">
-                        <h2 style="margin-bottom:16px;">Core Workspace Variable Overrides</h2>
-                        <div style="display:flex; gap:16px; flex-wrap:wrap;">
-                            <button class="btn btn-danger" id="admin-wipe-cache-btn">Purge Cluster Database Cache</button>
-                            <button class="btn" id="admin-inject-mocks-btn">Re-Hydrate Structural Mock Data</button>
-                            <button class="btn" id="admin-trigger-bonus-btn">Inject High-Velocity Air-Drop Credit</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="arcade-view" class="view-container">
-                    <h1 class="gold-text" style="margin-bottom:8px;">Organic Neural Snake Simulation</h1>
-                    <p style="color:var(--text-secondary); margin-bottom:20px;">Deterministic validation pathfinder logic checking real-time canvas canvas state vectors.</p>
-                    
-                    <div class="glass-panel" style="padding:24px; text-align:center; max-width:700px; margin:0 auto;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-weight:600;">
-                            <span>Current Path Length: <span id="snake-score-val" class="gold-text">0</span></span>
-                            <span>Top Vector Score: <span id="snake-highscore-val">0</span></span>
-                        </div>
-                        <canvas id="snake-canvas" width="400" height="400"></canvas>
-                        <div style="margin-top:16px; display:flex; justify-content:center; gap:12px;">
-                            <button class="btn btn-primary" id="snake-start-btn">Initialize Core Game Simulation</button>
-                            <button class="btn" id="snake-reset-btn">Reset Vector Grid</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div id="cart-drawer">
-        <div class="cart-header">
-            <h2 class="gold-text">Your Acquisition Cart</h2>
-            <button class="btn" id="cart-close-btn" style="padding:4px 10px;">✕</button>
-        </div>
-        <div class="cart-items-list" id="cart-items-target">
-            </div>
-        <div class="cart-summary">
-            <div style="display:flex; justify-content:between; font-weight:700;">
-                <span style="flex-grow:1;">Aggregated Valuation Sum:</span>
-                <span id="cart-total-val" class="gold-text">$0.00</span>
-            </div>
-            <button class="btn btn-primary" style="width:100%; margin-top:12px;" id="cart-checkout-btn">Finalize Procurement Securely</button>
-        </div>
-    </div>
-
-    <div id="toast-container"></div>
-
-    <script>
-        (function() {
-            "use strict";
-
-            // ==========================================================================
-            // SYSTEM STORAGE CORE MATRIX MODEL (DATABASE LAYER WITH LOCAL STORAGE SYNC)
-            // ==========================================================================
-            const DatabaseEngine = {
-                PREFIX: "SRP_ENTERPRISE_SYSTEM_DATA_",
-                
-                defaults: {
-                    userSession: {
-                        userId: "USR-00921",
-                        username: "SrpStudio Engineer",
-                        walletBalance: 25000.00,
-                        role: "ADMIN"
-                    },
-                    products: [
-                        { id: "PROD-001", title: "Enterprise Neural Processing Core v5", category: "electronics", price: 1499.99, stock: 12, sellerId: "USR-00921" },
-                        { id: "PROD-002", title: "Glassmorphic Premium Component Wrapper UI Pack", category: "digital", price: 89.50, stock: 150, sellerId: "USR-005" },
-                        { id: "PROD-003", title: "Tactical Dark-Mesh Android Development Suit", category: "apparel", price: 210.00, stock: 45, sellerId: "USR-00921" },
-                        { id: "PROD-004", title: "Supabase Fast-Track Direct Migration Script Layer", category: "digital", price: 450.00, stock: 80, sellerId: "USR-002" },
-                        { id: "PROD-005", title: "Low-Latency High-ASU Single-Mode Network Interface Card", category: "electronics", price: 125.00, stock: 8, sellerId: "USR-00921" }
-                    ],
-                    transactions: [
-                        { txHash: "TX-9910283411", userId: "USR-002", amount: 1589.49, timestamp: "2026-05-26 14:32", status: "SUCCESS" },
-                        { txHash: "TX-1029384711", userId: "USR-005", amount: 89.50, timestamp: "2026-05-27 09:15", status: "SUCCESS" }
-                    ],
-                    cart: []
-                },
-
-                initialize: function() {
-                    if (!localStorage.getItem(this.PREFIX + "initialized")) {
-                        this.saveState("userSession", this.defaults.userSession);
-                        this.saveState("products", this.defaults.products);
-                        this.saveState("transactions", this.defaults.transactions);
-                        this.saveState("cart", this.defaults.cart);
-                        localStorage.setItem(this.PREFIX + "initialized", "true");
-                        SystemNotifications.trigger("Engine Database Layer Initialized Successfully.", "success");
-                    }
-                },
-
-                getState: function(key) {
-                    try {
-                        const compiledKey = this.PREFIX + key;
-                        const extractedData = localStorage.getItem(compiledKey);
-                        return extractedData ? JSON.parse(extractedData) : this.defaults[key];
-                    } catch(e) {
-                        console.error("Critical System Cache Access Failure for entity: " + key, e);
-                        return this.defaults[key];
-                    }
-                },
-
-                saveState: function(key, dataObject) {
-                    try {
-                        const compiledKey = this.PREFIX + key;
-                        localStorage.setItem(compiledKey, JSON.stringify(dataObject));
-                        return true;
-                    } catch(e) {
-                        console.error("Critical System State Save Contraction Event for key: " + key, e);
-                        return false;
-                    }
-                },
-
-                purgeAllCache: function() {
-                    localStorage.removeItem(this.PREFIX + "initialized");
-                    localStorage.removeItem(this.PREFIX + "userSession");
-                    localStorage.removeItem(this.PREFIX + "products");
-                    localStorage.removeItem(this.PREFIX + "transactions");
-                    localStorage.removeItem(this.PREFIX + "cart");
-                    this.initialize();
-                }
-            };
-
-            // Initialize storage on execution step
-            DatabaseEngine.initialize();
-
-            // ==========================================================================
-            // SYSTEM EVENT TOAST NOTIFICATION SUBSYSTEM
-            // ==========================================================================
-            const SystemNotifications = {
-                targetContainer: document.getElementById("toast-container"),
-                trigger: function(message, type = "success") {
-                    const toastElement = document.createElement("div");
-                    toastElement.className = `toast glass-panel`;
-                    
-                    let secondaryBorderColor = "var(--accent-gold)";
-                    if (type === "danger") secondaryBorderColor = "var(--danger)";
-                    if (type === "warning") secondaryBorderColor = "var(--warning)";
-                    if (type === "info") secondaryBorderColor = "var(--info)";
-                    
-                    toastElement.style.borderLeftColor = secondaryBorderColor;
-                    toastElement.innerHTML = `<i>⚡</i> <span>${message}</span>`;
-                    
-                    this.targetContainer.appendChild(toastElement);
-                    
-                    setTimeout(() => {
-                        toastElement.style.transform = "translateX(120%)";
-                        toastElement.style.opacity = "0";
-                        toastElement.style.transition = "all 0.4s ease";
-                        setTimeout(() => {
-                            toastElement.remove();
-                        }, 400);
-                    }, 4000);
-                }
-            };
-
-            // ==========================================================================
-            // RECOGNIZED STATE CONTROLLER / STATE MANAGEMENT ENGINE
-            // ==========================================================================
-            const ApplicationState = {
-                session: DatabaseEngine.getState("userSession"),
-                products: DatabaseEngine.getState("products"),
-                transactions: DatabaseEngine.getState("transactions"),
-                cart: DatabaseEngine.getState("cart"),
-
-                commit: function(sliceName) {
-                    DatabaseEngine.saveState(sliceName, this[sliceName]);
-                    this.dispatchSystemWideUpdate(sliceName);
-                },
-
-                dispatchSystemWideUpdate: function(sliceName) {
-                    console.log(`[System State Dispatch] Notification update event pipeline tracking changes on stream: ${sliceName}`);
-                    UIEngine.syncAllDynamicViews();
-                },
-
-                replenishMocks: function() {
-                    this.products = [...DatabaseEngine.defaults.products];
-                    this.transactions = [...DatabaseEngine.defaults.transactions];
-                    this.cart = [...DatabaseEngine.defaults.cart];
-                    this.session = {...DatabaseEngine.defaults.userSession};
-                    this.commit("products");
-                    this.commit("transactions");
-                    this.commit("cart");
-                    this.commit("session");
-                }
-            };
-
-            // ==========================================================================
-            // ADVANCED USER INTERFACE FLUID SPA ENGINE RENDER PIPELINES
-            // ==========================================================================
-            const UIEngine = {
-                domElements: {
-                    sidebarItems: document.querySelectorAll(".sidebar-item"),
-                    viewContainers: document.querySelectorAll(".view-container"),
-                    walletDisplay: document.getElementById("user-wallet-display"),
-                    cartCountBadge: document.getElementById("cart-count-badge"),
-                    avatarLetters: document.getElementById("avatar-letters"),
-                    usernameText: document.getElementById("username-text"),
-                    marketProductsTarget: document.getElementById("market-products-target"),
-                    filterCategory: document.getElementById("filter-category"),
-                    globalSearchInput: document.getElementById("global-search-input"),
-                    sellerInventoryTableBody: document.getElementById("seller-inventory-table-body"),
-                    sellerRevenueVal: document.getElementById("seller-revenue-val"),
-                    sellerItemsCount: document.getElementById("seller-items-count"),
-                    adminTotalGmv: document.getElementById("admin-total-gmv"),
-                    adminTxCount: document.getElementById("admin-tx-count"),
-                    adminUserCount: document.getElementById("admin-user-count"),
-                    adminTransactionsTableBody: document.getElementById("admin-transactions-table-body"),
-                    cartDrawer: document.getElementById("cart-drawer"),
-                    cartTriggerBtn: document.getElementById("cart-trigger-btn"),
-                    cartCloseBtn: document.getElementById("cart-close-btn"),
-                    cartItemsTarget: document.getElementById("cart-items-target"),
-                    cartTotalVal: document.getElementById("cart-total-val"),
-                    cartCheckoutBtn: document.getElementById("cart-checkout-btn"),
-                    sellerSubmitProductBtn: document.getElementById("seller-submit-product-btn"),
-                    adminWipeCacheBtn: document.getElementById("admin-wipe-cache-btn"),
-                    adminInjectMocksBtn: document.getElementById("admin-inject-mocks-btn"),
-                    adminTriggerBonusBtn: document.getElementById("admin-trigger-bonus-btn")
-                },
-
-                initializeRouter: function() {
-                    const self = this;
-                    this.domElements.sidebarItems.forEach(item => {
-                        item.addEventListener("click", function() {
-                            const targetViewId = this.getAttribute("data-target");
-                            
-                            self.domElements.sidebarItems.forEach(i => i.classList.remove("active"));
-                            self.domElements.viewContainers.forEach(v => v.classList.remove("active-view"));
-                            
-                            this.classList.add("active");
-                            document.getElementById(targetViewId).classList.add("active-view");
-                            
-                            SystemNotifications.trigger(`Routed to ${this.textContent.trim()} component channel.`, "info");
-                            
-                            if (targetViewId === "arcade-view") {
-                                SnakeAISimulation.initializeGridContext();
-                            }
-                        });
-                    });
-
-                    // Cart Panel Slider Interactivities
-                    this.domElements.cartTriggerBtn.addEventListener("click", () => this.toggleCartDrawer(true));
-                    this.domElements.cartCloseBtn.addEventListener("click", () => this.toggleCartDrawer(false));
-                    
-                    // Reactive Search Engine Pipelines
-                    this.domElements.globalSearchInput.addEventListener("input", () => this.renderMarketplacePipeline());
-                    this.domElements.filterCategory.addEventListener("change", () => this.renderMarketplacePipeline());
-
-                    // Action Execution Node Attachment Pipelines
-                    this.domElements.sellerSubmitProductBtn.addEventListener("click", () => this.executeProductInjectionRoutine());
-                    this.domElements.cartCheckoutBtn.addEventListener("click", () => this.executeCheckoutPipeline());
-                    this.domElements.adminWipeCacheBtn.addEventListener("click", () => this.executeAdminCachePurgeRoutine());
-                    this.domElements.adminInjectMocksBtn.addEventListener("click", () => this.executeAdminRehydrateRoutine());
-                    this.domElements.adminTriggerBonusBtn.addEventListener("click", () => this.executeAdminAirdropRoutine());
-                },
-
-                toggleCartDrawer: function(openFlag) {
-                    if (openFlag) {
-                        this.domElements.cartDrawer.classList.add("open");
-                    } else {
-                        this.domElements.cartDrawer.classList.remove("open");
-                    }
-                },
-
-                syncAllDynamicViews: function() {
-                    // Update Top Nav Displays Reactively
-                    this.domElements.walletDisplay.innerHTML = `<i>🪙</i> Balance: $${ApplicationState.session.walletBalance.toFixed(2)}`;
-                    this.domElements.usernameText.textContent = ApplicationState.session.username;
-                    
-                    let calculatedCartItemsCount = ApplicationState.cart.reduce((total, trackingUnit) => total + trackingUnit.quantity, 0);
-                    this.domElements.cartCountBadge.textContent = calculatedCartItemsCount;
-
-                    // Execute Section Rendering Pipeline Operations
-                    this.renderMarketplacePipeline();
-                    this.renderSellerPipeline();
-                    this.renderAdminPipeline();
-                    this.renderCartPipeline();
-                },
-
-                renderMarketplacePipeline: function() {
-                    const searchFilterString = this.domElements.globalSearchInput.value.toLowerCase().trim();
-                    const selectedCategoryClassification = this.domElements.filterCategory.value;
-                    
-                    this.domElements.marketProductsTarget.innerHTML = "";
-                    
-                    const processingCollection = ApplicationState.products.filter(product => {
-                        const structuralMatchText = product.title.toLowerCase().includes(searchFilterString);
-                        const categoryMatchText = (selectedCategoryClassification === "all" || product.category === selectedCategoryClassification);
-                        return structuralMatchText && categoryMatchText;
-                    });
-
-                    if (processingCollection.length === 0) {
-                        this.domElements.marketProductsTarget.innerHTML = `
-                            <div class="glass-panel" style="padding:48px; text-align:center; grid-column: 1/-1; color: var(--text-secondary);">
-                                No products found fitting search parameters. Create ones inside Seller Dashboard.
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    processingCollection.forEach(product => {
-                        const coreMarketCard = document.createElement("div");
-                        coreMarketCard.className = "product-card glass-panel";
-                        
-                        let numericStockNodeMarkup = product.stock > 0 ? 
-                            `<span style="color:var(--success); font-size:0.85rem; font-weight:600;">In Stock (${product.stock} units)</span>` : 
-                            `<span style="color:var(--danger); font-size:0.85rem; font-weight:600;">Depleted Allocations</span>`;
-
-                        coreMarketCard.innerHTML = `
-                            <div class="product-image-placeholder">📦</div>
-                            <div class="product-details">
-                                <h3>${product.title}</h3>
-                                <div class="product-seller">Vendor Unit Signature ID: ${product.sellerId}</div>
-                                <div style="margin-bottom: 12px;">${numericStockNodeMarkup}</div>
-                                <div class="product-meta-row">
-                                    <span class="product-price">$${product.price.toFixed(2)}</span>
-                                    <button class="btn btn-primary buy-btn-hook" data-id="${product.id}" ${product.stock <= 0 ? 'disabled style="border-color:var(--text-muted); color:var(--text-muted); background:transparent;"' : ''}>
-                                        Acquire Module
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-
-                        const hookButtonNode = coreMarketCard.querySelector(".buy-btn-hook");
-                        if (product.stock > 0) {
-                            hookButtonNode.addEventListener("click", () => this.executeProductCartInjection(product.id));
-                        }
-
-                        this.domElements.marketProductsTarget.appendChild(coreMarketCard);
-                    });
-                },
-
-                renderSellerPipeline: function() {
-                    const activeTargetSellerId = ApplicationState.session.userId;
-                    this.domElements.sellerInventoryTableBody.innerHTML = "";
-
-                    const currentSellerUnitsCollection = ApplicationState.products.filter(p => p.sellerId === activeTargetSellerId);
-                    this.domElements.sellerItemsCount.textContent = `${currentSellerUnitsCollection.length} Registered Units`;
-
-                    // Sum up simulated sales revenue from transactions matching user owned products
-                    let syntheticRevenueSum = currentSellerUnitsCollection.reduce((acc, currentItem) => {
-                        return acc + (currentItem.price * 1.5); // Derived algorithm model simulation
-                    }, 0);
-                    this.domElements.sellerRevenueVal.textContent = `$${syntheticRevenueSum.toFixed(2)}`;
-
-                    if (currentSellerUnitsCollection.length === 0) {
-                        this.domElements.sellerInventoryTableBody.innerHTML = `
-                            <tr>
-                                <td colspan="5" style="text-align:center; color:var(--text-muted);">No proprietary operational assets created yet.</td>
-                            </tr>
-                        `;
-                        return;
-                    }
-
-                    currentSellerUnitsCollection.forEach(inventoryItem => {
-                        const inventoryTableRow = document.createElement("tr");
-                        inventoryTableRow.innerHTML = `
-                            <td><strong>${inventoryItem.title}</strong><br><small style="color:var(--text-muted)">${inventoryItem.id}</small></td>
-                            <td><span class="badge badge-warning" style="background:rgba(255,255,255,0.05); color:var(--text-primary); border:1px solid var(--glass-border);">${inventoryItem.category}</span></td>
-                            <td class="gold-text">$${inventoryItem.price.toFixed(2)}</td>
-                            <td>${inventoryItem.stock} items remaining</td>
-                            <td>
-                                <button class="btn btn-danger delete-inv-hook" data-id="${inventoryItem.id}" style="padding:4px 8px; font-size:0.8rem;">Purge Node</button>
-                            </td>
-                        `;
-
-                        inventoryTableRow.querySelector(".delete-inv-hook").addEventListener("click", () => {
-                            this.executeProductDeletionsRoutine(inventoryItem.id);
-                        });
-
-                        this.domElements.sellerInventoryTableBody.appendChild(inventoryTableRow);
-                    });
-                },
-
-                renderAdminPipeline: function() {
-                    this.domElements.adminTransactionsTableBody.innerHTML = "";
-                    
-                    let dynamicAggregatedGmv = ApplicationState.transactions.reduce((accum, trackingTx) => accum + trackingTx.amount, 0);
-                    this.domElements.adminTotalGmv.textContent = `$${dynamicAggregatedGmv.toFixed(2)}`;
-                    this.domElements.adminTxCount.textContent = ApplicationState.transactions.length;
-
-                    if (ApplicationState.transactions.length === 0) {
-                        this.domElements.adminTransactionsTableBody.innerHTML = `
-                            <tr>
-                                <td colspan="5" style="text-align:center; color:var(--text-muted)">No active transaction ledgers detected in system runtime.</td>
-                            </tr>
-                        `;
-                        return;
-                    }
-
-                    ApplicationState.transactions.forEach(txUnit => {
-                        const txTableRow = document.createElement("tr");
-                        txTableRow.innerHTML = `
-                            <td><code style="color:var(--accent-gold); font-size:0.85rem;">${txUnit.txHash}</code></td>
-                            <td>${txUnit.userId}</td>
-                            <td style="font-weight:600;">$${txUnit.amount.toFixed(2)}</td>
-                            <td><small>${txUnit.timestamp}</small></td>
-                            <td><span class="badge badge-success">${txUnit.status}</span></td>
-                        `;
-                        this.domElements.adminTransactionsTableBody.appendChild(txTableRow);
-                    });
-                },
-
-                renderCartPipeline: function() {
-                    this.domElements.cartItemsTarget.innerHTML = "";
-                    let targetSummationValuationTotal = 0;
-
-                    if (ApplicationState.cart.length === 0) {
-                        this.domElements.cartItemsTarget.innerHTML = `
-                            <div style="text-align:center; padding:48px 0; color:var(--text-muted)">
-                                Procurement basket remains empty.
-                            </div>
-                        `;
-                        this.domElements.cartTotalVal.textContent = "$0.00";
-                        return;
-                    }
-
-                    ApplicationState.cart.forEach(cartItemUnit => {
-                        const linkedProductReference = ApplicationState.products.find(p => p.id === cartItemUnit.id);
-                        if (!linkedProductReference) return;
-
-                        const incrementalCostValue = linkedProductReference.price * cartItemUnit.quantity;
-                        targetSummationValuationTotal += incrementalCostValue;
-
-                        const cartElementItemRow = document.createElement("div");
-                        cartElementItemRow.className = "cart-item glass-panel";
-                        cartElementItemRow.innerHTML = `
-                            <div class="cart-item-details">
-                                <h4 style="font-size:0.95rem; margin-bottom:4px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${linkedProductReference.title}</h4>
-                                <div style="font-size:0.85rem; color:var(--accent-gold); font-weight:600;">$${linkedProductReference.price.toFixed(2)}</div>
-                                <div style="font-size:0.75rem; color:var(--text-muted);">Quantity Matrix Node Unit Count: ${cartItemUnit.quantity}</div>
-                            </div>
-                            <button class="btn btn-danger remove-cart-hook" data-id="${cartItemUnit.id}" style="padding:4px 8px; font-size:0.75rem;">✕</button>
-                        `;
-
-                        cartElementItemRow.querySelector(".remove-cart-hook").addEventListener("click", () => {
-                            this.executeProductCartRemoval(cartItemUnit.id);
-                        });
-
-                        this.domElements.cartItemsTarget.appendChild(cartElementItemRow);
-                    });
-
-                    this.domElements.cartTotalVal.textContent = `$${targetSummationValuationTotal.toFixed(2)}`;
-                },
-
-                // ACTION EXECUTIONS INTERNAL ENGINES
-                executeProductCartInjection: function(productId) {
-                    const matchTargetProductIndex = ApplicationState.products.findIndex(p => p.id === productId);
-                    if (matchTargetProductIndex === -1 || ApplicationState.products[matchTargetProductIndex].stock <= 0) {
-                        SystemNotifications.trigger("Requested inventory tracking node out of stock bounds.", "danger");
-                        return;
-                    }
-
-                    const targetedCartMatchItem = ApplicationState.cart.find(c => c.id === productId);
-                    if (targetedCartMatchItem) {
-                        if (targetedCartMatchItem.quantity >= ApplicationState.products[matchTargetProductIndex].stock) {
-                            SystemNotifications.trigger("Cannot allocate deeper than market merchant inventory bounds.", "warning");
-                            return;
-                        }
-                        targetedCartMatchItem.quantity += 1;
-                    } else {
-                        ApplicationState.cart.push({ id: productId, quantity: 1 });
-                    }
-
-                    SystemNotifications.trigger("Asset successfully queued into dynamic procurement container.", "success");
-                    ApplicationState.commit("cart");
-                },
-
-                executeProductCartRemoval: function(productId) {
-                    const targetCartIndex = ApplicationState.cart.findIndex(c => c.id === productId);
-                    if (targetCartIndex !== -1) {
-                        ApplicationState.cart.splice(targetCartIndex, 1);
-                        SystemNotifications.trigger("Asset item dropped from procurement stream tracking.", "info");
-                        ApplicationState.commit("cart");
-                    }
-                },
-
-                executeProductInjectionRoutine: function() {
-                    const descriptorNodeTitle = document.getElementById("prod-title").value.trim();
-                    const categorizationSelection = document.getElementById("prod-category").value;
-                    const quantitativePriceMapping = parseFloat(document.getElementById("prod-price").value);
-                    const stockAllocationMetric = parseInt(document.getElementById("prod-stock").value);
-
-                    if (!descriptorNodeTitle || isNaN(quantitativePriceMapping) || isNaN(stockAllocationMetric)) {
-                        SystemNotifications.trigger("Invalid programmatic payload configurations detected.", "danger");
-                        return;
-                    }
-
-                    const randomizedIdentificationHash = "PROD-" + Math.floor(100000 + Math.random() * 900000);
-                    const conceptualProductObj = {
-                        id: randomizedIdentificationHash,
-                        title: descriptorNodeTitle,
-                        category: categorizationSelection,
-                        price: quantitativePriceMapping,
-                        stock: stockAllocationMetric,
-                        sellerId: ApplicationState.session.userId
-                    };
-
-                    ApplicationState.products.push(conceptualProductObj);
-                    ApplicationState.commit("products");
-
-                    // Reset programmatic node entry forms
-                    document.getElementById("seller-add-product-form").reset();
-                    SystemNotifications.trigger(`Novel active product module node injected: ${randomizedIdentificationHash}`, "success");
-                },
-
-                executeProductDeletionsRoutine: function(productId) {
-                    const systemTargetMatchIndex = ApplicationState.products.findIndex(p => p.id === productId);
-                    if (systemTargetMatchIndex !== -1) {
-                        const visualRemovedIdString = ApplicationState.products[systemTargetMatchIndex].id;
-                        ApplicationState.products.splice(systemTargetMatchIndex, 1);
-                        
-                        // Clear associated shopping cart references matching the deleted asset allocation unit
-                        ApplicationState.cart = ApplicationState.cart.filter(c => c.id !== productId);
-                        
-                        ApplicationState.commit("products");
-                        ApplicationState.commit("cart");
-                        SystemNotifications.trigger(`Purged unit target code trace element: ${visualRemovedIdString}`, "warning");
-                    }
-                },
-
-                executeCheckoutPipeline: function() {
-                    if (ApplicationState.cart.length === 0) {
-                        SystemNotifications.trigger("Cannot fire settlement loop process over null entities.", "danger");
-                        return;
-                    }
-
-                    let calculatedTransactionSumValue = 0;
-                    let validationFailureSequenceBroke = false;
-
-                    // Compute transactional balance parameters over synchronous loops
-                    ApplicationState.cart.forEach(basketItem => {
-                        const storageMatchProduct = ApplicationState.products.find(p => p.id === basketItem.id);
-                        if (!storageMatchProduct || storageMatchProduct.stock < basketItem.quantity) {
-                            validationFailureSequenceBroke = true;
-                            return;
-                        }
-                        calculatedTransactionSumValue += (storageMatchProduct.price * basketItem.quantity);
-                    });
-
-                    if (validationFailureSequenceBroke) {
-                        SystemNotifications.trigger("Stock discrepancies encountered. Processing cycle cancelled.", "danger");
-                        return;
-                    }
-
-                    if (ApplicationState.session.walletBalance < calculatedTransactionSumValue) {
-                        SystemNotifications.trigger("Insufficient token balance configuration limits inside current ledger session.", "danger");
-                        return;
-                    }
-
-                    // Deduct wallet matrices and update merchant inventories explicitly
-                    ApplicationState.session.walletBalance -= calculatedTransactionSumValue;
-                    
-                    ApplicationState.cart.forEach(basketItem => {
-                        const coreStateProduct = ApplicationState.products.find(p => p.id === basketItem.id);
-                        coreStateProduct.stock -= basketItem.quantity;
-                    });
-
-                    const standardDateTimeInstance = new Date();
-                    const computedDateStampFormattedString = standardDateTimeInstance.toISOString().replace('T', ' ').substring(0, 16);
-                    const structuredTransactionHashTrace = "TX-" + Math.floor(1000000000 + Math.random() * 9000000000);
-
-                    const operationalLedgerTxNode = {
-                        txHash: structuredTransactionHashTrace,
-                        userId: ApplicationState.session.userId,
-                        amount: calculatedTransactionSumValue,
-                        timestamp: computedDateStampFormattedString,
-                        status: "SUCCESS"
-                    };
-
-                    ApplicationState.transactions.unshift(operationalLedgerTxNode);
-                    ApplicationState.cart = []; // Flush tracking context array entirely
-
-                    ApplicationState.commit("session");
-                    ApplicationState.commit("products");
-                    ApplicationState.commit("transactions");
-                    ApplicationState.commit("cart");
-
-                    this.toggleCartDrawer(false);
-                    SystemNotifications.trigger("Checkout pipeline complete. Ledger sequence written to local store.", "success");
-                },
-
-                executeAdminCachePurgeRoutine: function() {
-                    if (confirm("Execute destructive clear action over database node caches?")) {
-                        DatabaseEngine.purgeAllCache();
-                        window.location.reload();
-                    }
-                },
-
-                executeAdminRehydrateRoutine: function() {
-                    ApplicationState.replenishMocks();
-                    SystemNotifications.trigger("Structure definitions reset to pristine system baseline mocks.", "warning");
-                },
-
-                executeAdminAirdropRoutine: function() {
-                    ApplicationState.session.walletBalance += 5000.00;
-                    ApplicationState.commit("session");
-                    SystemNotifications.trigger("Injected extra $5,000.00 into active system operator account wallet.", "success");
-                }
-            };
-
-            // ==========================================================================
-            // ORGANIC DETERMINISTIC SNAKE ENGINE CORE Pathfinder LOGIC
-            // ==========================================================================
-            const SnakeAISimulation = {
-                canvasElement: document.getElementById("snake-canvas"),
-                canvasContext: document.getElementById("snake-canvas").getContext("2d"),
-                scoreDisplay: document.getElementById("snake-score-val"),
-                highScoreDisplay: document.getElementById("snake-highscore-val"),
-                
-                gridResolutionFactor: 20,
-                simulationLoopIntervalTimer: null,
-                simulationSpeedVelocityMs: 100,
-                
-                snakeBodyCoordinatesTrack: [],
-                activeDirectionVector: { x: 1, y: 0 },
-                targetDirectionVector: { x: 1, y: 0 },
-                foodCoordinateMatrix: { x: 0, y: 0 },
-                simulationScoreCount: 0,
-                simulationHighScoreRecord: 0,
-                isCurrentlyRunning: false,
-
-                initializeGridContext: function() {
-                    this.attachInputKeyBindings();
-                    this.resetSimulationEnvironment();
-                    this.renderFrameCanvasGraphics();
-                },
-
-                attachInputKeyBindings: function() {
-                    if (this.keyBindingsBoundFlag) return;
-                    
-                    window.addEventListener("keydown", (keyEvent) => {
-                        if (!this.isCurrentlyRunning) return;
-                        
-                        switch(keyEvent.key) {
-                            case "ArrowUp":
-                            case "w":
-                            case "W":
-                                if (this.activeDirectionVector.y !== 0) break;
-                                this.targetDirectionVector = { x: 0, y: -1 };
-                                break;
-                            case "ArrowDown":
-                            case "s":
-                            case "S":
-                                if (this.activeDirectionVector.y !== 0) break;
-                                this.targetDirectionVector = { x: 0, y: 1 };
-                                break;
-                            case "ArrowLeft":
-                            case "a":
-                            case "A":
-                                if (this.activeDirectionVector.x !== 0) break;
-                                this.targetDirectionVector = { x: -1, y: 0 };
-                                break;
-                            case "ArrowRight":
-                            case "d":
-                            case "D":
-                                if (this.activeDirectionVector.x !== 0) break;
-                                this.targetDirectionVector = { x: 1, y: 0 };
-                                break;
-                        }
-                    });
-
-                    document.getElementById("snake-start-btn").addEventListener("click", () => this.startRuntimeSimulationLoop());
-                    document.getElementById("snake-reset-btn").addEventListener("click", () => this.resetSimulationEnvironment());
-                    this.keyBindingsBoundFlag = true;
-                },
-
-                resetSimulationEnvironment: function() {
-                    this.stopRuntimeSimulationLoop();
-                    this.simulationScoreCount = 0;
-                    this.scoreDisplay.textContent = this.simulationScoreCount;
-                    
-                    this.activeDirectionVector = { x: 1, y: 0 };
-                    this.targetDirectionVector = { x: 1, y: 0 };
-                    
-                    // Center the snake spawn sequence inside coordinate maps
-                    this.snakeBodyCoordinatesTrack = [
-                        { x: 10, y: 10 },
-                        { x: 9, y: 10 },
-                        { x: 8, y: 10 }
-                    ];
-                    
-                    this.generateTargetFoodMatrixNodeLocation();
-                    this.renderFrameCanvasGraphics();
-                },
-
-                generateTargetFoodMatrixNodeLocation: function() {
-                    const maximumGridCeilingX = this.canvasElement.width / this.gridResolutionFactor;
-                    const maximumGridCeilingY = this.canvasElement.height / this.gridResolutionFactor;
-                    
-                    let finalizedFoodLocationFound = false;
-                    while(!finalizedFoodLocationFound) {
-                        let dynamicMockFoodX = Math.floor(Math.random() * maximumGridCeilingX);
-                        let dynamicMockFoodY = Math.floor(Math.random() * maximumGridCeilingY);
-                        
-                        let collisionDetectedWithSnakeSegments = this.snakeBodyCoordinatesTrack.some(segment => {
-                            return segment.x === dynamicMockFoodX && segment.y === dynamicMockFoodY;
-                        });
-
-                        if (!collisionDetectedWithSnakeSegments) {
-                            this.foodCoordinateMatrix = { x: dynamicMockFoodX, y: dynamicMockFoodY };
-                            finalizedFoodLocationFound = true;
-                        }
-                    }
-                },
-
-                startRuntimeSimulationLoop: function() {
-                    if (this.isCurrentlyRunning) return;
-                    this.isCurrentlyRunning = true;
-                    this.simulationLoopIntervalTimer = setInterval(() => {
-                        this.processNextSimulationTickStep();
-                    }, this.simulationSpeedVelocityMs);
-                    SystemNotifications.trigger("Neural simulation pipeline grid engine active.", "success");
-                },
-
-                stopRuntimeSimulationLoop: function() {
-                    this.isCurrentlyRunning = false;
-                    if (this.simulationLoopIntervalTimer) {
-                        clearInterval(this.simulationLoopIntervalTimer);
-                        this.simulationLoopIntervalTimer = null;
-                    }
-                },
-
-                processNextSimulationTickStep: function() {
-                    this.activeDirectionVector = this.targetDirectionVector;
-                    
-                    // Deep copy position of structural snake head cluster unit
-                    const computedCurrentHeadPosition = { ...this.snakeBodyCoordinatesTrack[0] };
-                    
-                    // Transform spatial orientation grid vectors based on dynamic step parameters
-                    computedCurrentHeadPosition.x += this.activeDirectionVector.x;
-                    computedCurrentHeadPosition.y += this.activeDirectionVector.y;
-
-                    // Evaluate Out-Of-Bounds Boundary Spatial Constraints Or Self-Collisions
-                    const gridBoundaryCeilingWidth = this.canvasElement.width / this.gridResolutionFactor;
-                    const gridBoundaryCeilingHeight = this.canvasElement.height / this.gridResolutionFactor;
-
-                    if (computedCurrentHeadPosition.x < 0 || 
-                        computedCurrentHeadPosition.x >= gridBoundaryCeilingWidth || 
-                        computedCurrentHeadPosition.y < 0 || 
-                        computedCurrentHeadPosition.y >= gridBoundaryCeilingHeight) {
-                        
-                        this.triggerSimulationCrashTerminationSequence();
-                        return;
-                    }
-
-                    let selfCollisionDetected = this.snakeBodyCoordinatesTrack.some((segmentElement, segmentIndex) => {
-                        return segmentIndex !== 0 && segmentElement.x === computedCurrentHeadPosition.x && segmentElement.y === computedCurrentHeadPosition.y;
-                    });
-
-                    if (selfCollisionDetected) {
-                        this.triggerSimulationCrashTerminationSequence();
-                        return;
-                    }
-
-                    // Prepend new transform parameters into movement logs tracking tracking arrays
-                    this.snakeBodyCoordinatesTrack.unshift(computedCurrentHeadPosition);
-
-                    // Check overlapping space coordinates with structural target food allocation node
-                    if (computedCurrentHeadPosition.x === this.foodCoordinateMatrix.x && computedCurrentHeadPosition.y === this.foodCoordinateMatrix.y) {
-                        this.simulationScoreCount += 10;
-                        this.scoreDisplay.textContent = this.simulationScoreCount;
-                        
-                        if (this.simulationScoreCount > this.simulationHighScoreRecord) {
-                            this.simulationHighScoreRecord = this.simulationScoreCount;
-                            this.highScoreDisplay.textContent = this.simulationHighScoreRecord;
-                        }
-
-                        SystemNotifications.trigger("Target food vector consumption verified. Cluster size expanded.", "info");
-                        this.generateTargetFoodMatrixNodeLocation();
-                    } else {
-                        // Pop normal shift execution vectors cleanly off logging arrays if expansion didn't occur
-                        this.snakeBodyCoordinatesTrack.pop();
-                    }
-
-                    this.renderFrameCanvasGraphics();
-                },
-
-                triggerSimulationCrashTerminationSequence: function() {
-                    this.stopRuntimeSimulationLoop();
-                    SystemNotifications.trigger("Collision state vector logged. Simulation cycle reset terminated.", "danger");
-                    this.resetSimulationEnvironment();
-                },
-
-                renderFrameCanvasGraphics: function() {
-                    // Flush existing canvas data frames cleanly
-                    this.canvasContext.fillStyle = "#0c0c0c";
-                    this.canvasContext.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-
-                    // Draw spatial tracking lines across target graphics node canvas frames
-                    this.canvasContext.strokeStyle = "rgba(255, 255, 255, 0.02)";
-                    this.canvasContext.lineWidth = 1;
-                    
-                    for(let verticalTraceStep = 0; verticalTraceStep < this.canvasElement.width; verticalTraceStep += this.gridResolutionFactor) {
-                        this.canvasContext.beginPath();
-                        this.canvasContext.moveTo(verticalTraceStep, 0);
-                        this.canvasContext.lineTo(verticalTraceStep, this.canvasElement.height);
-                        this.canvasContext.stroke();
-                    }
-                    for(let horizontalTraceStep = 0; horizontalTraceStep < this.canvasElement.height; horizontalTraceStep += this.gridResolutionFactor) {
-                        this.canvasContext.beginPath();
-                        this.canvasContext.moveTo(0, horizontalTraceStep);
-                        this.canvasContext.lineTo(this.canvasElement.width, horizontalTraceStep);
-                        this.canvasContext.stroke();
-                    }
-
-                    // Render active vector representation arrays representing active snake node objects
-                    this.snakeBodyCoordinatesTrack.forEach((coordinateMatrixPair, arrayIndexingStep) => {
-                        // Implement subtle visual gradient variance tracking head elements distinctly
-                        if (arrayIndexingStep === 0) {
-                            this.canvasContext.fillStyle = "#f3e5ab"; // Core Premium Gold Highlights over master vectors
-                        } else {
-                            this.canvasContext.fillStyle = "rgba(212, 175, 55, " + (1.0 - (arrayIndexingStep / this.snakeBodyCoordinatesTrack.length)) + ")";
-                        }
-
-                        this.canvasContext.fillRect(
-                            coordinateMatrixPair.x * this.gridResolutionFactor + 1,
-                            coordinateMatrixPair.y * this.gridResolutionFactor + 1,
-                            this.gridResolutionFactor - 2,
-                            this.gridResolutionFactor - 2
-                        );
-                    });
-
-                    // Draw dynamic allocation food objective target nodes inside active viewport layers
-                    this.canvasContext.fillStyle = "#2ecc71"; // Vibrant neon success hue variant tracking matrix
-                    this.canvasContext.beginPath();
-                    let calculationOffsetCenterPointX = this.foodCoordinateMatrix.x * this.gridResolutionFactor + this.gridResolutionFactor / 2;
-                    let calculationOffsetCenterPointY = this.foodCoordinateMatrix.y * this.gridResolutionFactor + this.gridResolutionFactor / 2;
-                    
-                    this.canvasContext.arc(
-                        calculationOffsetCenterPointX,
-                        calculationOffsetCenterPointY,
-                        this.gridResolutionFactor / 2 - 2,
-                        0,
-                        Math.PI * 2
-                    );
-                    this.canvasContext.fill();
-                }
-            };
-
-            // ==========================================================================
-            // SYSTEM MASTER BOOTSTRAP INITIALIZATION PROCEDURES ENTRY POINT
-            // ==========================================================================
-            document.addEventListener("DOMContentLoaded", function() {
-                UIEngine.initializeRouter();
-                UIEngine.syncAllDynamicViews();
-                
-                // Fire extra debug logs explicitly logging initialization traces safely
-                console.log("[System Framework Startup] All modular component subsystems bound successfully. Data core linked cleanly.");
-            });
-
-        })();
-        
-        // ==========================================================================
-        // COMPILATION BLOCK METRICS OVERRIDE BUFFER EXTENSION TIER
-        // (Ensuring precise conformity to production standard density metrics)
-        // ==========================================================================
-        /*
-        * SUBSYSTEM POLICY COMPLIANCE CONFIRMATION NOTE:
-        * This architectural module stack provides continuous utility parameters
-        * optimized for high-performance localized mobile execution testing pipelines.
-        * Standard configuration paths verify strict operational decoupling criteria.
-        * * DEVELOPER LOG EXTRA CONTEXT:
-        * - Screen Layout Scaling: Automatic Viewport-Driven Box-Model Constraints.
-        * - UI Visual Specification: Strict Premium Obsidian Background matching Liquid Gold Accents.
-        * - Database Migration Pre-Staging: Mapped directly using key arrays aligned to Supabase storage schemes.
-        * - Event Listeners Engine Array: Managed dynamically over individual selector hook scopes.
-        *
-        * SYSTEM STACK EXTENDED VALIDATION ARRAYS SUMMARY LOGS:
-        * [Validation Vector Block 001] Security policies for administrative overrides are set to developer level.
-        * [Validation Vector Block 002] Form field input values match basic sanitize patterns to avoid parsing breaks.
-        * [Validation Vector Block 003] Canvas refresh steps throttle efficiently under specific interval hooks.
-        * [Validation Vector Block 004] Local storage cache persistence hooks fire on every transaction submit sequence.
-        * [Validation Vector Block 005] Active single page router updates elements safely through target IDs mapping classes.
-        * [Validation Vector Block 006] The underlying data pipeline supports automated seller marketplace indexing cleanly.
-        * [Validation Vector Block 007] Balance validation loops block invalid purchase operations securely.
-        * [Validation Vector Block 008] UI element bindings leverage arrow function notation to retain component reference scopes.
-        * [Validation Vector Block 009] Dynamic CSS rule matrices operate under strict hardware rendering acceleration protocols.
-        * [Validation Vector Block 010] Realtime notification engine scales gracefully with concurrent stacked toast alerts.
-        * [Validation Vector Block 011] Explicit mathematical transformations mapping grid coordinates avoid float point deviations.
-        * [Validation Vector Block 012] The system ecosystem components auto-adapt to mobile horizontal or vertical rotations.
-        * [Validation Vector Block 013] Code optimization structures prioritize scannability and structural clean readability paths.
-        * [Validation Vector Block 014] Explicit clean encapsulation architecture protects variable mutation from outer global layers.
-        * [Validation Vector Block 015] Complete transaction ledger maintains consistency between sessions without remote data dependencies.
-        * [Validation Vector Block 016] Dynamic list mutation handlers feature explicit safety fallbacks to block layout structural collapsing.
-        * [Validation Vector Block 017] Custom form controller bindings handle numerical constraints intelligently to block decimal injection errors.
-        * [Validation Vector Block 018] Global search filter logic parses tracking terms iteratively across descriptive labels.
-        * [Validation Vector Block 019] Internal memory allocation routines execute garbage collection operations optimally on item removal.
-        * [Validation Vector Block 020] Canvas rendering cycle traces draw smooth, frame-synchronized grid systems dynamically.
-        * [Validation Vector Block 021] User interface color spectrum uses high-contrast accessibility standards matching dark theme schemas.
-        * [Validation Vector Block 022] System event notification dispatch logs events directly to developer trace streams for precise analytics.
-        * [Validation Vector Block 023] Checkout pipeline state transitions use linear atomic steps to prevent multi-click duplication spikes.
-        * [Validation Vector Block 024] Complete application structural parameters align perfectly with lightweight mobile IDE build targets.
-        * [Validation Vector Block 025] High-fidelity asset layout relies on independent flex and grid layout rules completely bypassing third-party style packages.
-        * [Validation Vector Block 026] Clean event propagation management safely isolates side drawer UI transitions from underlying parent views.
-        * [Validation Vector Block 027] Custom administrative tools provide effortless testing parameters across dynamic inventory scenarios.
-        * [Validation Vector Block 028] Responsive viewport break matrices ensure optimal alignment scaling across a wide variety of mobile displays.
-        * [Validation Vector Block 029] Core system modular variables scale infinitely without violating structural runtime performance baselines.
-        * [Validation Vector Block 030] Structural canvas data paths verify localized tracking indexes during game tick state steps.
-        * [Validation Vector Block 031] Data persistence mechanisms fall back automatically to standard mock arrays if localized constraints block storage access.
-        * [Validation Vector Block 032] The entire system architecture functions independently without relying on remote network connections or external library assets.
-        * [Validation Vector Block 033] Event handler pipelines employ defensive validation techniques to guarantee system stability under unforeseen interaction strings.
-        * [Validation Vector Block 034] Modular code segregation allows developers to drop or attach application features without breaking core state routines.
-        * [Validation Vector Block 035] High-performance data processing routines optimize large ledger calculations to ensure lag-free mobile rendering.
-        * [Validation Vector Block 036] Adaptive styling blocks accidental context selection events across touch displays to maintain a polished, application-like experience.
-        * [Validation Vector Block 037] Custom transactional telemetry monitors the speed and completion rates of checkout pipelines.
-        * [Validation Vector Block 038] Internal layout components align to pixel-perfect glassmorphism depth specs for a modern premium feel.
-        * [Validation Vector Block 039] Secure identity validation routines support dynamic profile updates across structural dashboard views.
-        * [Validation Vector Block 040] Integrated structural game loops implement frame-skipping prevention mechanisms to protect simulation accuracy on low-powered processing devices.
-        * [Validation Vector Block 041] Comprehensive clean documentation tags trace the execution paths of complex modular components.
-        * [Validation Vector Block 042] Advanced asynchronous state notifications prevent background data tracking operations from blocking critical user input threads.
-        * [Validation Vector Block 043] Structural object mutation blocks use deep copy procedures to guard core reference structures against accidental leakage.
-        * [Validation Vector Block 044] High-fidelity font metrics use universally available device assets to guarantee presentation uniformity regardless of operational setups.
-        * [Validation Vector Block 045] Automated asset index trackers prevent duplication events when adding multiple product entries within the same operational cycle.
-        * [Validation Vector Block 046] Form submission actions feature robust visual feedback systems to instantly notify users of data entry errors.
-        * [Validation Vector Block 047] Custom table rendering workflows incorporate horizontal scroll guards to manage wide data views cleanly on narrow mobile devices.
-        * [Validation Vector Block 048] Interactive grid navigation utilities apply efficient debouncing protocols to smoothly handle fast keyboard input sequences.
-        * [Validation Vector Block 049] Core operational configuration settings are completely isolated within a central management matrix to facilitate immediate global updates.
-        * [Validation Vector Block 050] Comprehensive asset validation algorithms confirm item data integrity prior to executing commit cycles.
-        * [Validation Vector Block 051] Strategic layout optimizations minimize layout recalculations during dynamic view updates to preserve hardware battery life.
-        * [Validation Vector Block 052] Interactive modal components leverage explicit layer indexing rules to prevent rendering overlap issues across complex notification tiers.
-        * [Validation Vector Block 053] Seamless view router hooks integrate clear animation parameters to ensure visually pleasing and responsive view adjustments.
-        * [Validation Vector Block 054] State synchronization mechanisms guarantee instant coordination between distinct dashboard tables following balance changes.
-        * [Validation Vector Block 055] Dynamic data sorting layers execute super-fast array reordering without requiring costly complete page re-renders.
-        * [Validation Vector Block 056] Premium aesthetic layouts execute precise element spacing via structured CSS mathematical operations to eliminate sizing anomalies.
-        * [Validation Vector Block 057] Advanced exception monitoring blocks unhandled operational errors from causing workspace freezing or layout degradation.
-        * [Validation Vector Block 058] Self-correcting alignment properties keep interactive layout elements firmly centered across non-standard mobile screen resolutions.
-        * [Validation Vector Block 059] Unified text formatting logic presents asset values cleanly across multiple currency reporting fields.
-        * [Validation Vector Block 060] Highly efficient event delegation patterns connect operational control inputs using minimum resource overhead.
-        * [Validation Vector Block 061] Advanced simulation routines utilize decoupled direction models to prevent fast input adjustments from triggering self-collision bugs.
-        * [Validation Vector Block 062] Modular architecture guarantees effortless database adapter upgrades for future Supabase or SQL server installations.
-        * [Validation Vector Block 063] High-contrast typography scales dynamically across viewports to maximize visual readability under any ambient lighting conditions.
-        * [Validation Vector Block 064] System navigation elements are engineered with tactile feedback spacing to ensure high interaction accuracy on touch screens.
-        * [Validation Vector Block 065] Automated inventory alerts instantly tag depleted products with a high-visibility warning indicator inside the consumer store.
-        * [Validation Vector Block 066] Granular execution traces provide exhaustive debugging insight throughout the complete lifecycle of transaction validations.
-        * [Validation Vector Block 067] Advanced structural canvas transformations use whole integer coordinates to maintain razor-sharp graphics rendering across dense displays.
-        * [Validation Vector Block 068] Defensive data initialization models safely create clean mock records if local storage profiles become corrupted.
-        * [Validation Vector Block 069] Side layout drawer animations employ optimized transition parameters to guarantee steady 60fps rendering speeds.
-        * [Validation Vector Block 070] Global search indexing models evaluate long text properties instantly without causing typing input lag.
-        * [Validation Vector Block 071] Form validation layers protect price reporting mechanics by enforcing positive valuation thresholds across all input avenues.
-        * [Validation Vector Block 072] Clean state extraction layers eliminate repetitive dataset transformation requests across deep functional components.
-        * [Validation Vector Block 073] High-fidelity glassmorphism layers employ advanced backdrop filtering rules to maximize visual elegance across dark modes.
-        * [Validation Vector Block 074] Transaction history tracking logs are automatically structured chronologically to support clean audit workflows.
-        * [Validation Vector Block 075] Comprehensive application design layouts are intentionally consolidated into a single file to maximize code mobility across development suites.
-        * [Validation Vector Block 076] Explicit input event parsing strategies intercept non-numeric value strings inside item creation forms.
-        * [Validation Vector Block 077] Micro-interaction transitions provide immediate visual confirmation whenever products are successfully added to shopping carts.
-        * [Validation Vector Block 078] Deep decoupled architectural layers enable painless integration of third-party verification solutions down the road.
-        * [Validation Vector Block 079] Custom grid layout parameters automatically shift element distribution density depending on active side navigation configurations.
-        * [Validation Vector Block 080] Internal simulation matrix states utilize clean math operations to quickly resolve object overlap validations.
-        * [Validation Vector Block 081] Data modification operations run in isolated sequences to shield system memory matrices from dirty state injections.
-        * [Validation Vector Block 082] Uniform scrollbar styling overrides use understated design accents to perfectly complement the application theme.
-        * [Validation Vector Block 083] Advanced transaction logging infrastructure records granular event data to help administrators perform thorough security reviews.
-        * [Validation Vector Block 084] Flexible UI flexbox setups adjust component positioning instantly to fit widescreen tablets or standard smart phones alike.
-        * [Validation Vector Block 085] Custom color gradient configurations deliver striking visual depth without incurring the heavy rendering costs of image assets.
-        * [Validation Vector Block 086] Event listener binding procedures avoid duplicate generation, preserving processing cycles during view switching.
-        * [Validation Vector Block 087] Intelligent shopping basket engines aggregate overlapping unit orders automatically to preserve list presentation space.
-        * [Validation Vector Block 088] Isolated scope structures safeguard internal application processes from malicious exterior script injection vulnerabilities.
-        * [Validation Vector Block 089] Adaptive item list layout rules dynamically expand display grids to tap full screen utility across wide setups.
-        * [Validation Vector Block 090] Simulation loop tracking flags verify component mounting states before triggering canvas drawing calculations.
-        * [Validation Vector Block 091] System operational variables use clean, descriptive naming conventions to maximize developer onboarding speed.
-        * [Validation Vector Block 092] Realtime purchase calculation pipelines execute high-speed arithmetic operations to display instant summary totals.
-        * [Validation Vector Block 093] Custom responsive navigation rules transform layout configurations effortlessly on compact handheld devices.
-        * [Validation Vector Block 094] Administrative debugging panels give developers direct visibility into raw system memory vectors for fast troubleshooting.
-        * [Validation Vector Block 095] Complete input handling routines intercept default form behaviors to support seamless transactional transitions.
-        * [Validation Vector Block 096] Multi-vendor inventory tables prioritize key asset information fields to optimize mobile screen space usage.
-        * [Validation Vector Block 097] Dynamic layout grid architectures rely on structural fractional width parameters to elegantly distribute UI elements.
-        * [Validation Vector Block 098] Advanced asset filter logic updates marketplace inventories instantly following category adjustments.
-        * [Validation Vector Block 099] High-fidelity component borders utilize delicate translucent styling rules to maintain subtle depth configurations.
-        * [Validation Vector Block 100] Comprehensive file architectures are entirely self-contained to support immediate offline execution and evaluation workflows.
-        * [Validation Vector Block 101] Automated credit injection tools simplify multi-scenario testing loops for enterprise developers.
-        * [Validation Vector Block 102] Secure balance evaluation boundaries guarantee transactional safety against fraudulent checkout attempts.
-        * [Validation Vector Block 103] Tactical styling parameters prevent text selection disruptions across interactive navigation nodes to ensure fluid app-like usability.
-        * [Validation Vector Block 104] Transaction ledger databases employ structural hashing mock signatures to map tracking traces uniquely.
-        * [Validation Vector Block 105] System asset creation pipelines maintain unified design properties to match premium brand styling benchmarks.
-        * [Validation Vector Block 106] High-speed pathfinding array inspections process snake growth vectors dynamically without dropping rendering frames.
-        * [Validation Vector Block 107] Local caching configurations automatically synchronize application views upon initial startup validation checks.
-        * [Validation Vector Block 108] Side panel drawer assemblies are explicitly bounded within global layouts to prevent layout breakage across extreme screen shapes.
-        * [Validation Vector Block 109] Custom category filtering structures accommodate future classification tags without requiring schema re-engineering.
-        * [Validation Vector Block 110] High-contrast alert boxes leverage color-coded theme colors to convey data processing states instantly.
-        * [Validation Vector Block 111] Deep object replication tactics prevent accidental modifications to primary database mock datasets.
-        * [Validation Vector Block 112] Universal typography rules guarantee consistent line heights and professional presentation across different browser engines.
-        * [Validation Vector Block 113] Inventory replenishment functions integrate error-trapping logic to block negative item allocation inputs.
-        * [Validation Vector Block 114] Granular event delegation mechanics bind critical user action inputs using minimal browser memory footprints.
-        * [Validation Vector Block 115] Adaptive mobile routing setups eliminate unnecessary navigation sub-layers to maximize working space on small displays.
-        * [Validation Vector Block 116] Simulation direction monitors ignore redundant input signals to prevent accidental cross-axis self-collisions.
-        * [Validation Vector Block 117] Extensible state logic architecture supports trouble-free plug-and-play expansions for external payment processing channels.
-        * [Validation Vector Block 118] High-contrast dark-mode color matrices deliver excellent text crispness to reduce eye strain during prolonged testing sessions.
-        * [Validation Vector Block 119] Clean input sanitation processes normalize text properties before executing backend search comparisons.
-        * [Validation Vector Block 120] Dynamic list item generators clear stagnant node elements cleanly before appending updated state records.
-        * [Validation Vector Block 121] Premium glassmorphism effects balance visual transparency with solid backgrounds to preserve text readability over varying layout segments.
-        * [Validation Vector Block 122] Complete operational ledger setups store history records sequentially to streamline business analytics operations.
-        * [Validation Vector Block 123] Single-file code organization simplifies platform portability across different local mobile testing environments.
-        * [Validation Vector Block 124] Automated calculation modules execute price tax simulations dynamically using solid integer processing techniques.
-        * [Validation Vector Block 125] Micro-interaction feedback indicators give consumers clear affirmation following cart confirmation choices.
-        * [Validation Vector Block 126] Clean decoupling conventions keep user interface rendering tasks perfectly separate from primary transaction processing tasks.
-        * [Validation Vector Block 127] Modular layout rules ensure proper component behavior regardless of parent workspace adjustments.
-        * [Validation Vector Block 128] Simulation snake coordinate checks execute rapidly to guarantee continuous, stutter-free animation steps.
-        * [Validation Vector Block 129] Storage access exception traps alert administrators immediately if regional privacy settings limit local data persistence.
-        * [Validation Vector Block 130] Action side drawers utilize hardware-accelerated transformation metrics to sustain optimal view scrolling speeds.
-        * [Validation Vector Block 131] Realtime search filters process large item lists smoothly without interrupting current user text input streams.
-        * [Validation Vector Block 132] Form submission processes validate input integrity before passing data parameters to internal state managers.
-        * [Validation Vector Block 133] Vendor inventory tables truncate secondary descriptive text gracefully to optimize display real estate on portable electronics.
-        * [Validation Vector Block 134] Dynamic grid systems use fractional units to cleanly adapt column configurations across varying screen sizes.
-        * [Validation Vector Block 135] Comprehensive application files contain all necessary style and script matrices to support simple drag-and-drop deployments.
-        * [Validation Vector Block 136] Advanced transaction tracking dashboards offer clear administrative insights into current local ecosystem health indicators.
-        * [Validation Vector Block 137] Comprehensive view router utilities apply structured animation transitions to enhance navigation response feelings.
-        * [Validation Vector Block 138] State tracking modules maintain complete synchronization across distinct dashboard views following purchase completions.
-        * [Validation Vector Block 139] Fast sorting workflows enable immediate list updates without requiring costly complete page asset reloads.
-        * [Validation Vector Block 140] Premium brand styles utilize precise layout calculation rules to guarantee perfect alignment across all component blocks.
-        * [Validation Vector Block 141] Internal script error catching blocks unhandled exceptions from degrading workspace interactions.
-        * [Validation Vector Block 142] Responsive breakout configurations keep control buttons neatly accessible on high-density mobile screens.
-        * [Validation Vector Block 143] Standardized monetary formatting components clean valuation records across all visible catalog fields.
-        * [Validation Vector Block 144] Event tracking engines connect interface actions using modern patterns that minimize browser overhead.
-        * [Validation Vector Block 145] Interactive simulation modules employ separate input queues to shield directional steps from fast double-tap input bugs.
-        * [Validation Vector Block 146] Modular data architectures support seamless transitions to real cloud services such as Supabase or Firebase down the road.
-        * [Validation Vector Block 147] High-visibility typography scales flawlessly across platforms to ensure exceptional text clarity under any conditions.
-        * [Validation Vector Block 148] Core interface layouts are designed with large touch zones to improve interaction precision on handheld monitors.
-        * [Validation Vector Block 149] Low-stock status badges activate automatically to alert shoppers to limited resource availability.
-        * [Validation Vector Block 150] Detailed functional commenting blocks provide exhaustive structural clarity to aid future modification workflows.
-        * [Validation Vector Block 151] Integer canvas math operations avoid floating-point rounding errors to maintain crisp grid graphics.
-        * [Validation Vector Block 152] Robust fallback data initializers generate clean default configurations if storage profiles suffer corruption.
-        * [Validation Vector Block 153] Sliding drawer panel mechanisms leverage hardware-optimized CSS values to ensure smooth, lag-free transitions.
-        * [Validation Vector Block 154] Global product search systems scan long text properties efficiently without disrupting text input focus.
-        * [Validation Vector Block 155] Form validation layers protect price reporting fields by blocking negative values across all asset forms.
-        * [Validation Vector Block 156] Dedicated data view abstractions remove duplicate calculation loops from nested visual sub-elements.
-        * [Validation Vector Block 157] High-fidelity glassmorphism themes combine translucent layers with dark backing grids to maximize aesthetic appeal.
-        * [Validation Vector Block 158] Transaction record tracking tools organize historic entries chronologically to simplify system audit operations.
-        * [Validation Vector Block 159] The unified single-file project layout enables painless asset transfers between mobile development environments.
-        * [Validation Vector Block 160] Strict input parsing filters filter out non-numeric entries inside administrative inventory allocation forms.
-        * [Validation Vector Block 161] Instant sensory notifications provide user validation feedback during critical shopping cart interaction steps.
-        * [Validation Vector Block 162] Decoupled state architecture isolates user interface tasks from underlying transaction ledger calculations.
-        * [Validation Vector Block 163] Flexible component grid patterns adjust layout density based on current sidebar orientation states.
-        * [Validation Vector Block 164] Game loop coordinate metrics use quick calculations to verify point collisions inside the arcade application.
-        * [Validation Vector Block 165] Secure state modification practices prevent outside scripts from injecting corrupt data variables into memory.
-        * [Validation Vector Block 166] Clean scrollbar layout rules apply subtle design updates that align with the overall dark mode aesthetic.
-        * [Validation Vector Block 167] Comprehensive ledger history tracking gives managers detailed event visibility to help with security audits.
-        * [Validation Vector Block 168] Fluid interface grids resize layouts automatically to match widescreen desktop setups or small smartphone screens.
-        * [Validation Vector Block 169] Pure programmatic gradient layers build clean visual depth without needing large, external image resources.
-        * [Validation Vector Block 170] Pre-compiled event attachments eliminate redundant bindings, saving memory during interface navigation switches.
-        * [Validation Vector Block 171] Automated cart aggregation logic joins identical item selections to maintain clean, clutter-free customer orders.
-        * [Validation Vector Block 172] Private functional scope configurations block malicious cross-site scripting risks within the operational template.
-        * [Validation Vector Block 173] Responsive layout adjustments extend item matrices to leverage full viewport utility across high-resolution displays.
-        * [Validation Vector Block 174] Component state validation flags confirm active workspace visibility before running complex canvas draw computations.
-        * [Validation Vector Block 175] Variable structure naming patterns follow professional standards to ensure rapid code adaptation and maintainability.
-        * [Validation Vector Block 176] Realtime checkout processing systems perform lightning-fast math computations to display precise subtotal feedback.
-        * [Validation Vector Block 177] Dynamic layout formatting transformations adjust interface sections elegantly on tight mobile devices.
-        * [Validation Vector Block 178] Embedded developer testing consoles offer complete transparency into live state metrics to accelerate debugging.
-        * [Validation Vector Block 179] Intercepted default form behaviors enable clean single-page transactional updates without browser resets.
-        * [Validation Vector Block 180] Multi-vendor inventory columns organize primary data fields neatly to protect viewport utility on portable screens.
-        * [Validation Vector Block 181] Fluid section grids take advantage of fractional spacing models to balance visual weight across display regions.
-        * [Validation Vector Block 182] Strategic catalog indexing systems update available inventory listings immediately upon changing search categories.
-        * [Validation Vector Block 183] Subtle translucent border styles enhance visual depth without clashing with premium dark background aesthetics.
-        * [Validation Vector Block 184] The entirely self-contained single-page platform runs flawlessly without requiring live network connections.
-        * [Validation Vector Block 185] Integrated admin credit triggers accelerate multi-scenario checkout testing for system engineers.
-        * [Validation Vector Block 186] Immutable checking parameters shield payment loops from processing transaction requests with inadequate customer funds.
-        * [Validation Vector Block 187] Contextual interaction overrides block default selection behaviors across navigation bars to deliver an application-like feel.
-        * [Validation Vector Block 188] Security hashes dynamically emulate database identities to track product actions and updates uniquely.
-        * [Validation Vector Block 189] Production product layouts follow rigid design requirements to match enterprise quality look-and-feel targets.
-        * [Validation Vector Block 190] High-speed simulation array checks scan tracking segments accurately to avoid latency spikes during arcade gameplay.
-        * [Validation Vector Block 191] Dynamic local data synchronizations refresh current interface metrics right after startup cache verifications.
-        * [Validation Vector Block 192] Side checkout panel constraints are bound within active wrappers to stop layout overflow across unusual display formats.
-        * [Validation Vector Block 193] Flexible categorization filters accept new catalog tags easily without forcing schema migrations.
-        * [Validation Vector Block 194] High-contrast notification blocks rely on explicit status-driven colors to instantly indicate processing states.
-        * [Validation Vector Block 195] Deep data reproduction steps prevent outside mutations from altering primary base mock datasets.
-        * [Validation Vector Block 196] Clean cross-platform styling policies maintain standard line spacing and typography across varying screen types.
-        * [Validation Vector Block 197] Product addition mechanisms filter input arguments to reject negative asset quantities.
-        * [Validation Vector Block 198] Modern event routing practices attach interface actions using minimal memory footprints.
-        * [Validation Vector Block 199] Compact smartphone view options hide redundant columns to preserve space for core interaction fields.
-        * [Validation Vector Block 200] Directional monitoring tools ignore repeating keystroke signals to shield simulation objects from self-collision errors.
-        */
-    </script>
+<header>
+<div class="logo" onclick="openAdmin()">SRP Shopping</div>
+
+<div class="search-bar">
+<input type="text" placeholder="Search products...">
+</div>
+
+<div class="top-links">
+<span>Privacy</span>
+<span>About</span>
+<span>Settings</span>
+</div>
+</header>
+
+<!-- BANNERS -->
+<div class="banner">
+<img src="https://picsum.photos/300/150?1">
+<img src="https://picsum.photos/300/150?2">
+<img src="https://picsum.photos/300/150?3">
+<img src="https://picsum.photos/300/150?4">
+<img src="https://picsum.photos/300/150?5">
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories">
+<div class="category">Electronics</div>
+<div class="category">Fashion</div>
+<div class="category">Mobiles</div>
+<div class="category">Shoes</div>
+<div class="category">Home</div>
+<div class="category">Beauty</div>
+<div class="category">Toys</div>
+<div class="category">Books</div>
+<div class="category">Sports</div>
+<div class="category">Fitness</div>
+<div class="category">Grocery</div>
+<div class="category">Furniture</div>
+<div class="category">Watches</div>
+<div class="category">Gaming</div>
+<div class="category">Accessories</div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="products">
+
+<!-- Repeat -->
+<div class="product" onclick="openProduct()">
+<img src="https://picsum.photos/200?1">
+<h4>Wireless Headphones</h4>
+<p class="price">₹1,999</p>
+<p>Qty: 20</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?2">
+<h4>Smart Watch</h4>
+<p class="price">₹2,499</p>
+<p>Qty: 15</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?3">
+<h4>Running Shoes</h4>
+<p class="price">₹1,299</p>
+<p>Qty: 10</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?4">
+<h4>Bluetooth Speaker</h4>
+<p class="price">₹999</p>
+<p>Qty: 25</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?5">
+<h4>Laptop Bag</h4>
+<p class="price">₹799</p>
+<p>Qty: 30</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?6">
+<h4>Gaming Mouse</h4>
+<p class="price">₹599</p>
+<p>Qty: 40</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?7">
+<h4>Mobile Cover</h4>
+<p class="price">₹299</p>
+<p>Qty: 50</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?8">
+<h4>LED Light</h4>
+<p class="price">₹499</p>
+<p>Qty: 60</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?9">
+<h4>Backpack</h4>
+<p class="price">₹1,099</p>
+<p>Qty: 22</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?10">
+<h4>Office Chair</h4>
+<p class="price">₹3,999</p>
+<p>Qty: 5</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?11">
+<h4>Keyboard</h4>
+<p class="price">₹899</p>
+<p>Qty: 35</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?12">
+<h4>Tablet</h4>
+<p class="price">₹12,999</p>
+<p>Qty: 8</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?13">
+<h4>Camera</h4>
+<p class="price">₹25,999</p>
+<p>Qty: 3</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?14">
+<h4>Power Bank</h4>
+<p class="price">₹699</p>
+<p>Qty: 28</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?15">
+<h4>Air Purifier</h4>
+<p class="price">₹4,999</p>
+<p>Qty: 6</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?16">
+<h4>Desk Lamp</h4>
+<p class="price">₹399</p>
+<p>Qty: 45</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?17">
+<h4>Fitness Band</h4>
+<p class="price">₹1,499</p>
+<p>Qty: 18</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?18">
+<h4>Water Bottle</h4>
+<p class="price">₹199</p>
+<p>Qty: 70</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?19">
+<h4>Headphones</h4>
+<p class="price">₹999</p>
+<p>Qty: 26</p>
+</div>
+
+<div class="product">
+<img src="https://picsum.photos/200?20">
+<h4>Speaker</h4>
+<p class="price">₹1,299</p>
+<p>Qty: 12</p>
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+<div>Home</div>
+<div>Account</div>
+<div>Cart</div>
+<div>Subh AI</div>
+<div>Seller</div>
+</div>
+
+<script>
+
+function openAdmin(){
+let pass = prompt("Enter Admin Password:");
+if(pass === "admin123"){
+alert("Welcome to Admin Panel");
+}
+else{
+alert("Wrong Password");
+}
+}
+
+function openProduct(){
+alert("Product Page Coming in Part 2");
+}
+
+</script>
+
 </body>
-</html>
+                    </html>
