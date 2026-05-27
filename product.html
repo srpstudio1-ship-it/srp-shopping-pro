@@ -3,72 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product - SRP Shopping</title>
+<title>SRP Product</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins;
-}
+/* ===== GLOBAL ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
+body{background:#f0faff}
 
-body{
-background:#f5faff;
-}
-
-/* HEADER */
+/* ===== HEADER ===== */
 header{
-background:white;
-padding:10px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+padding:12px;
+background:white;
 box-shadow:0 2px 10px rgba(0,0,0,0.1);
+position:sticky;
+top:0;
+z-index:999;
 }
 
 .logo{
-font-size:20px;
-font-weight:600;
 color:#00aaff;
+font-size:22px;
+font-weight:600;
 cursor:pointer;
 }
 
-/* MAIN */
+/* ===== LAYOUT ===== */
 .container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+padding:20px;
+}
+
+/* ===== IMAGE SECTION ===== */
+.gallery{
+background:white;
 padding:15px;
-}
-
-/* IMAGE SLIDER */
-.slider{
-display:flex;
-overflow-x:auto;
-gap:10px;
-}
-
-.slider img{
-width:300px;
-height:300px;
 border-radius:10px;
 }
 
-/* PRODUCT DETAILS */
+.main-img{
+width:100%;
+height:350px;
+object-fit:cover;
+border-radius:10px;
+transition:0.3s;
+}
+
+.thumbs{
+display:flex;
+gap:10px;
+margin-top:10px;
+overflow-x:auto;
+}
+
+.thumbs img{
+width:70px;
+height:70px;
+border-radius:8px;
+cursor:pointer;
+opacity:0.6;
+}
+
+.thumbs img:hover{
+opacity:1;
+}
+
+/* ===== DETAILS ===== */
 .details{
-margin-top:15px;
 background:white;
-padding:15px;
+padding:20px;
 border-radius:10px;
 }
 
 .price{
 color:#00aaff;
-font-size:22px;
+font-size:24px;
 font-weight:600;
+margin:10px 0;
 }
 
+/* OPTIONS */
 .option{
 margin-top:10px;
 }
@@ -77,28 +98,28 @@ margin-top:10px;
 padding:8px 12px;
 margin:5px;
 border:none;
-background:#e0f4ff;
 border-radius:5px;
 cursor:pointer;
+background:#e0f4ff;
+}
+
+.option button.active{
+background:#00aaff;
+color:white;
 }
 
 /* ADDRESS */
 .address{
 margin-top:15px;
-background:white;
-padding:15px;
-border-radius:10px;
 }
 
 .address input{
 width:100%;
-padding:8px;
+padding:10px;
 margin-top:10px;
-border:1px solid #ccc;
-border-radius:5px;
 }
 
-/* BUTTONS */
+/* ACTIONS */
 .actions{
 display:flex;
 gap:10px;
@@ -110,45 +131,48 @@ flex:1;
 padding:12px;
 border:none;
 border-radius:5px;
-font-size:16px;
 cursor:pointer;
+font-size:16px;
 }
 
-.cart{
-background:#ffd814;
-}
+.cart{background:#ffd814}
+.buy{background:#ff9900;color:white}
 
-.buy{
-background:#ff9900;
-color:white;
+/* STICKY BUY */
+.buy-box{
+position:fixed;
+right:10px;
+top:100px;
+width:250px;
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
 }
 
 /* DESCRIPTION */
-.description{
-margin-top:15px;
+.section{
 background:white;
+margin:15px;
 padding:15px;
 border-radius:10px;
-max-height:300px;
-overflow:auto;
+}
+
+.desc{
+max-height:200px;
+overflow:hidden;
+}
+
+.show{
+max-height:none;
 }
 
 /* RATINGS */
-.ratings{
-margin-top:15px;
-background:white;
-padding:15px;
-border-radius:10px;
+.star{
+color:gold;
 }
 
 /* Q&A */
-.qa{
-margin-top:15px;
-background:white;
-padding:15px;
-border-radius:10px;
-}
-
 .qa input{
 width:100%;
 padding:8px;
@@ -166,107 +190,168 @@ margin-top:10px;
 
 <div class="container">
 
-<!-- IMAGE SLIDER -->
-<div class="slider">
-<img src="https://picsum.photos/300?1">
-<img src="https://picsum.photos/300?2">
-<img src="https://picsum.photos/300?3">
+<!-- IMAGE -->
+<div class="gallery">
+<img id="mainImg" class="main-img" src="https://picsum.photos/400?1">
+
+<div class="thumbs">
+<img src="https://picsum.photos/400?1" onclick="changeImg(this)">
+<img src="https://picsum.photos/400?2" onclick="changeImg(this)">
+<img src="https://picsum.photos/400?3" onclick="changeImg(this)">
+<img src="https://picsum.photos/400?4" onclick="changeImg(this)">
+</div>
 </div>
 
 <!-- DETAILS -->
 <div class="details">
-<h2>Wireless Headphones</h2>
-<p class="price">₹1,999</p>
+<h2 id="title">Premium Headphones</h2>
+<p class="price" id="price">₹1999</p>
 
 <div class="option">
-<p>Select Color:</p>
-<button>Black</button>
-<button>Blue</button>
-<button>Red</button>
+<p>Select Color</p>
+<button onclick="selectOpt(this)">Black</button>
+<button onclick="selectOpt(this)">Blue</button>
+<button onclick="selectOpt(this)">Red</button>
 </div>
 
 <div class="option">
-<p>Select Size:</p>
-<button>Standard</button>
-<button>Large</button>
+<p>Select Size</p>
+<button onclick="selectOpt(this)">Standard</button>
+<button onclick="selectOpt(this)">Large</button>
 </div>
 
-<p style="margin-top:10px;">Delivery by: <b>3-5 Days</b></p>
-<p>Return: 7 Days Replacement Available</p>
+<p style="margin-top:10px;">Delivery: 3-5 Days</p>
+<p>7 Day Replacement Available</p>
 
-</div>
-
-<!-- ADDRESS -->
 <div class="address">
-<h3>Delivery Address</h3>
-<input type="text" placeholder="Enter your address">
+<h3>Address</h3>
+<input id="addr" placeholder="Enter address">
+<button onclick="saveAddr()">Save</button>
+<div id="savedAddr"></div>
 </div>
 
-<!-- ACTION BUTTONS -->
 <div class="actions">
-<button class="cart" onclick="addToCart()">Add to Cart</button>
+<button class="cart" onclick="addCart()">Add to Cart</button>
+<button class="buy" onclick="buyNow()">Buy Now</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- STICKY BUY -->
+<div class="buy-box">
+<h3>Quick Buy</h3>
+<p id="quickPrice">₹1999</p>
 <button class="buy" onclick="buyNow()">Buy Now</button>
 </div>
 
 <!-- DESCRIPTION -->
-<div class="description">
+<div class="section">
 <h3>Description</h3>
-<p id="desc">
-Premium quality wireless headphones with deep bass, noise cancellation, long battery life, and comfortable design.
+<p id="desc" class="desc">
+High quality premium headphones with noise cancellation, deep bass and long battery life.
 <br><br>
-(Here seller can add up to 2000 lines description)
+(Expandable long description up to 2000 lines)
 </p>
+<button onclick="expandDesc()">Read More</button>
 </div>
 
 <!-- RATINGS -->
-<div class="ratings">
-<h3>Ratings & Reviews</h3>
-<p>⭐⭐⭐⭐☆ (4.2)</p>
-<p>Great product, worth the price!</p>
-<p>Battery life is amazing.</p>
+<div class="section">
+<h3>Ratings</h3>
+<p class="star">★★★★☆ 4.3</p>
+<p>5⭐ - 70%</p>
+<p>4⭐ - 20%</p>
+<p>3⭐ - 5%</p>
+<p>2⭐ - 3%</p>
+<p>1⭐ - 2%</p>
 </div>
 
 <!-- Q&A -->
-<div class="qa">
-<h3>Questions & Answers</h3>
-<p><b>Q:</b> Does it support fast charging?</p>
-<p><b>A:</b> Yes, full charge in 1 hour.</p>
+<div class="section qa">
+<h3>Q & A</h3>
 
-<input type="text" placeholder="Ask a question...">
-<button onclick="askQ()">Submit</button>
+<div id="qaList">
+<p><b>Q:</b> Is it waterproof?</p>
+<p><b>A:</b> No but splash resistant</p>
 </div>
 
+<input id="qInput" placeholder="Ask question">
+<button onclick="addQ()">Submit</button>
 </div>
 
 <script>
 
-function goHome(){
-window.location.href="index.html";
+/* IMAGE CHANGE */
+function changeImg(e){
+document.getElementById("mainImg").src=e.src;
 }
 
-function addToCart(){
+/* SELECT OPTION */
+function selectOpt(btn){
+let group=btn.parentElement;
+[...group.children].forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+}
 
-let product = {
-name: "Wireless Headphones",
-price: 1999,
-image: "https://picsum.photos/300?1",
-qty: 1
+/* DESCRIPTION */
+function expandDesc(){
+document.getElementById("desc").classList.toggle("show");
+}
+
+/* ADDRESS */
+function saveAddr(){
+let a=document.getElementById("addr").value;
+let list=JSON.parse(localStorage.getItem("addr"))||[];
+list.push(a);
+localStorage.setItem("addr",JSON.stringify(list));
+loadAddr();
+}
+
+function loadAddr(){
+let list=JSON.parse(localStorage.getItem("addr"))||[];
+let div=document.getElementById("savedAddr");
+div.innerHTML="";
+list.forEach(a=>{
+div.innerHTML+=`<p>${a}</p>`;
+});
+}
+loadAddr();
+
+/* CART */
+function addCart(){
+
+let product={
+name:document.getElementById("title").innerText,
+price:1999,
+img:document.getElementById("mainImg").src,
+qty:1
 };
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
 cart.push(product);
+localStorage.setItem("cart",JSON.stringify(cart));
 
-localStorage.setItem("cart", JSON.stringify(cart));
-
-alert("Added to cart!");
+alert("Added to cart");
 }
+
+/* BUY */
 function buyNow(){
-alert("Proceeding to payment...");
+alert("Proceeding to Checkout...");
+window.location.href="checkout.html";
 }
 
-function askQ(){
-alert("Question submitted!");
+/* QA */
+function addQ(){
+let q=document.getElementById("qInput").value;
+let div=document.getElementById("qaList");
+div.innerHTML+=`<p><b>Q:</b> ${q}</p><p><b>A:</b> Seller will reply soon</p>`;
+}
+
+/* NAV */
+function goHome(){
+window.location.href="index.html";
 }
 
 </script>
