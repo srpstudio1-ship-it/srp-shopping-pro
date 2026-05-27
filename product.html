@@ -245,9 +245,22 @@ window.location.href="index.html";
 }
 
 function addToCart(){
+
+let product = {
+name: "Wireless Headphones",
+price: 1999,
+image: "https://picsum.photos/300?1",
+qty: 1
+};
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push(product);
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
 alert("Added to cart!");
 }
-
 function buyNow(){
 alert("Proceeding to payment...");
 }
