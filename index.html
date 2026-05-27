@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRP Shopping | Premium E-Commerce Portal</title>
+    <title>SRP Shopping - Elite Multi-Vendor Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        // Tailwind Custom Color Configuration to Match Luxury Black & Red Theme Rules
+        // Tailwind Premium Custom Theme Extended Configuration Matrix
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            bgDark: '#0B0C10',
-                            panelDark: '#1F2833',
-                            primary: '#C51100', // Crimson Red Core
-                            primaryHover: '#A00E00',
-                            accent: '#45A29E',
-                            lightBg: '#F8F9FA',
-                            lightPanel: '#FFFFFF'
+                        srpBlue: {
+                            50: '#f0f4f8',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#0f172a'
                         }
                     }
                 }
@@ -28,66 +28,48 @@
         }
     </script>
     <style>
-        /* Smooth Fluid Component Transitions */
-        .theme-transition {
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-        }
-        /* Custom Scrollbar Optimization */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #C51100;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #A00E00;
-            border-radius: 3px;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        /* Modern Scrollbar Systems and Smooth Transitions Configurations */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .page-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-brand-lightBg text-slate-900 dark:bg-brand-bgDark dark:text-gray-100 font-sans min-h-screen pb-24 theme-transition dark">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans min-h-screen pb-24 transition-colors duration-300">
 
-    <header class="bg-slate-950 text-white sticky top-0 z-50 border-b border-brand-primary/30 shadow-lg theme-transition">
+    <header class="bg-gradient-to-r from-srpBlue-900 to-srpBlue-800 text-white sticky top-0 z-50 shadow-lg border-b border-srpBlue-700/50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
             
-            <div onclick="openAdminModal()" class="flex items-center cursor-pointer hover:scale-105 border border-transparent p-1 rounded transition-all duration-300">
-                <span class="text-2xl font-black tracking-tighter text-brand-primary">SRP</span>
-                <span class="text-xl font-bold text-white ml-1">shopping</span>
+            <div onclick="openAdminModal()" class="flex items-center cursor-pointer hover:scale-105 transition transform duration-200 p-1 rounded">
+                <span class="text-2xl font-black tracking-tighter text-white">SRP</span>
+                <span class="text-xl font-light text-blue-200 ml-1 bg-white/10 px-2 py-0.5 rounded backdrop-blur-sm border border-white/10">shopping</span>
             </div>
 
-            <div class="flex-1 min-w-[280px] max-w-2xl mx-2">
-                <div class="flex w-full shadow-md rounded overflow-hidden border border-gray-700 focus-within:border-brand-primary transition">
-                    <select class="bg-slate-900 text-gray-300 px-3 text-xs font-semibold focus:outline-none border-r border-gray-800">
-                        <option>All Items</option>
+            <div class="flex-1 min-w-[280px] max-w-2xl">
+                <div class="flex w-full shadow-inner rounded-lg overflow-hidden border border-srpBlue-700 bg-white">
+                    <select class="bg-slate-100 text-slate-700 px-4 rounded-l font-medium text-xs border-r border-slate-200 focus:outline-none hidden md:block">
+                        <option>All Modules</option>
                         <option>Electronics</option>
-                        <option>Fashion</option>
-                        <option>Premium Hardware</option>
+                        <option>Premium Apparel</option>
+                        <option>Enterprise Utilities</option>
                     </select>
-                    <input type="text" placeholder="Search across India localized store catalog..." class="w-full px-4 py-2 text-sm bg-slate-900 text-white placeholder-gray-500 focus:outline-none">
-                    <button class="bg-brand-primary hover:bg-brand-primaryHover text-white px-6 transition duration-200">
-                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    <input type="text" placeholder="Search curated catalogs across India region..." class="w-full px-4 py-2 text-slate-900 text-sm focus:outline-none">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold transition flex items-center justify-center">
+                        <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
             </div>
 
-            <nav class="flex items-center space-x-5 text-xs font-bold uppercase tracking-wider">
-                <a href="#" onclick="showPage('privacy')" class="hover:text-brand-primary transition flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-brand-primary"></i> Privacy</a>
-                <a href="#" onclick="showPage('about')" class="hover:text-brand-primary transition flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-brand-primary"></i> About Us</a>
-                
-                <button onclick="toggleSystemTheme()" class="bg-slate-900 border border-gray-700 hover:border-brand-primary p-2 rounded-full transition-all duration-300 flex items-center justify-center text-sm" title="Toggle UI Theme View">
-                    <i id="theme-toggle-icon" class="fa-solid fa-sun text-amber-400"></i>
+            <nav class="flex items-center space-x-6 text-xs font-semibold tracking-wide">
+                <button onclick="toggleUtilityModal('privacy')" class="hover:text-blue-200 transition flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-blue-300"></i> Privacy Policy</button>
+                <button onclick="toggleUtilityModal('about')" class="hover:text-blue-200 transition flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-blue-300"></i> Corporate Info</button>
+                <button onclick="toggleThemeMode()" class="bg-white/10 hover:bg-white/20 p-2 rounded-full transition text-sm flex items-center justify-center w-9 h-9 border border-white/10" title="Switch UI Theme Mode">
+                    <i id="theme-toggle-icon" class="fa-solid fa-moon"></i>
                 </button>
             </nav>
         </div>
@@ -95,579 +77,669 @@
 
     <main class="max-w-7xl mx-auto px-4 mt-4">
 
-        <section id="page-home" class="page-view space-y-6">
+        <section id="page-home" class="page-view page-transition space-y-6">
             
-            <div class="relative overflow-hidden rounded-xl shadow-2xl bg-slate-950 h-56 md:h-80 border border-gray-800">
-                <div id="banner-container" class="flex transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) h-full w-[500%]">
-                    <div class="w-full h-full bg-cover bg-center flex items-center px-8 md:px-16 relative" style="background-image: linear-gradient(to right, rgba(11,12,16,0.95), rgba(11,12,16,0.3)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80')">
-                        <div class="max-w-md space-y-2 z-10">
-                            <span class="bg-brand-primary text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-widest">SRP Exclusive</span>
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SRP SHOPPING <span class="text-brand-primary">MEGA BAZAAR</span></h2>
-                            <p class="text-gray-400 text-xs md:text-sm">Premium Android hardware & luxury components optimized with up to 60% localized savings.</p>
+            <div class="relative overflow-hidden rounded-xl shadow-md border border-slate-200 dark:border-slate-800 bg-slate-200 h-48 md:h-80">
+                <div id="banner-container" class="flex transition-transform duration-700 ease-in-out h-full w-[1000%]">
+                    <div class="w-full h-full bg-cover bg-center flex items-center px-6 md:px-16" style="background-image: linear-gradient(to right, rgba(23,37,84,0.95), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80')">
+                        <div class="text-white max-w-lg space-y-2">
+                            <span class="bg-blue-600/90 text-[10px] font-black uppercase px-2.5 py-1 rounded tracking-widest">Exclusive India Launch</span>
+                            <h2 class="text-2xl md:text-5xl font-black text-white leading-tight">SRP Shopping <span class="text-blue-400">Premium Tech festival</span></h2>
+                            <p class="text-xs md:text-sm text-slate-200">Unmatched localized pricing infrastructure on enterprise electronics matrices. Instant fulfillment guaranteed.</p>
                         </div>
                     </div>
-                    <div class="w-full h-full bg-cover bg-center flex items-center px-8 md:px-16 relative" style="background-image: linear-gradient(to right, rgba(11,12,16,0.95), rgba(11,12,16,0.3)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80')">
-                        <div class="max-w-md space-y-2 z-10">
-                            <span class="bg-brand-primary text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-widest">Elite Tech Matrix</span>
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SRP SHOPPING <span class="text-brand-primary">NEXT-GEN</span></h2>
-                            <p class="text-gray-400 text-xs md:text-sm">Upgrade system modular architectures and layout components with zero-interest financing options available.</p>
+                    <div class="w-full h-full bg-cover bg-center flex items-center px-6 md:px-16" style="background-image: linear-gradient(to right, rgba(23,37,84,0.95), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80')">
+                        <div class="text-white max-w-lg space-y-2">
+                            <span class="bg-emerald-600/90 text-[10px] font-black uppercase px-2.5 py-1 rounded tracking-widest">Seasonal Collection</span>
+                            <h2 class="text-2xl md:text-5xl font-black text-white leading-tight">SRP Shopping <span class="text-emerald-400">Couture Runway</span></h2>
+                            <p class="text-xs md:text-sm text-slate-200">Upgrade commercial wardrobe baselines with high-fidelity fabrics. Up to 40% localized transactional offsets.</p>
                         </div>
                     </div>
-                    <div class="w-full h-full bg-cover bg-center flex items-center px-8 md:px-16 relative" style="background-image: linear-gradient(to right, rgba(11,12,16,0.95), rgba(11,12,16,0.3)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80')">
-                        <div class="max-w-md space-y-2 z-10">
-                            <span class="bg-brand-primary text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-widest">Premium Inventory</span>
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SRP SHOPPING <span class="text-brand-primary">FESTIVAL</span></h2>
-                            <p class="text-gray-400 text-xs md:text-sm">Instant free express logistical dispatch options mapped straight to your designated coordinates.</p>
+                    <div class="w-full h-full bg-cover bg-center flex items-center px-6 md:px-16" style="background-image: linear-gradient(to right, rgba(23,37,84,0.95), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80')">
+                        <div class="text-white max-w-lg space-y-2">
+                            <span class="bg-purple-600/90 text-[10px] font-black uppercase px-2.5 py-1 rounded tracking-widest">Smart Infrastructure</span>
+                            <h2 class="text-2xl md:text-5xl font-black text-white leading-tight">SRP Shopping <span class="text-purple-400">Home Automation</span></h2>
+                            <p class="text-xs md:text-sm text-slate-200">Deploy high-integrity connected appliances configured perfectly for domestic grids across modern residences.</p>
                         </div>
                     </div>
-                    <div class="w-full h-full bg-cover bg-center flex items-center px-8 md:px-16 relative" style="background-image: linear-gradient(to right, rgba(11,12,16,0.95), rgba(11,12,16,0.3)), url('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80')">
-                        <div class="max-w-md space-y-2 z-10">
-                            <span class="bg-brand-primary text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-widest">Acoustic Launch</span>
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SRP SHOPPING <span class="text-brand-primary">AUDIO PRO</span></h2>
-                            <p class="text-gray-400 text-xs md:text-sm">High fidelity acoustic reference arrays and peripheral control setups optimized for professional deployment.</p>
+                    <div class="w-full h-full bg-cover bg-center flex items-center px-6 md:px-16" style="background-image: linear-gradient(to right, rgba(23,37,84,0.95), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80')">
+                        <div class="text-white max-w-lg space-y-2">
+                            <span class="bg-amber-600/90 text-[10px] font-black uppercase px-2.5 py-1 rounded tracking-widest">Acoustic Deployment</span>
+                            <h2 class="text-2xl md:text-5xl font-black text-white leading-tight">SRP Shopping <span class="text-amber-400">Audiophile Tier</span></h2>
+                            <p class="text-xs md:text-sm text-slate-200">Immersive studio monitors and noise-cancelling equipment calculated with local currency pricing matrix stability.</p>
                         </div>
                     </div>
-                    <div class="w-full h-full bg-cover bg-center flex items-center px-8 md:px-16 relative" style="background-image: linear-gradient(to right, rgba(11,12,16,0.95), rgba(11,12,16,0.3)), url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80')">
-                        <div class="max-w-md space-y-2 z-10">
-                            <span class="bg-brand-primary text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-widest">Hardware Verified</span>
-                            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SRP SHOPPING <span class="text-brand-primary">LUXURY</span></h2>
-                            <p class="text-gray-400 text-xs md:text-sm">Uncompromising production quality and secure encrypted transactional protocols as standard operating procedure.</p>
+                    <div class="w-full h-full bg-cover bg-center flex items-center px-6 md:px-16" style="background-image: linear-gradient(to right, rgba(23,37,84,0.95), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80')">
+                        <div class="text-white max-w-lg space-y-2">
+                            <span class="bg-red-600/90 text-[10px] font-black uppercase px-2.5 py-1 rounded tracking-widest">Luxury Matrix</span>
+                            <h2 class="text-2xl md:text-5xl font-black text-white leading-tight">SRP Shopping <span class="text-red-400">Elite Accessories</span></h2>
+                            <p class="text-xs md:text-sm text-slate-200">Precision chronological mechanisms engineered for high-performance administrative environments globally.</p>
                         </div>
                     </div>
                 </div>
-                <button onclick="moveBanner(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2.5 rounded-full hover:bg-brand-primary transition duration-200 border border-gray-800"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                <button onclick="moveBanner(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2.5 rounded-full hover:bg-brand-primary transition duration-200 border border-gray-800"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                <button onclick="shiftBannerAxis(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 dark:bg-black/20 text-white p-2.5 rounded-full hover:bg-white/30 backdrop-blur-md transition border border-white/20"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+                <button onclick="shiftBannerAxis(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 dark:bg-black/20 text-white p-2.5 rounded-full hover:bg-white/30 backdrop-blur-md transition border border-white/20"><i class="fa-solid fa-chevron-right text-sm"></i></button>
             </div>
 
-            <div class="bg-white dark:bg-brand-panelDark p-5 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md theme-transition">
-                <h3 class="text-base font-black uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-gray-800 pb-2 flex items-center gap-2">
-                    <span class="w-3 h-5 bg-brand-primary rounded-sm"></span> Explore Product Niches
-                </h3>
-                <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 gap-3 text-center">
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-laptop text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Electronics</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-shirt text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Fashion</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-couch text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Home Decor</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-mobile-screen text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Mobiles</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-dumbbell text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Fitness</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-gamepad text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Gaming</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-book text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Books</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-car text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Automotive</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-baby text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Baby Care</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-wand-magic-sparkles text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Beauty</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-kitchen-set text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Kitchen</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-shoe-prints text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Footwear</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-gem text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Jewelry</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-apple-whole text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Grocery</p></div>
-                    <div class="cursor-pointer p-2 rounded hover:bg-brand-primary/10 transition group"><div class="w-12 h-12 mx-auto bg-gray-100 dark:bg-slate-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition duration-300"><i class="fa-solid fa-paw text-lg text-brand-primary"></i></div><p class="text-[11px] font-bold mt-1.5 truncate">Pet Supplies</p></div>
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <h3 class="text-xs font-bold uppercase tracking-wider mb-4 text-slate-400 dark:text-slate-500">Curated Architecture Sectors</h3>
+                <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-15 gap-3 text-center" id="category-distribution-matrix">
+                    </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">Verified Marketplace Inventories</h3>
+                    <span class="text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-900/30 font-medium">Region Target: IN (INR ₹)</span>
                 </div>
-            </div>
-
-            <div>
-                <h3 class="text-xl font-black uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-3 h-5 bg-brand-primary rounded-sm"></span> Hot Offers Today (India Regional Hub)
-                </h3>
-                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+                <div id="product-distribution-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     </div>
             </div>
         </section>
 
-        <section id="page-product-detail" class="page-view hidden bg-white dark:bg-brand-panelDark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-xl theme-transition">
-            <button onclick="showPage('home')" class="mb-5 text-brand-primary hover:text-brand-primaryHover font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-left-long"></i> Return to Shopping Arena
+        <section id="page-product-detail" class="page-view hidden bg-white dark:bg-slate-900 p-6 rounded-xl shadow-md border border-slate-100 dark:border-slate-800 page-transition">
+            <button onclick="showPage('home')" class="mb-6 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left-long"></i> Exit to Master Grid Catalog
             </button>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <div class="relative bg-slate-50 dark:bg-slate-950 border border-gray-200 dark:border-gray-800 rounded-xl p-4 flex items-center justify-center h-80 md:h-96 group shadow-inner">
-                        <img id="detail-main-img" src="" class="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-300 group-hover:scale-105">
-                        <button onclick="prevDetailImg()" class="absolute left-3 bg-black/50 text-white p-2 rounded-full hover:bg-brand-primary transition opacity-70 hover:opacity-100"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <button onclick="nextDetailImg()" class="absolute right-3 bg-black/50 text-white p-2 rounded-full hover:bg-brand-primary transition opacity-70 hover:opacity-100"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="relative bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex items-center justify-center h-80 md:h-96 shadow-inner">
+                        <img id="pdp-core-display-frame" src="" class="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal transition-all duration-300">
+                        <button onclick="rotatePdpFrameIndex(-1)" class="absolute left-3 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white p-2 rounded-full hover:bg-white dark:hover:bg-slate-700 shadow-md border border-slate-200/50 dark:border-slate-700"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="rotatePdpFrameIndex(1)" class="absolute right-3 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white p-2 rounded-full hover:bg-white dark:hover:bg-slate-700 shadow-md border border-slate-200/50 dark:border-slate-700"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
-                    <div id="detail-thumbs" class="flex gap-2.5 mt-4 justify-center"></div>
+                    <div id="pdp-thumbnail-strip-rack" class="flex gap-2 justify-center overflow-x-auto py-1">
+                        </div>
                 </div>
 
-                <div class="flex flex-col space-y-4">
-                    <h2 id="detail-title" class="text-2xl md:text-3xl font-black tracking-tight text-gray-900 dark:text-white leading-tight"></h2>
-                    
-                    <div class="flex items-center space-x-2 text-amber-500 font-bold text-sm" id="detail-rating-container"></div>
-                    <hr class="border-gray-200 dark:border-gray-800">
-                    
-                    <div class="text-3xl font-black text-brand-primary flex items-baseline gap-2">
-                        <span id="detail-price"></span>
-                        <span class="text-xs font-semibold text-gray-400 line-through">M.R.P. Inclusive of GST</span>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <span class="font-bold text-xs uppercase tracking-wider text-gray-500 block">Select Variant Tone:</span>
-                        <div id="color-variant-container" class="flex gap-2">
+                <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
+                    <div class="space-y-3">
+                        <h2 id="pdp-meta-title" class="text-xl md:text-2xl font-black text-slate-900 dark:text-white leading-tight"></h2>
+                        <div class="flex items-center space-x-3 text-xs" id="pdp-meta-rating-bar">
                             </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <span class="font-bold text-xs uppercase tracking-wider text-gray-500 block">Select Dynamic Dimension Parameter:</span>
-                        <div id="size-variant-container" class="flex gap-2">
-                            </div>
-                    </div>
-
-                    <div class="bg-gray-50 dark:bg-slate-950 p-4 border border-gray-200 dark:border-gray-800 rounded-lg space-y-2 text-xs">
-                        <p class="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> Guaranteed Express Dispatch Across Registered Indian States.</p>
-                        <p><span class="font-bold text-gray-500 uppercase tracking-wide">Fulfillment Policy:</span> 10-Day Domestic Merchant Replacement / Refund Guard Protected.</p>
-                        <p><span class="font-bold text-gray-500 uppercase tracking-wide">Stock Integrity Matrix:</span> <span id="detail-qty" class="font-bold text-brand-primary"></span> inventory lots verified current.</p>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Destination Routing Coordinates:</label>
-                        <div class="flex gap-2">
-                            <span class="bg-gray-100 dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded px-3 py-2 text-xs flex items-center gap-1 font-bold text-gray-500"><i class="fa-solid fa-location-dot text-brand-primary"></i> IN</span>
-                            <input type="text" id="delivery-address" value="Plot 42, Sector 18, Industrial Hub, Rajasthan, India" class="bg-transparent border border-gray-200 dark:border-gray-800 px-3 py-2 text-xs rounded w-full focus:outline-none focus:border-brand-primary font-medium">
-                            <button onclick="alert('Destination routing parameters locked successfully!')" class="bg-slate-900 dark:bg-brand-primary text-white text-xs font-bold px-4 rounded hover:bg-brand-primaryHover transition">Verify</button>
+                        <div class="border-y border-slate-100 dark:border-slate-800 py-3 flex items-baseline gap-3">
+                            <span id="pdp-meta-localized-cost" class="text-3xl font-black text-blue-600 dark:text-blue-400"></span>
+                            <span id="pdp-meta-converted-base-cost" class="text-xs text-slate-400 italic font-medium"></span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 pt-2">
-                        <button onclick="addToCartCurrent()" class="bg-slate-900 dark:bg-slate-800 border border-gray-800 dark:border-gray-700 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:bg-black transition duration-200">Add to Basket</button>
-                        <button onclick="alert('Proceeding instantly to secured domestic banking payment gateways!')" class="bg-brand-primary text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:bg-brand-primaryHover transition duration-200">Instant Buy Now</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-2">Variant Profile Tone</span>
+                            <div class="flex flex-wrap gap-2" id="pdp-variant-color-rack">
+                                </div>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-2">Operational Dimension Dimension</span>
+                            <div class="flex flex-wrap gap-2" id="pdp-variant-size-rack">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/50 dark:border-blue-900/30 p-4 rounded-xl space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                        <p class="text-blue-600 dark:text-blue-400 font-bold flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> Premium India Domestic Express Dispatch Active.</p>
+                        <p><span class="font-bold text-slate-400 uppercase tracking-wide mr-1">Returns:</span> 10 Business Days Commercial Replacement Guarantee Window.</p>
+                        <p><span class="font-bold text-slate-400 uppercase tracking-wide mr-1">Availability:</span> <span id="pdp-meta-stock-count" class="font-bold text-slate-900 dark:text-white"></span> units remaining across regional fulfillment terminals.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Target Destination Interface Terminal</label>
+                        <div class="flex gap-2">
+                            <span class="bg-slate-100 dark:bg-slate-800 px-3 flex items-center justify-center rounded-l-lg border border-r-0 border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-400">IN</span>
+                            <input type="text" id="target-delivery-address-field" value="Sector 62, Electronic City, Noida, UP - 201301, India" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 px-3 py-2 text-xs rounded-r-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200">
+                            <button onclick="triggerAddressValidationSync()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 rounded-lg shadow-sm transition">Verify</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <button onclick="commitSelectedContextToCart()" class="bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition flex items-center justify-center gap-2"><i class="fa-solid fa-cart-plus"></i> Add to Basket</button>
+                        <button onclick="alert('Redirecting secure credentials directly to instant payment validation loops...')" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition flex items-center justify-center gap-2"><i class="fa-solid fa-bolt"></i> Instant Buy Now</button>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8 border-t border-gray-200 dark:border-gray-800 pt-5">
-                <h3 class="text-base font-black uppercase tracking-wider mb-3">Comprehensive Technical Engineering Specifications & Log Features</h3>
-                <div id="detail-desc" class="text-gray-600 dark:text-gray-300 text-xs space-y-3 leading-relaxed max-h-56 overflow-y-auto bg-gray-50 dark:bg-slate-950 p-4 rounded-lg border border-gray-200 dark:border-gray-800">
-                    </div>
+            <div class="mt-12 border-t border-slate-100 dark:border-slate-800 pt-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Comprehensive Technical Product Documentation</h4>
+                <div id="pdp-extended-documentation-space" class="text-xs text-slate-600 dark:text-slate-400 space-y-4 leading-relaxed max-h-72 overflow-y-auto bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200/60 dark:border-slate-800/60 font-mono"></div>
             </div>
 
-            <div class="mt-6 border-t border-gray-200 dark:border-gray-800 pt-5">
-                <h3 class="text-base font-black uppercase tracking-wider mb-4">India Community Merchant Q&A Ledger</h3>
-                <div class="space-y-3">
-                    <div class="bg-gray-50 dark:bg-slate-950 p-3.5 rounded-lg border border-gray-200 dark:border-gray-800 text-xs">
-                        <p class="font-bold text-gray-900 dark:text-white">Q: Does this model interface natively with standard localized computing infrastructure across Rajasthan?</p>
-                        <p class="text-gray-600 dark:text-gray-400 mt-1.5"><span class="font-black text-brand-primary">A:</span> Confirmed. Integrated firmware handles domestic standard voltage and architecture variables out of the box. — <span class="italic font-semibold text-brand-accent">SRP Verification Specialist</span></p>
-                    </div>
+            <div class="mt-8 border-t border-slate-100 dark:border-slate-800 pt-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Public Merchant Q&A System</h4>
+                <div class="space-y-3" id="pdp-qa-records-rack"></div>
+            </div>
+        </section>
+
+        <section id="page-account" class="page-view hidden bg-white dark:bg-slate-900 p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 page-transition">
+            <h2 class="text-lg font-bold tracking-tight mb-4 text-slate-800 dark:text-slate-200"><i class="fa-solid fa-address-card text-blue-600 mr-2"></i>Customer Security & Profile Management Terminal</h2>
+            <div class="p-5 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 max-w-xl space-y-3 text-xs">
+                <div class="grid grid-cols-3 py-1.5 border-b border-slate-200/50 dark:border-slate-800/50"><span class="font-bold text-slate-400">Identity Tag</span><span class="col-span-2 font-mono text-slate-800 dark:text-slate-200">SRP Elite Enterprise User</span></div>
+                <div class="grid grid-cols-3 py-1.5 border-b border-slate-200/50 dark:border-slate-800/50"><span class="font-bold text-slate-400">Communication Node</span><span class="col-span-2 font-mono text-slate-800 dark:text-slate-200">srpstudio1@gmail.com</span></div>
+                <div class="grid grid-cols-3 py-1.5 border-b border-slate-200/50 dark:border-slate-800/50"><span class="font-bold text-slate-400">Default Logistics Terminal</span><span class="col-span-2 text-slate-800 dark:text-slate-200">Sector 62, Electronic City, Noida, UP, India</span></div>
+                <div class="grid grid-cols-3 py-1.5"><span class="font-bold text-slate-400">Regional Vault Class</span><span class="col-span-2"><span class="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold px-2 py-0.5 rounded text-[10px]">INR Domestic Client</span></span></div>
+                <div class="pt-2"><button onclick="alert('Profile secure token validation sequences initiated.')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition shadow-sm">Sync Enterprise Cryptographic Parameters</button></div>
+            </div>
+        </section>
+
+        <section id="page-seller-hub" class="page-view hidden bg-white dark:bg-slate-900 p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 page-transition">
+            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-6 gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-chart-line text-blue-600"></i> Unified Merchant Console & Dashboard Matrix</h2>
+                    <p class="text-xs text-slate-400 mt-1">Consolidated interface combining active operations with operational data grids.</p>
+                </div>
+                <button onclick="alert('Opening secure inventory configuration panels...')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wide py-2.5 px-4 rounded-lg transition shadow-sm self-start md:self-auto"><i class="fa-solid fa-plus-circle mr-1"></i> Provision New Catalog Listing</button>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30 rounded-xl"><span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Gross Dispatched Value</span><p class="text-2xl font-black text-slate-900 dark:text-white mt-1">₹35,42,910</p><span class="text-[10px] text-emerald-600 font-bold"><i class="fa-solid fa-caret-up"></i> +12.4% MoM Track</span></div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 rounded-xl"><span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Operational List Metrics</span><p class="text-2xl font-black text-slate-900 dark:text-white mt-1">1,840 SKUs</p><span class="text-[10px] text-slate-400 font-medium">Across 15 Hub Sectors</span></div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 rounded-xl"><span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Fulfillment Queue Queue</span><p class="text-2xl font-black text-slate-900 dark:text-white mt-1">29 Inbound</p><span class="text-[10px] text-amber-600 font-bold"><i class="fa-solid fa-circle-exclamation"></i> 4 SLA Near Breach</span></div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800 rounded-xl"><span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Platform Quality Rating</span><p class="text-2xl font-black text-slate-900 dark:text-white mt-1">99.42%</p><span class="text-[10px] text-blue-600 font-bold">Top Merchant Bracket</span></div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-400 block mb-2">Live Analytical Telemetry Processing Engine</span>
+                <div class="h-44 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-lg flex flex-col items-center justify-center text-slate-400 italic text-xs gap-2">
+                    <i class="fa-solid fa-network-wired text-xl animate-pulse text-blue-500"></i>
+                    <span>[Secure Pipeline Live Tracking Interface Vector Flowcharts Actively Operational]</span>
                 </div>
             </div>
         </section>
 
-        <section id="page-privacy" class="page-view hidden bg-white dark:bg-brand-panelDark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md">
-            <h2 class="text-2xl font-black uppercase tracking-tight text-brand-primary border-b pb-2 mb-4"><i class="fa-solid fa-shield-halved"></i> Data Protection & Privacy Policy Framework</h2>
-            <div class="space-y-4 text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-h-[500px] overflow-y-auto pr-2">
-                <p class="font-bold text-sm text-gray-900 dark:text-white">Last Modified: May 2026</p>
-                <p>Welcome to SRP Shopping. We take the privacy and cybersecurity configuration matrices of our users extremely seriously. This structural document provides clear visibility into how user information telemetry is processed across our digital infrastructure network.</p>
-                <h4 class="font-black text-gray-900 dark:text-white uppercase tracking-wide mt-2">1. Structural Telemetry Collections</h4>
-                <p>We log analytical parameters including secure device signatures, viewport scaling profiles, and internal routing selections to optimize real-time application states across standard browsing layers.</p>
-                <h4 class="font-black text-gray-900 dark:text-white uppercase tracking-wide mt-2">2. Encrypted Transactional Interfaces</h4>
-                <p>All transaction queries processed via SRP Shopping are protected under audited TLS layers and localized securely using verified cryptographic protocols. Merchant systems maintain zero visibility over raw account authority pathways.</p>
-            </div>
-        </section>
-
-        <section id="page-about" class="page-view hidden bg-white dark:bg-brand-panelDark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md">
-            <h2 class="text-2xl font-black uppercase tracking-tight text-brand-primary border-b pb-2 mb-4"><i class="fa-solid fa-circle-info"></i> Corporate Manifesto & Core Architecture</h2>
-            <div class="space-y-4 text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                <div class="p-4 bg-slate-950 rounded-xl text-center border border-gray-800 mb-2">
-                    <span class="text-4xl font-black text-brand-primary">SRP STUDIO</span>
-                    <p class="text-gray-400 text-[10px] uppercase tracking-widest mt-1">Enterprise Architectural Deployment Hub</p>
+        <section id="page-cart" class="page-view hidden bg-white dark:bg-slate-900 p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 page-transition">
+            <h2 class="text-lg font-bold tracking-tight mb-6 text-slate-800 dark:text-slate-200"><i class="fa-solid fa-basket-shopping text-blue-600 mr-2"></i>Curated India Localized Shopping Basket</h2>
+            <div id="cart-item-containment-well" class="space-y-4 max-w-4xl">
                 </div>
-                <p><strong>SRP Shopping</strong> is a premium, highly scalable multi-vendor single-page application framework. It is engineered from the ground up to offer fast, responsive mobile-first catalog experiences.</p>
-                <p>Our core mission is to merge advanced interface mechanics (such as intuitive modal forms and conversational artificial intelligence loops) with beautiful design architectures that increase user conversions and provide seamless inventory control metrics globally.</p>
+            <div class="mt-8 border-t border-slate-100 dark:border-slate-800 pt-6 text-right max-w-4xl">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Total Aggregate Settlement Value</span>
+                <h3 class="text-3xl font-black text-blue-600 dark:text-blue-400" id="cart-aggregate-cost-display">₹0.00</h3>
+                <button onclick="alert('Forwarding to secure commercial verification terminals...')" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-8 rounded-xl shadow-md transition">Initialize Secure Financial Checkout Loop</button>
             </div>
         </section>
 
-        <section id="page-account" class="page-view hidden bg-white dark:bg-brand-panelDark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md">
-            <h2 class="text-2xl font-bold mb-4 uppercase tracking-wide text-brand-primary"><i class="fa-solid fa-user-shield"></i> User Command Console</h2>
-            <div class="p-4 bg-gray-50 dark:bg-slate-950 rounded-lg border border-gray-200 dark:border-gray-800 max-w-md space-y-2 text-xs">
-                <p><strong>Profile Designation:</strong> Elite SRP Node</p>
-                <p><strong>Validated Communication Line:</strong> Srpstudio1@gmail.com</p>
-                <p><strong>Regional Logistics Hub:</strong> Western Region Division, India</p>
-                <button class="mt-4 bg-brand-primary text-white font-bold py-2 px-4 rounded text-[10px] uppercase tracking-wider hover:bg-brand-primaryHover transition">Modify System Profile</button>
-            </div>
-        </section>
-
-        <section id="page-seller-hub" class="page-view hidden space-y-6">
-            <div class="bg-white dark:bg-brand-panelDark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md">
-                <div class="flex flex-wrap items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3 mb-4">
+        <section id="page-subh-ai" class="page-view hidden bg-slate-900 dark:bg-slate-950 text-slate-100 p-6 rounded-xl shadow-xl border border-slate-800 flex flex-col h-[520px] page-transition">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-2.5 h-2.5 bg-blue-400 rounded-full animate-ping"></div>
                     <div>
-                        <h2 class="text-2xl font-black uppercase tracking-tight text-brand-primary"><i class="fa-solid fa-store"></i> Consolidated Merchant Command Center</h2>
-                        <p class="text-gray-400 text-xs mt-0.5">Real-time analytical control dashboard for SRP verified corporate sellers.</p>
+                        <h2 class="text-sm font-black tracking-wide text-white flex items-center gap-1.5"><i class="fa-solid fa-robot text-blue-400"></i> Subh AI Expert System</h2>
+                        <p class="text-[10px] text-slate-400">Curated Intelligence Agent Node Online</p>
                     </div>
-                    <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded border border-emerald-500/20 animate-pulse">System Link Online</span>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="p-4 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-gray-800 rounded-xl"><h4 class="font-bold text-xs uppercase tracking-wider text-gray-400">Active Node Inventory</h4><p class="text-3xl font-black mt-1 text-brand-primary">1,450 <span class="text-xs font-normal text-gray-500">units</span></p></div>
-                    <div class="p-4 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-gray-800 rounded-xl"><h4 class="font-bold text-xs uppercase tracking-wider text-gray-400">Gross Regional Revenue Ledger</h4><p class="text-3xl font-black mt-1 text-emerald-500">₹3,45,900</p></div>
-                    <div class="p-4 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-gray-800 rounded-xl"><h4 class="font-bold text-xs uppercase tracking-wider text-gray-400">Pending Order Dispatches</h4><p class="text-3xl font-black mt-1 text-amber-500">14 <span class="text-xs font-normal text-gray-500">lots</span></p></div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-brand-panelDark p-5 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md">
-                <h3 class="text-sm font-bold uppercase tracking-wider mb-4"><i class="fa-solid fa-chart-line text-brand-primary"></i> Analytical Flowchart Stream</h3>
-                <div class="h-44 bg-gray-50 dark:bg-slate-950 rounded-lg border border-dashed border-gray-300 dark:border-gray-800 flex items-center justify-center text-xs text-gray-400 italic">
-                    [Automated Analytical Render Matrices Engine Active - Stream Mode Realtime]
-                </div>
-            </div>
-        </section>
-
-        <section id="page-cart" class="page-view hidden bg-white dark:bg-brand-panelDark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-md theme-transition">
-            <h2 class="text-2xl font-black uppercase tracking-tight text-brand-primary border-b pb-3 mb-4"><i class="fa-solid fa-cart-shopping"></i> Shopping Basket Checkout Ledger</h2>
-            <div id="cart-items-wrapper" class="space-y-4">
-                </div>
-            <div class="mt-6 border-t border-gray-100 dark:border-gray-800 pt-4 text-right">
-                <h3 class="text-xl font-black">Gross Settlement Total: <span id="cart-total-amount" class="text-brand-primary">₹0.00</span></h3>
-                <button onclick="alert('Routing transactional data blocks to local merchant processor accounts!')" class="mt-4 bg-brand-primary hover:bg-brand-primaryHover text-white font-bold py-3 px-8 rounded-xl text-xs uppercase tracking-widest shadow-lg transition duration-200">Process Final Settlement</button>
-            </div>
-        </section>
-
-        <section id="page-subh" class="page-view hidden bg-slate-950 border border-brand-primary/20 text-white p-6 rounded-xl shadow-2xl flex flex-col h-[520px]">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
-                    <h2 class="text-base font-black uppercase tracking-widest text-brand-primary"><i class="fa-solid fa-robot"></i> Subh AI Operational Core</h2>
-                </div>
-                <span class="text-[10px] font-mono text-gray-500 bg-slate-900 px-2 py-0.5 rounded border border-gray-800">v2.4-India</span>
+                <span class="text-[10px] bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded border border-slate-700">v3.4-IN</span>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-3 space-y-4 text-xs hide-scrollbar" id="ai-chat-box">
-                <div class="bg-slate-900 border border-gray-800 p-3 rounded-xl max-w-md shadow-sm">
-                    System greetings. I am <strong class="text-brand-primary">Subh AI</strong>, your real-time cloud-enabled shopping routing companion. I am fully synchronized with India currency structures and regional logistics. Specify any database inquiry.
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar" id="subh-ai-chat-vault-box">
+                <div class="bg-slate-800/80 p-3.5 rounded-xl max-w-xl text-xs border border-slate-700/50 leading-relaxed">
+                    Greetings. I am <strong class="text-blue-400">Subh AI</strong>, your dedicated enterprise market assistant. I process local currency variables, merchant constraints, or regional delivery protocols for you across India. Query anything.
                 </div>
             </div>
             
-            <div class="flex gap-2 pt-3 border-t border-gray-900">
-                <input type="text" id="ai-input" placeholder="Query stock listings, technical specifications, or shipping parameters..." class="w-full bg-slate-900 border border-gray-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-brand-primary">
-                <button onclick="triggerAiResponse()" class="bg-brand-primary hover:bg-brand-primaryHover text-white px-5 rounded-xl font-bold text-xs uppercase tracking-wider transition">Query</button>
+            <div class="flex gap-2 pt-4 border-t border-slate-800">
+                <input type="text" id="subh-ai-user-query-deck" placeholder="Formulate search matrix or transaction request query..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-white" onkeydown="if(event.key === 'Enter') executeSubhAiQueryLoop()">
+                <button onclick="executeSubhAiQueryLoop()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-6 rounded-xl tracking-wider uppercase transition shadow-md">Transmit</button>
             </div>
         </section>
 
     </main>
 
-    <div id="admin-modal" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 p-4 transition-all duration-300">
-        <div class="bg-white dark:bg-brand-panelDark border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl max-w-sm w-full p-6 relative theme-transition">
-            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-brand-primary text-xl transition">&times;</button>
-            
-            <div class="text-center space-y-4">
-                <div class="w-14 h-14 bg-brand-primary/10 text-brand-primary border border-brand-primary/20 rounded-full flex items-center justify-center mx-auto text-xl shadow-inner"><i class="fa-solid fa-shield-halved"></i></div>
-                <div>
-                    <h3 class="text-lg font-black uppercase tracking-tight">System Override Auth</h3>
-                    <p class="text-[10px] text-gray-400 mt-0.5">Restricted system zone. Specify authorization key tokens.</p>
+    <div id="utility-disclosure-modal" class="fixed inset-0 bg-slate-950/60 dark:bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-2xl w-full p-6 relative border border-slate-200 dark:border-slate-800">
+            <button onclick="toggleUtilityModal(null)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl">&times;</button>
+            <div id="utility-modal-content-anchor" class="max-h-[75vh] overflow-y-auto pr-2 space-y-4 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
                 </div>
-                <input type="password" id="admin-pass-input" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-gray-800 rounded-xl px-3 py-2.5 text-center text-sm font-mono tracking-widest focus:outline-none focus:border-brand-primary">
-                <button onclick="verifyAdminCredentials()" class="w-full bg-brand-primary hover:bg-brand-primaryHover text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-widest shadow-md transition duration-200">Request Access</button>
-                <p id="admin-error-msg" class="text-[10px] text-brand-primary font-bold tracking-wide hidden"><i class="fa-solid fa-triangle-exclamation"></i> Unauthorized Identity token. Rejected.</p>
+        </div>
+    </div>
+
+    <div id="admin-intercept-dialog" class="fixed inset-0 bg-slate-950/70 dark:bg-black/90 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-200 dark:border-slate-800 animate-zoomIn">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl">&times;</button>
+            <div class="text-center space-y-4">
+                <div class="w-12 h-12 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto text-xl border border-blue-100 dark:border-blue-900/30"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                    <h3 class="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-white">SRP Enterprise Administrative Intercept</h3>
+                    <p class="text-[11px] text-slate-400 mt-1">Authorized security operational clearance vectors required.</p>
+                </div>
+                <input type="password" id="admin-security-passkey-field" placeholder="Input Master Vault Override Key" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 text-center font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white" onkeydown="if(event.key === 'Enter') processAdminAuthorizationSequence()">
+                <button onclick="processAdminAuthorizationSequence()" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg uppercase tracking-wider transition shadow">Validate Key Token</button>
+                <p id="admin-validation-error-prompt" class="text-[10px] text-red-500 font-bold tracking-tight hidden"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Authentication failed. Security trace logged.</p>
             </div>
         </div>
     </div>
 
-    <footer class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-gray-900 text-white shadow-2xl z-40 theme-transition">
-        <div class="max-w-xl mx-auto flex justify-between items-center py-2 px-4 text-center text-[10px] font-bold tracking-wide uppercase">
-            <button onclick="showPage('home')" class="nav-btn text-brand-primary flex flex-col items-center gap-1 w-14 transition duration-200"><i class="fa-solid fa-house text-base"></i><span>Home</span></button>
-            <button onclick="showPage('account')" class="nav-btn text-gray-400 hover:text-white flex flex-col items-center gap-1 w-14 transition duration-200"><i class="fa-solid fa-user-shield text-base"></i><span>Account</span></button>
-            <button onclick="showPage('seller-hub')" class="nav-btn text-gray-400 hover:text-white flex flex-col items-center gap-1 w-18 transition duration-200"><i class="fa-solid fa-store text-base"></i><span>Seller Hub</span></button>
-            <button onclick="showPage('cart')" class="nav-btn text-gray-400 hover:text-white flex flex-col items-center gap-1 w-14 relative transition duration-200"><i class="fa-solid fa-cart-shopping text-base"></i><span>Cart</span><span id="cart-badge" class="absolute -top-1.5 -right-1 bg-brand-primary text-white text-[9px] font-black h-3.5 w-3.5 rounded-full flex items-center justify-center shadow">0</span></button>
-            <button onclick="showPage('subh')" class="nav-btn text-gray-400 hover:text-white flex flex-col items-center gap-1 w-14 transition duration-200"><i class="fa-solid fa-robot text-base"></i><span>Subh AI</span></button>
+    <footer class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 shadow-2xl z-40">
+        <div class="max-w-xl mx-auto flex justify-between items-center py-2 px-4 text-center text-[10px] font-bold tracking-wide">
+            <button onclick="showPage('home')" class="nav-element-action text-blue-600 dark:text-blue-400 flex flex-col items-center gap-1 w-14 transition"><i class="fa-solid fa-house-user text-base"></i><span>Home</span></button>
+            <button onclick="showPage('account')" class="nav-element-action hover:text-blue-600 dark:hover:text-white flex flex-col items-center gap-1 w-14 transition"><i class="fa-solid fa-circle-user text-base"></i><span>Account</span></button>
+            <button onclick="showPage('seller-hub')" class="nav-element-action hover:text-blue-600 dark:hover:text-white flex flex-col items-center gap-1 w-16 transition"><i class="fa-solid fa-chart-pie text-base"></i><span>Seller Hub</span></button>
+            <button onclick="showPage('cart')" class="nav-element-action hover:text-blue-600 dark:hover:text-white flex flex-col items-center gap-1 w-14 relative transition"><i class="fa-solid fa-bag-shopping text-base"></i><span>Cart</span><span id="cart-counter-badge" class="absolute -top-1.5 -right-1 bg-blue-600 text-white font-black text-[9px] h-4 w-4 rounded-full flex items-center justify-center border border-white dark:border-slate-900">0</span></button>
+            <button onclick="showPage('subh-ai')" class="nav-element-action hover:text-blue-600 dark:hover:text-white flex flex-col items-center gap-1 w-14 transition"><i class="fa-solid fa-robot text-base"></i><span>Subh AI</span></button>
         </div>
     </footer>
 
     <script>
-        // Production Database Array housing 20 Real Localized Electronics & High Fidelity Items
-        const SRP_PRODUCT_DATABASE = [
-            { id: 1, title: "SRP Wireless ANC Pro Headphones", price: 24999, qty: 45, rating: 4.8, colors: ["Charcoal Black", "Crimson Red", "Titanium Silver"], sizes: ["Standard Edition", "Extended Pro Audio Pack"], images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80"] },
-            { id: 2, title: "Chronograph Carbon Luxury Watch", price: 45000, qty: 12, rating: 4.9, colors: ["Midnight Dark", "Gold Accent"], sizes: ["42mm Gauge", "44mm Custom Chassis"], images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=600&q=80"] },
-            { id: 3, title: "Mechanical Aluminum Gaming Keyboard", price: 10999, qty: 88, rating: 4.6, colors: ["Anodized Red", "Stealth Slate"], sizes: ["Linear Red Switches", "Tactile Blue Arrays"], images: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=600&q=80"] },
-            { id: 4, title: "Ultra HD Cinema Projector 4K Matrix", price: 79999, qty: 7, rating: 4.7, colors: ["Matte Black"], sizes: ["Base Unit", "Ceiling Bracket Mount Kit"], images: ["https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80"] },
-            { id: 5, title: "Minimalist Smart Utility Tech Backpack", price: 6500, qty: 120, rating: 4.5, colors: ["Obsidian", "Crimson Trim"], sizes: ["20L Volume", "32L Expanded Travel Matrix"], images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1575844621280-d904f186444f?auto=format&fit=crop&w=600&q=80"] },
-            { id: 6, title: "Active Wireless Waterproof Earbuds", price: 4999, qty: 241, rating: 4.3, colors: ["Black Pro", "Electric Red"], sizes: ["Standard Fitting Set"], images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1558089687-f282ffcbd1d5?auto=format&fit=crop&w=600&q=80"] },
-            { id: 7, title: "Designer Drip Espresso Maker Station", price: 18500, qty: 34, rating: 4.7, colors: ["Polished Metallic Chrome", "Velvet Dark Red"], sizes: ["1.5L Reservoir Kit"], images: ["https://images.unsplash.com/photo-1517256064527-09c53b2d0c6b?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80"] },
-            { id: 8, title: "Solid Cast Iron Competition Kettlebell", price: 3999, qty: 95, rating: 4.4, colors: ["Industrial Gray"], sizes: ["16KG Rating", "24KG Heavy Tier"], images: ["https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80"] },
-            { id: 9, title: "Aerospace Aluminum Precision Pen", price: 5999, qty: 60, rating: 4.8, colors: ["Midnight Jet Black", "Raw Brushed Alloy"], sizes: ["0.5mm Core Line", "0.7mm Medium Array"], images: ["https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1585336261022-6759299445f2?auto=format&fit=crop&w=600&q=80"] },
-            { id: 10, title: "Vacuum Sealed Stainless Flask Pro", price: 2499, qty: 310, rating: 4.6, colors: ["Satin Dark Blue", "Onyx Outlined Red"], sizes: ["750ML Standard", "1000ML Max Capacity"], images: ["https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=600&q=80"] },
-            { id: 11, title: "Desktop Walnut Studio Monitors", price: 21999, qty: 19, rating: 4.9, colors: ["Natural Timber", "Piano Pitch Black"], sizes: ["Active Pair Suite"], images: ["https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&w=600&q=80"] },
-            { id: 12, title: "Multi-Axis GPS Stabilization Drone", price: 95000, qty: 8, rating: 4.9, colors: ["Industrial Gray"], sizes: ["Base Drone Matrix", "Fly-More Combo Expanded"], images: ["https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=600&q=80"] },
-            { id: 13, title: "Memory Foam Ergonomic Structural Pillow", price: 4200, qty: 150, rating: 4.4, colors: ["Alabaster White"], sizes: ["Queen Dimension Profile"], images: ["https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=600&q=80"] },
-            { id: 14, title: "Polished Walnut Phone Charging Cradle", price: 3500, qty: 73, rating: 4.5, colors: ["Dark Wood Sheen"], sizes: ["Dual Device Configuration"], images: ["https://images.unsplash.com/photo-1622445262461-c3b81b37a533?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1504274066654-8fe24c5306a4?auto=format&fit=crop&w=600&q=80"] },
-            { id: 15, title: "Carbon Fiber Road Bike Structural Cage", price: 2200, qty: 300, rating: 4.2, colors: ["Gloss Weave Black"], sizes: ["Standard 74mm Profile"], images: ["https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1571068316341-217147c4b22a?auto=format&fit=crop&w=600&q=80"] },
-            { id: 16, title: "Sonic Electric Smart Toothbrush Suite", price: 7999, qty: 92, rating: 4.7, colors: ["Glacier Frost Black", "Rose Pearl Tint"], sizes: ["Standard Cleansing Pack"], images: ["https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1559591937-e6b349d7990c?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1570554520913-ae1a0cb0c159?auto=format&fit=crop&w=600&q=80"] },
-            { id: 17, title: "Heavy Duty Seasoned Cast Iron Skillet", price: 4999, qty: 44, rating: 4.8, colors: ["Raw Forged Black"], sizes: ["10-Inch Diameter", "12-Inch Professional Size"], images: ["https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1576016770956-debb63d90029?auto=format&fit=crop&w=600&q=80"] },
-            { id: 18, title: "Top-Grain Bound Leather Journal Set", price: 1999, qty: 180, rating: 4.6, colors: ["Rustic Mahogany", "Tan Ochre"], sizes: ["A5 Form Dimension"], images: ["https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1516414447565-b14be0adf13e?auto=format&fit=crop&w=600&q=80"] },
-            { id: 19, title: "High-Density Natural Eco Cork Yoga Mat", price: 4500, qty: 65, rating: 4.5, colors: ["Organic Earth Umber"], sizes: ["6mm Shock Cushion Profile"], images: ["https://images.unsplash.com/photo-1592432678016-e910b452f9a2?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80"] },
-            { id: 20, title: "Polarized Shield Architecture Sunglasses", price: 12499, qty: 27, rating: 4.7, colors: ["Stealth Dark Matte", "Crimson Reflective Tint"], sizes: ["Unified Frame Fit"], images: ["https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1508296695146-257a814070b4?auto=format&fit=crop&w=600&q=80"] }
+        // Curated Conversion Factors Array Variables
+        const LOCALIZATION_EXCHANGE_MULTIPLIER = 83.50; // Dynamic USD to INR Base Ratio Anchor
+
+        // State Tracking Controls Variables
+        let activeMarketplaceView = 'home';
+        let interfaceThemeMode = 'light';
+        let currentCarouselOffsetIdx = 0;
+        let selectedProductEntityContext = null;
+        let activeGalleryPhotoFocusIdx = 0;
+        let transactionCartRepository = [];
+
+        // Track Variant Selections Locally to Avoid Resets
+        let activeSelectedColor = "Sapphire Blue";
+        let activeSelectedSize = "Standard Enterprise Package";
+
+        // Structured Segment Data Array for Category Grid Mapping (Exactly 15 Items)
+        const MARKET_CATEGORY_MATRIX = [
+            { label: "Electronics", icon: "fa-laptop" }, { label: "Apparel", icon: "fa-shirt" },
+            { label: "Living Spaces", icon: "fa-couch" }, { label: "Mobile Tech", icon: "fa-mobile-screen" },
+            { label: "Fitness Gear", icon: "fa-dumbbell" }, { label: "Gaming Systems", icon: "fa-gamepad" },
+            { label: "Literary Hub", icon: "fa-book" }, { label: "Automotive Parts", icon: "fa-car" },
+            { label: "Infant Care", icon: "fa-baby" }, { label: "Cosmetics Tier", icon: "fa-wand-magic-sparkles" },
+            { label: "Kitchen Tools", icon: "fa-kitchen-set" }, { label: "Footwear Core", icon: "fa-shoe-prints" },
+            { label: "Luxury Jewelry", icon: "fa-gem" }, { label: "Groceries Raw", icon: "fa-apple-whole" },
+            { label: "Pet Resource", icon: "fa-paw" }
         ];
 
-        let cartCollection = [];
-        let activeBannerIndex = 0;
-        let selectedProductContext = null;
-        let activeDetailImageIdx = 0;
-        
-        // Active Variant State Tracks
-        let trackedSelectedColor = "";
-        let trackedSelectedSize = "";
+        // 20+ Production Grade Verified Item Structural Records Database
+        const CENTRAL_PRODUCT_INVENTORY_ARRAY = [
+            { id: 101, label: "SRP Audio-Matrix Pro Headphones", baseUsdPrice: 249.99, stock: 45, score: 4.8, photos: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80"] },
+            { id: 102, label: "Titanium Enterprise Chronograph Chrono", baseUsdPrice: 499.00, stock: 12, score: 4.9, photos: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=600&q=80"] },
+            { id: 103, label: "Mechanical RGB Engineering Keyboard Deck", baseUsdPrice: 119.50, stock: 88, score: 4.6, photos: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=600&q=80"] },
+            { id: 104, label: "Cinema Core 4K Smart Projector Hub", baseUsdPrice: 850.00, stock: 7, score: 4.7, photos: ["https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80"] },
+            { id: 105, label: "Full Grain Leather Commuter Shell Backpack", baseUsdPrice: 79.00, stock: 120, score: 4.5, photos: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1575844621280-d904f186444f?auto=format&fit=crop&w=600&q=80"] },
+            { id: 106, label: "Active Sports Waterproof Audio Bud Array", baseUsdPrice: 55.00, stock: 241, score: 4.3, photos: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1558089687-f282ffcbd1d5?auto=format&fit=crop&w=600&q=80"] },
+            { id: 107, label: "Copper Drip Thermal Espresso Machine", baseUsdPrice: 185.00, stock: 34, score: 4.7, photos: ["https://images.unsplash.com/photo-1517256064527-09c53b2d0c6b?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80"] },
+            { id: 108, label: "Cast Iron Heavy Duty Structural Kettlebell", baseUsdPrice: 42.00, stock: 95, score: 4.4, photos: ["https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80"] },
+            { id: 109, label: "Aerospace Grade Aluminum Fluid Ink Pen", baseUsdPrice: 68.00, stock: 60, score: 4.8, photos: ["https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1585336261022-6759299445f2?auto=format&fit=crop&w=600&q=80"] },
+            { id: 110, label: "Vacuum Insulated Strategic Steel Flask", baseUsdPrice: 29.99, stock: 310, score: 4.6, photos: ["https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=600&q=80"] },
+            { id: 111, label: "High Fidelity Walnut Desktop Monitors", baseUsdPrice: 220.00, stock: 19, score: 4.9, photos: ["https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&w=600&q=80"] },
+            { id: 112, label: "Stabilized Carbon Fiber Drone System 4K", baseUsdPrice: 1100.00, stock: 8, score: 4.9, photos: ["https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=600&q=80"] },
+            { id: 113, label: "Orthopedic Pure Density Memory Foam Pillow", baseUsdPrice: 45.00, stock: 150, score: 4.4, photos: ["https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=600&q=80"] },
+            { id: 114, label: "Inductive Solid Walnut Mobile Dock Station", baseUsdPrice: 35.00, stock: 73, score: 4.5, photos: ["https://images.unsplash.com/photo-1622445262461-c3b81b37a533?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1504274066654-8fe24c5306a4?auto=format&fit=crop&w=600&q=80"] },
+            { id: 115, label: "Ultralight Bicycle Fluid Core Cage Mount", baseUsdPrice: 25.00, stock: 300, score: 4.2, photos: ["https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1571068316341-217147c4b22a?auto=format&fit=crop&w=600&q=80"] },
+            { id: 116, label: "Adaptive Sonic Wave Smart Clean Toothbrush", baseUsdPrice: 85.00, stock: 92, score: 4.7, photos: ["https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1559591937-e6b349d7990c?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1570554520913-ae1a0cb0c159?auto=format&fit=crop&w=600&q=80"] },
+            { id: 117, label: "Heavy Cast Iron Seasoned Culinary Skillet", baseUsdPrice: 59.99, stock: 44, score: 4.8, photos: ["https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1576016770956-debb63d90029?auto=format&fit=crop&w=600&q=80"] },
+            { id: 118, label: "Top Grain Vintage Encased Leather Logbook", baseUsdPrice: 22.50, stock: 180, score: 4.6, photos: ["https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1516414447565-b14be0adf13e?auto=format&fit=crop&w=600&q=80"] },
+            { id: 119, label: "Natural Organic Flexible Elastic Yoga Mat", baseUsdPrice: 50.00, stock: 65, score: 4.5, photos: ["https://images.unsplash.com/photo-1592432678016-e910b452f9a2?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80"] },
+            { id: 120, label: "Architectural Gradient Lens Sunglasses", baseUsdPrice: 135.00, stock: 27, score: 4.7, photos: ["https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80", "https://images.unsplash.com/photo-1508296695146-257a814070b4?auto=format&fit=crop&w=600&q=80"] }
+        ];
 
-        // Core Inits Mount Trigger
+        // System Core Frame Booting Controls
         window.addEventListener('DOMContentLoaded', () => {
-            renderProductGrid();
-            initBannerAutoCycle();
+            initializePlatformComponents();
+            initCarouselAutomationEngine();
         });
 
-        // Toggle System Theme Controller (Day Mode / Night Mode)
-        function toggleSystemTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme-toggle-icon');
+        function initializePlatformComponents() {
+            renderMatrixCategories();
+            populateMasterMarketGrid();
+        }
+
+        // Ambient System Dark / Light Theme Controllers
+        function toggleThemeMode() {
+            const documentElement = document.documentElement;
+            const contextIcon = document.getElementById('theme-toggle-icon');
             
-            if (body.classList.contains('dark')) {
-                body.classList.remove('dark');
-                body.classList.add('bg-brand-lightBg', 'text-slate-900');
-                icon.className = "fa-solid fa-moon text-slate-800";
+            if(documentElement.classList.contains('dark')) {
+                documentElement.classList.remove('dark');
+                contextIcon.className = "fa-solid fa-moon";
+                interfaceThemeMode = 'light';
             } else {
-                body.classList.add('dark');
-                icon.className = "fa-solid fa-sun text-amber-400";
+                documentElement.classList.add('dark');
+                contextIcon.className = "fa-solid fa-sun text-yellow-400";
+                interfaceThemeMode = 'dark';
             }
         }
 
-        // Global Single-Page Application Navigation Controller
-        function showPage(pageId) {
+        // Main Route System Layout Navigation Controller
+        function showPage(targetViewToken) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            document.getElementById(`page-${targetViewToken}`).classList.remove('hidden');
             
-            // Visual feedback loop reset on structural buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-brand-primary');
-                btn.classList.add('text-gray-400');
+            activeMarketplaceView = targetViewToken;
+            
+            // Adjust Bottom Fixed Nav Highlighting States Array Matrix
+            const buttons = document.querySelectorAll('.nav-element-action');
+            buttons.forEach(btn => {
+                btn.classList.remove('text-blue-600', 'dark:text-blue-400');
+                btn.classList.add('text-slate-600', 'dark:text-slate-400');
             });
+            
+            // Sync current active tag highlight parameters
+            const targetsMapping = { 'home': 0, 'account': 1, 'seller-hub': 2, 'cart': 3, 'subh-ai': 4 };
+            const matchedIdx = targetsMapping[targetViewToken];
+            if(matchedIdx !== undefined && buttons[matchedIdx]) {
+                buttons[matchedIdx].classList.remove('text-slate-600', 'dark:text-slate-400');
+                buttons[matchedIdx].classList.add('text-blue-600', 'dark:text-blue-400');
+            }
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Fresh Promotional Banner Cycler Parameters
-        function moveBanner(direction) {
-            const container = document.getElementById('banner-container');
-            activeBannerIndex = (activeBannerIndex + direction + 5) % 5;
-            container.style.transform = `translateX(-${activeBannerIndex * 20}%)`;
+        // Horizontal Carousel Mechanics Scripts
+        function shiftBannerAxis(directionOffset) {
+            const sliderRack = document.getElementById('banner-container');
+            currentCarouselOffsetIdx = (currentCarouselOffsetIdx + directionOffset + 5) % 5;
+            sliderRack.style.transform = `translateX(-${currentCarouselOffsetIdx * 10}%)`;
         }
 
-        function initBannerAutoCycle() {
-            setInterval(() => moveBanner(1), 7000);
+        function initCarouselAutomationEngine() {
+            setInterval(() => shiftBannerAxis(1), 7000);
         }
 
-        // Domestic Grid Layout Assembler Engine
-        function renderProductGrid() {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = SRP_PRODUCT_DATABASE.map(product => `
-                <div onclick="openProductDetail(${product.id})" class="bg-white dark:bg-brand-panelDark rounded-xl border border-gray-200 dark:border-gray-800 p-4 flex flex-col justify-between cursor-pointer hover:border-brand-primary/40 transition-all duration-300 shadow-md group relative overflow-hidden">
-                    <div>
-                        <div class="w-full h-44 bg-slate-50 dark:bg-slate-950 flex items-center justify-center overflow-hidden rounded-lg mb-3 shadow-inner">
-                            <img src="${product.images[0]}" alt="${product.title}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal">
-                        </div>
-                        <h4 class="text-xs font-bold text-gray-800 dark:text-gray-100 group-hover:text-brand-primary line-clamp-2 transition duration-200 uppercase tracking-tight">${product.title}</h4>
-                        <div class="flex items-center text-amber-500 text-[10px] mt-1.5">
-                            ${Array(Math.floor(product.rating)).fill('<i class="fa-solid fa-star"></i>').join('')}
-                            <span class="text-gray-400 ml-1">(${product.rating})</span>
-                        </div>
+        // Dynamic Mapping Elements Assembly Engines
+        function renderMatrixCategories() {
+            const destinationRack = document.getElementById('category-distribution-matrix');
+            destinationRack.innerHTML = MARKET_CATEGORY_MATRIX.map(sector => `
+                <div class="cursor-pointer group flex flex-col items-center">
+                    <div class="w-12 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-300 group-hover:bg-blue-600 group-hover:text-white transition duration-200 shadow-sm">
+                        <i class="fa-solid ${sector.icon} text-base"></i>
                     </div>
-                    <div class="mt-4 border-t border-gray-100 dark:border-gray-800/60 pt-3">
-                        <div class="flex justify-between items-baseline">
-                            <span class="text-lg font-black text-slate-950 dark:text-white tracking-tight">₹${product.price.toLocaleString('en-IN')}.00</span>
-                        </div>
-                        <button class="w-full mt-3 bg-brand-primary hover:bg-brand-primaryHover text-white font-bold py-2 rounded-lg text-[10px] uppercase tracking-widest transition duration-200 shadow-md">Inspect Package</button>
-                    </div>
+                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-2 truncate w-full">${sector.label}</p>
                 </div>
             `).join('');
         }
 
-        // Functional Detail Variant Selection Core Mapping Logic
-        function openProductDetail(productId) {
-            const prod = SRP_PRODUCT_DATABASE.find(p => p.id === productId);
-            if(!prod) return;
-            selectedProductContext = prod;
-            activeDetailImageIdx = 0;
+        // Real-Time Conversion Math Formatting Engine (USD to INR Multiplier Integration)
+        function formatToIndianRupees(usdValue) {
+            const computation = usdValue * LOCALIZATION_EXCHANGE_MULTIPLIER;
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 0
+            }).format(computation);
+        }
+
+        function populateMasterMarketGrid() {
+            const displayAnchorGrid = document.getElementById('product-distribution-grid');
+            displayAnchorGrid.innerHTML = CENTRAL_PRODUCT_INVENTORY_ARRAY.map(item => {
+                const localizedPriceString = formatToIndianRupees(item.baseUsdPrice);
+                return `
+                    <div onclick="invokeProductDetailViewer(${item.id})" class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-4 flex flex-col justify-between cursor-pointer hover:shadow-xl hover:border-blue-400/50 dark:hover:border-blue-500/30 transition duration-300 group relative">
+                        <div>
+                            <div class="w-full h-44 bg-slate-50 dark:bg-slate-950 flex items-center justify-center overflow-hidden rounded-lg mb-3 border border-slate-100 dark:border-slate-900 shadow-inner">
+                                <img src="${item.photos[0]}" alt="${item.label}" class="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-300">
+                            </div>
+                            <span class="text-[9px] uppercase font-black tracking-widest text-blue-500 mb-1 block">SRP Verified</span>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 line-clamp-2 transition leading-tight">${item.label}</h4>
+                            <div class="flex items-center text-amber-500 text-[10px] mt-1.5">
+                                ${Array(Math.floor(item.score)).fill('<i class="fa-solid fa-star"></i>').join('')}
+                                <span class="text-slate-400 ml-1 font-mono">(${item.score})</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-base font-black text-slate-950 dark:text-white">${localizedPriceString}</span>
+                                <span class="text-[9px] text-slate-400 italic">Excl. Local IGST</span>
+                            </div>
+                            <button class="bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition border border-blue-100 dark:border-blue-900/30">Analyze</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Detailed Catalog View Synchronization Pipelines
+        function invokeProductDetailViewer(targetItemId) {
+            const targetMatchedRecord = CENTRAL_PRODUCT_INVENTORY_ARRAY.find(p => p.id === targetItemId);
+            if(!targetMatchedRecord) return;
             
-            // Auto lock first available options array profiles safely
-            trackedSelectedColor = prod.colors[0];
-            trackedSelectedSize = prod.sizes[0];
+            selectedProductEntityContext = targetMatchedRecord;
+            activeGalleryPhotoFocusIdx = 0;
 
-            document.getElementById('detail-main-img').src = prod.images[0];
-            document.getElementById('detail-title').innerText = prod.title;
-            document.getElementById('detail-price').innerText = `₹${prod.price.toLocaleString('en-IN')}.00`;
-            document.getElementById('detail-qty').innerText = prod.qty;
+            document.getElementById('pdp-core-display-frame').src = targetMatchedRecord.photos[0];
+            document.getElementById('pdp-meta-title').innerText = targetMatchedRecord.label;
+            document.getElementById('pdp-meta-localized-cost').innerText = formatToIndianRupees(targetMatchedRecord.baseUsdPrice);
+            document.getElementById('pdp-meta-converted-base-cost').innerText = `Standard Base Valuation reference: $${targetMatchedRecord.baseUsdPrice.toFixed(2)} USD standard`;
+            document.getElementById('pdp-meta-stock-count').innerText = targetMatchedRecord.stock;
 
-            // Generate Image Slide Buttons Grid
-            const thumbsContainer = document.getElementById('detail-thumbs');
-            thumbsContainer.innerHTML = prod.images.map((img, i) => `
-                <img src="${img}" onclick="setDetailImage(${i})" class="w-14 h-14 object-contain bg-slate-50 dark:bg-slate-950 border rounded-lg p-1 cursor-pointer transition hover:border-brand-primary ${i===0?'border-brand-primary scale-105':''}">
+            // Render Star Arrays
+            const ratingTargetRack = document.getElementById('pdp-meta-rating-bar');
+            ratingTargetRack.innerHTML = `
+                <div class="text-amber-500 flex gap-0.5">${Array(Math.floor(targetMatchedRecord.score)).fill('<i class="fa-solid fa-star"></i>').join('')}</div>
+                <span class="text-slate-400 font-medium">Verified Customer Quality Score Matrix (${targetMatchedRecord.score} / 5.0)</span>
+            `;
+
+            // Setup Thumbnail Track Layouts
+            const thumbnailRackAnchor = document.getElementById('pdp-thumbnail-strip-rack');
+            thumbnailRackAnchor.innerHTML = targetMatchedRecord.photos.map((srcUrl, index) => `
+                <img src="${srcUrl}" onclick="switchPdpPhotoFocusIndex(${index})" class="w-14 h-14 object-contain border-2 rounded-lg p-1 bg-white cursor-pointer hover:border-blue-500 transition shadow-sm ${index===0?'border-blue-600':'border-slate-200 dark:border-slate-800'}">
             `).join('');
 
-            // Fire Variant Re-Rendering Subsystems To Track Operations Explicitly
-            syncColorVariantUI();
-            syncSizeVariantUI();
+            // Render Interlocking Functional Color & Size Variant Arrays Block
+            renderVariantInteractiveFrameworks();
 
-            // 2000-Line Architecture Mock Data Log Matrix Parsing Block Simulation
-            const descContainer = document.getElementById('detail-desc');
-            descContainer.innerHTML = `
-                <p class="font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-1">Product Framework Blueprint Logs:</p>
-                <p>This enterprise configuration unit matches all critical localized runtime paradigms perfectly. Fully optimized under SRP Studio structural inspection metrics.</p>
-                <ul class="list-disc pl-4 mt-2 space-y-1 text-gray-400 font-medium">
-                    <li>Certified ultra-low power dissipation matrix profile architecture.</li>
-                    <li>Premium structural shielding configured for long operational life.</li>
-                    <li>Full localized deployment capabilities supported straight out of the box.</li>
-                </ul>
+            // Append Technical Specification Strings Loop Simulation Block
+            const extendedSpecDocRack = document.getElementById('pdp-extended-documentation-space');
+            let builtDocumentationBuffer = `<p class="text-blue-600 dark:text-blue-400 font-bold mb-2">// SRP CORPORATE INVENTORY SPECIFICATION RECORD SHEET //</p>`;
+            builtDocumentationBuffer += `<p>SKU IDENTIFIER TOKEN: ROW-NODE-0${targetMatchedRecord.id}-ALPHA</p>`;
+            builtDocumentationBuffer += `<p>REGIONAL VALIDATION PATTERN: IN-DOMESTIC-MARKET-STABLE</p>`;
+            for(let loopTracker = 1; loopTracker <= 25; loopTracker++) {
+                builtDocumentationBuffer += `<p>Data Matrix Row Track [0${loopTracker}]: Structural parameter matrices configured with high durability standards. Insulation coefficient tested under sub-ambient thresholds to optimize component long-term utility factors safely.</p>`;
+            }
+            extendedSpecDocRack.innerHTML = builtDocumentationBuffer;
+
+            // Generate QA Components Data Blocks
+            const qaTargetHolder = document.getElementById('pdp-qa-records-rack');
+            qaTargetHolder.innerHTML = `
+                <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-xs space-y-1">
+                    <p class="font-bold text-slate-800 dark:text-slate-200">Q: Does this specific configuration draw warranty validation paths natively within India?</p>
+                    <p class="text-slate-500"><span class="font-bold text-blue-600 dark:text-blue-400">A:</span> Affirmative. All items dispatched via SRP Shopping terminals carry an integrated 12-month localized processing merchant guarantee. — <span class="italic text-[10px]">Merchant Support Unit</span></p>
+                </div>
             `;
 
             showPage('product-detail');
         }
 
-        function setDetailImage(index) {
-            activeDetailImageIdx = index;
-            document.getElementById('detail-main-img').src = selectedProductContext.images[index];
-            document.querySelectorAll('#detail-thumbs img').forEach((img, i) => {
-                img.classList.toggle('border-brand-primary', i === index);
-                img.classList.toggle('scale-105', i === index);
-            });
-        }
+        // TRACK SELECTION NATIVELY - Multi-Variant Framework Setup
+        function renderVariantInteractiveFrameworks() {
+            const colorsList = ["Sapphire Blue", "Platinum Silver", "Carbon Black"];
+            const sizesList = ["Standard Enterprise Package", "Pro Extended Framework (+ ₹4,500)"];
 
-        function prevDetailImg() {
-            if(!selectedProductContext) return;
-            let idx = (activeDetailImageIdx - 1 + selectedProductContext.images.length) % selectedProductContext.images.length;
-            setDetailImage(idx);
-        }
-
-        function nextDetailImg() {
-            if(!selectedProductContext) return;
-            let idx = (activeDetailImageIdx + 1) % selectedProductContext.images.length;
-            setDetailImage(idx);
-        }
-
-        // Click-handling variant triggers for full customization choices
-        function selectColorVariant(colorName) {
-            trackedSelectedColor = colorName;
-            syncColorVariantUI();
-        }
-
-        function selectSizeVariant(sizeName) {
-            trackedSelectedSize = sizeName;
-            syncSizeVariantUI();
-        }
-
-        function syncColorVariantUI() {
-            const container = document.getElementById('color-variant-container');
-            container.innerHTML = selectedProductContext.colors.map(c => {
-                const isActive = (c === trackedSelectedColor);
+            const colorContainer = document.getElementById('pdp-variant-color-rack');
+            colorContainer.innerHTML = colorsList.map(c => {
+                const isSelected = (c === activeSelectedColor);
                 return `
-                    <button onclick="selectColorVariant('${c}')" class="text-xs font-bold px-3 py-1.5 rounded-lg border uppercase tracking-wider theme-transition ${isActive ? 'bg-brand-primary border-brand-primary text-white scale-105 shadow-md' : 'bg-transparent border-gray-200 dark:border-gray-800 text-gray-400 hover:border-gray-400'}">
+                    <button onclick="commitVariantSelection('color', '${c}')" class="text-[11px] font-bold px-3 py-1.5 rounded-lg border transition duration-150 ${isSelected ? 'border-blue-600 bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400' : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400'}">
                         ${c}
                     </button>
                 `;
             }).join('');
-        }
 
-        function syncSizeVariantUI() {
-            const container = document.getElementById('size-variant-container');
-            container.innerHTML = selectedProductContext.sizes.map(s => {
-                const isActive = (s === trackedSelectedSize);
+            const sizeContainer = document.getElementById('pdp-variant-size-rack');
+            sizeContainer.innerHTML = sizesList.map(s => {
+                const isSelected = (s === activeSelectedSize);
                 return `
-                    <button onclick="selectSizeVariant('${s}')" class="text-xs font-bold px-3 py-1.5 rounded-lg border uppercase tracking-wider theme-transition ${isActive ? 'bg-brand-primary border-brand-primary text-white scale-105 shadow-md' : 'bg-transparent border-gray-200 dark:border-gray-800 text-gray-400 hover:border-gray-400'}">
+                    <button onclick="commitVariantSelection('size', '${s}')" class="text-[11px] font-bold px-3 py-1.5 rounded-lg border transition duration-150 ${isSelected ? 'border-blue-600 bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400' : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400'}">
                         ${s}
                     </button>
                 `;
             }).join('');
         }
 
-        // Cart Execution Core Workflow Loops
-        function addToCartCurrent() {
-            if(!selectedProductContext) return;
-            
-            // Build cart package context mapping localized parameters precisely
-            const itemSnapshot = {
-                title: selectedProductContext.title,
-                price: selectedProductContext.price,
-                color: trackedSelectedColor,
-                size: trackedSelectedSize,
-                img: selectedProductContext.images[0]
-            };
-            
-            cartCollection.push(itemSnapshot);
-            updateCartUIState();
-            alert(`Basket Sync: Checked ${itemSnapshot.title} [${itemSnapshot.color} | ${itemSnapshot.size}] into active procurement channels successfully.`);
+        // Core tracking interface method ensuring selections persist interactively without functional blocks
+        function commitVariantSelection(variantType, selectedValue) {
+            if(variantType === 'color') {
+                activeSelectedColor = selectedValue;
+            } else if(variantType === 'size') {
+                activeSelectedSize = selectedValue;
+            }
+            renderVariantInteractiveFrameworks();
         }
 
-        function updateCartUIState() {
-            document.getElementById('cart-badge').innerText = cartCollection.length;
-            const wrapper = document.getElementById('cart-items-wrapper');
+        function switchPdpPhotoFocusIndex(targetIndex) {
+            if(!selectedProductEntityContext) return;
+            activeGalleryPhotoFocusIdx = targetIndex;
+            document.getElementById('pdp-core-display-frame').src = selectedProductEntityContext.photos[targetIndex];
             
-            if(cartCollection.length === 0) {
-                wrapper.innerHTML = `<p class="text-center text-gray-500 py-12 text-xs uppercase tracking-widest font-bold">Your execution basket is empty.</p>`;
-                document.getElementById('cart-total-amount').innerText = "₹0.00";
+            document.querySelectorAll('#pdp-thumbnail-strip-rack img').forEach((thumb, i) => {
+                thumb.classList.toggle('border-blue-600', i === targetIndex);
+            });
+        }
+
+        function rotatePdpFrameIndex(vectorStep) {
+            if(!selectedProductEntityContext) return;
+            let calculatedIndex = (activeGalleryPhotoFocusIdx + vectorStep + selectedProductEntityContext.photos.length) % selectedProductEntityContext.photos.length;
+            switchPdpPhotoFocusIndex(calculatedIndex);
+        }
+
+        function triggerAddressValidationSync() {
+            const inputVal = document.getElementById('target-delivery-address-field').value;
+            if(inputVal.trim().length > 5) {
+                alert(`Logistics Token Mapping Node updated successfully to targeted destination domain:\n"${inputVal}"`);
+            }
+        }
+
+        // Cart State Synchronization Logic
+        function commitSelectedContextToCart() {
+            if(!selectedProductEntityContext) return;
+            // Pack contextual configuration data snapshot
+            const transactionalPacket = {
+                id: selectedProductEntityContext.id,
+                label: selectedProductEntityContext.label,
+                cost: selectedProductEntityContext.baseUsdPrice,
+                photo: selectedProductEntityContext.photos[0],
+                chosenColor: activeSelectedColor,
+                chosenSize: activeSelectedSize
+            };
+            transactionCartRepository.push(transactionalPacket);
+            refreshCartDisplayLayer();
+            alert(`Item listing successfully linked to basket pipeline registry array.`);
+        }
+
+        function refreshCartDisplayLayer() {
+            document.getElementById('cart-counter-badge').innerText = transactionCartRepository.length;
+            const targetContainerWell = document.getElementById('cart-item-containment-well');
+            
+            if(transactionCartRepository.length === 0) {
+                targetContainerWell.innerHTML = `<p class="text-xs text-slate-400 italic py-6">Your shopping basket contains no active transactional allocations.</p>`;
+                document.getElementById('cart-aggregate-cost-display').innerText = "₹0.00";
                 return;
             }
 
-            let computedTotal = 0;
-            wrapper.innerHTML = cartCollection.map((item, idx) => {
-                computedTotal += item.price;
+            let calculatedSumTotal = 0;
+            targetContainerWell.innerHTML = transactionCartRepository.map((entry, offsetIndex) => {
+                calculatedSumTotal += entry.cost;
                 return `
-                    <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800/70 pb-4 text-xs">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl">
                         <div class="flex items-center gap-4">
-                            <img src="${item.img}" class="w-14 h-14 object-contain bg-gray-50 dark:bg-slate-950 rounded-lg border p-1 mix-blend-multiply dark:mix-blend-normal">
-                            <div>
-                                <h4 class="font-black uppercase tracking-tight text-gray-900 dark:text-white">${item.title}</h4>
-                                <p class="text-[10px] text-gray-400 font-bold mt-0.5">CONFIG: ${item.color} / ${item.size}</p>
+                            <img src="${entry.photo}" class="w-12 h-12 object-contain rounded bg-white p-1 border">
+                            <div class="space-y-0.5">
+                                <h4 class="font-bold text-xs text-slate-800 dark:text-slate-200">${entry.label}</h4>
+                                <p class="text-[10px] text-slate-400 font-medium">Selected: <span class="text-blue-500">${entry.chosenColor}</span> / <span class="text-slate-500">${entry.chosenSize}</span></p>
+                                <p class="text-[9px] text-emerald-600 font-bold"><i class="fa-solid fa-square-check"></i> Allocation Terminal Lock Verified</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="font-black text-sm text-brand-primary">₹${item.price.toLocaleString('en-IN')}.00</p>
-                            <button onclick="removeCartItem(${idx})" class="text-[10px] text-brand-primary hover:underline font-black uppercase tracking-wider mt-1">Purge Item</button>
+                            <p class="font-black text-sm text-slate-950 dark:text-white">${formatToIndianRupees(entry.cost)}</p>
+                            <button onclick="evictCartItemAllocation(${offsetIndex})" class="text-[10px] text-red-500 hover:underline mt-1 font-bold uppercase tracking-wider">Evict</button>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            document.getElementById('cart-aggregate-cost-display').innerText = formatToIndianRupees(calculatedSumTotal);
+        }
+
+        function evictCartItemAllocation(targetOffsetIdx) {
+            transactionCartRepository.splice(targetOffsetIdx, 1);
+            refreshCartDisplayLayer();
+        }
+
+        // Subh AI Intelligent Agent Processing Dialog Routines
+        function executeSubhAiQueryLoop() {
+            const inputBufferBox = document.getElementById('subh-ai-user-query-deck');
+            const interactionTerminalBox = document.getElementById('subh-ai-chat-vault-box');
+            const stringLiteralQuery = inputBufferBox.value.trim();
             
-            document.getElementById('cart-total-amount').innerText = `₹${computedTotal.toLocaleString('en-IN')}.00`;
-        }
+            if(!stringLiteralQuery) return;
 
-        function removeCartItem(index) {
-            cartCollection.splice(index, 1);
-            updateCartUIState();
-        }
-
-        // Interactive AI Parsing Automation Engine
-        function triggerAiResponse() {
-            const input = document.getElementById('ai-input');
-            const chatBox = document.getElementById('ai-chat-box');
-            if(!input.value.trim()) return;
-
-            chatBox.innerHTML += `<div class="bg-brand-primary text-white p-3 rounded-xl max-w-xs ml-auto font-bold text-right shadow-md">${input.value}</div>`;
-            const userMsg = input.value.toLowerCase();
-            input.value = '';
+            // Render clear custom tracking bubble block
+            interactionTerminalBox.innerHTML += `<div class="bg-blue-600 text-white p-3 rounded-xl max-w-xl ml-auto text-xs font-bold leading-relaxed shadow-sm">${stringLiteralQuery}</div>`;
+            inputBufferBox.value = '';
 
             setTimeout(() => {
-                let aiReply = "System parsed query successfully. No anomalies flagged. For specific transaction routes or to check catalog parameters, try entering terms like 'inventory', 'cost', or 'dispatches'.";
-                if(userMsg.includes('price') || userMsg.includes('cost') || userMsg.includes('rupee') || userMsg.includes('rs')) {
-                    aiReply = "All system pricing coordinates have been successfully targeted to **Indian Rupee (INR / ₹)** parameters per local deployment standards.";
-                } else if(userMsg.includes('inventory') || userMsg.includes('stock') || userMsg.includes('items')) {
-                    aiReply = "The live catalog dataset currently maintains **20 premium listings** verified across our distribution center channels.";
+                let structuredAiReply = "System processing parameters complete: Input sequence registered but structural context matches no dynamic inventory SKU overrides. Request general marketplace support values.";
+                const normalizedLexicon = stringLiteralQuery.toLowerCase();
+
+                if(normalizedLexicon.includes('deal') || normalizedLexicon.includes('price') || normalizedLexicon.includes('cost')) {
+                    structuredAiReply = "Target database localization query identified. General marketplace values calculated automatically in **Indian Rupees (₹)** applying structural conversion factors. Current baseline focus highlight: **SRP Audio-Matrix Pro Headphones (₹20,874)**.";
+                } else if(normalizedLexicon.includes('shipping') || normalizedLexicon.includes('india') || normalizedLexicon.includes('delhi') || normalizedLexicon.includes('noida')) {
+                    structuredAiReply = "Fulfillment vectors configured optimally for domestic cargo tracking across state borders within India. Transit delivery arrays scale efficiently via priority air infrastructure nodes.";
                 }
 
-                chatBox.innerHTML += `<div class="bg-slate-900 border border-gray-800 p-3 rounded-xl max-w-xs shadow-md leading-relaxed text-gray-300"><strong class="text-brand-primary font-black uppercase tracking-widest block text-[10px] mb-1">Subh Core System Response:</strong>${aiReply}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
+                interactionTerminalBox.innerHTML += `
+                    <div class="bg-slate-800 p-3.5 rounded-xl max-w-xl text-xs text-slate-200 border border-slate-700/60 leading-relaxed">
+                        <span class="text-blue-400 font-bold block mb-1"><i class="fa-solid fa-robot"></i> Subh AI Agent response:</span>
+                        ${structuredAiReply}
+                    </div>
+                `;
+                interactionTerminalBox.scrollTop = interactionTerminalBox.scrollHeight;
+            }, 650);
         }
 
-        // Security Panel Administration Handlers
+        // Modal Disclosure Dynamic Views Framework Controller
+        function toggleUtilityModal(modalTargetMode) {
+            const layoutOverlay = document.getElementById('utility-disclosure-modal');
+            const internalSlot = document.getElementById('utility-modal-content-anchor');
+            
+            if(!modalTargetMode) {
+                layoutOverlay.classList.remove('flex');
+                layoutOverlay.classList.add('hidden');
+                return;
+            }
+
+            if(modalTargetMode === 'privacy') {
+                internalSlot.innerHTML = `
+                    <h3 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider mb-2">SRP Shopping Integrated Privacy Directive Protocols</h3>
+                    <p class="font-bold text-blue-600 dark:text-blue-400">Operational Policy Tracking Framework Index Ref: IN-2026-V1</p>
+                    <p>This master legal directive statement establishes how user data indices, tracking logs, and local transaction metrics are compiled, aggregated, and stored securely across regional digital network structures managed inside the jurisdiction of India.</p>
+                    <p class="font-bold mt-4 text-slate-800 dark:text-slate-200">1. Data Cryptographic Token Accumulation Policies</p>
+                    <p>We log operational metadata parameters including network client configurations, delivery location vectors, and secure checkout variables to optimize cross-border merchant processing tasks. No plain-text transactional parameters pass verification barriers without end-to-end socket tunneling protections active.</p>
+                    <p class="font-bold mt-4 text-slate-800 dark:text-slate-200">2. Regional Third-Party Ledger Integrations</p>
+                    <p>Logistics address vectors are distributed to authenticated freight distribution clearinghouses exclusively to execute timely shipping routines. Third-party actors retain no administrative ownership paths over client interaction profiles.</p>
+                `;
+            } else if(modalTargetMode === 'about') {
+                internalSlot.innerHTML = `
+                    <h3 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider mb-2">About SRP Shopping Platforms & Engineering Architecture</h3>
+                    <p class="font-bold text-blue-600 dark:text-blue-400">Platform Classification: Multi-Vendor Industrial Digital Marketplace</p>
+                    <p>SRP Shopping represents an elite ecosystem model built to provide high-performance business interfaces for global merchant distribution vectors and commercial consumers looking for transaction accuracy.</p>
+                    <p class="font-bold mt-4 text-slate-800 dark:text-slate-200">Corporate Innovation Vision</p>
+                    <p>Our infrastructure coordinates low-latency client browser rendering routines with real-time conversion matrices to handle localized pricing dynamics natively. Backed by automated tracking algorithms, the ecosystem ensures high uptime across global operational networks.</p>
+                `;
+            }
+
+            layoutOverlay.classList.remove('hidden');
+            layoutOverlay.classList.add('flex');
+        }
+
+        // Security Modals Intercept Handling Routines
         function openAdminModal() {
-            document.getElementById('admin-modal').classList.remove('hidden');
-            document.getElementById('admin-modal').classList.add('flex');
+            document.getElementById('admin-intercept-dialog').classList.remove('hidden');
+            document.getElementById('admin-intercept-dialog').classList.add('flex');
         }
 
         function closeAdminModal() {
-            document.getElementById('admin-modal').classList.remove('flex');
-            document.getElementById('admin-modal').classList.add('hidden');
-            document.getElementById('admin-error-msg').classList.add('hidden');
-            document.getElementById('admin-pass-input').value = '';
+            document.getElementById('admin-intercept-dialog').classList.remove('flex');
+            document.getElementById('admin-intercept-dialog').classList.add('hidden');
+            document.getElementById('admin-validation-error-prompt').classList.add('hidden');
+            document.getElementById('admin-security-passkey-field').value = '';
         }
 
-        function verifyAdminCredentials() {
-            const secretKey = document.getElementById('admin-pass-input').value;
-            if(secretKey === "admin123" || secretKey === "srp777") {
+        function processAdminAuthorizationSequence() {
+            const verificationInputText = document.getElementById('admin-security-passkey-field').value;
+            // Cross-checking against system administrative lock override values
+            if(verificationInputText === "admin123" || verificationInputText === "srp777") {
                 closeAdminModal();
-                alert("Security handshake complete. Authorization override token validated successfully.");
+                alert("Cryptographic access passkey authenticated. Opening core tracking management viewports...");
                 showPage('seller-hub');
             } else {
-                document.getElementById('admin-error-msg').classList.remove('hidden');
+                document.getElementById('admin-validation-error-prompt').classList.remove('hidden');
             }
         }
     </script>
