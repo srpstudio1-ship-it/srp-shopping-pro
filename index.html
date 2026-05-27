@@ -338,13 +338,15 @@ cursor:pointer;
 <div class="bottom-nav">
 <div>Home</div>
 <div>Account</div>
-<div>Cart</div>
+<div onclick="openCart()">Cart</div>
 <div>Subh AI</div>
 <div>Seller</div>
 </div>
 
 <script>
-
+function openCart(){
+window.location.href = "cart.html";
+}
 function openAdmin(){
 let pass = prompt("Enter Admin Password:");
 if(pass === "admin123"){
