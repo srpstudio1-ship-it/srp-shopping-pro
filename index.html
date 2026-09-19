@@ -1,9 +1,869 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SRP Shopping</title><link rel="stylesheet" href="/assets/style.css"></head><body>
-<div class="top">🚚 Free delivery on orders above ₹999 <span>Sell on SRP • Help • Download App</span></div>
-<header><a class="logo" href="/">SRP<span>SHOPPING</span></a><div class="search"><input id="search" placeholder="Search for products, brands and more"><button onclick="loadProducts()">Search</button></div><nav><button onclick="openLogin()">Account</button><a href="/seller.html">Become a Seller</a><button onclick="cart()">Cart <b id="cartCount">0</b></button></nav></header>
-<div class="cats" id="cats"></div>
-<section class="hero"><div><small>SRP SHOPPING MARKETPLACE</small><h1>Everything you need.<br><strong>One trusted marketplace.</strong></h1><p>Shop from verified sellers across fashion, electronics, home, beauty and more.</p><button class="primary" onclick="document.getElementById('products').scrollIntoView()">Shop Now</button></div><div class="hero-art"><div class="deal">MEGA<br><b>DEALS</b><small>UP TO 70% OFF</small></div></div></section>
-<div class="strip"><span>⚡ Daily Deals</span><span>✓ Verified Sellers</span><span>↻ Easy Returns</span><span>🔒 Secure Checkout</span><span>₹ Free shipping above ₹999</span></div>
-<main><div class="section-head"><div><small>CURATED FOR YOU</small><h2>Trending Products</h2></div><select id="sort" onchange="loadProducts()"><option value="">Sort</option><option value="rating">Top Rated</option><option value="priceLow">Price: Low to High</option><option value="priceHigh">Price: High to Low</option></select></div><div class="grid" id="products"></div></main>
-<div id="toast"></div><div id="modal"></div><footer><div><b>SRP SHOPPING</b><p>Indian multi-vendor commerce, built for customers and sellers.</p></div><div><b>Customer Care</b><p>Orders · Returns · Payments · Help Center</p></div><div><b>For Sellers</b><p>Seller registration · Seller dashboard · Business tools</p></div><div><b>Company</b><p>About · Careers · Privacy · Terms</p></div></footer>
-<script src="/assets/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRP Shopping Pro - Multi-Vendor & Wholesale Hub</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --fk-blue: #2874f0;
+            --fk-yellow: #ffe11b;
+            --fk-orange: #fb641b;
+            --bg-color: #f1f3f6;
+            --text-main: #212121;
+            --text-light: #878787;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        /* --- AMAZON-INSPIRED HEADER & NAVIGATION --- */
+        header {
+            background-color: var(--fk-blue);
+            color: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .logo-area h1 {
+            font-size: 22px;
+            font-weight: bold;
+            font-style: italic;
+            color: var(--white);
+        }
+
+        .logo-area span {
+            font-size: 10px;
+            color: var(--fk-yellow);
+            letter-spacing: 1px;
+        }
+
+        .search-bar {
+            flex: 1;
+            display: flex;
+            max-width: 600px;
+            background: var(--white);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            background: var(--fk-yellow);
+            border: none;
+            padding: 0 20px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-weight: bold;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-btn {
+            background: var(--white);
+            color: var(--fk-blue);
+            border: none;
+            padding: 8px 18px;
+            font-weight: bold;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Sub Navigation Menu */
+        .sub-nav {
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 5%;
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .sub-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .sub-nav a:hover {
+            color: var(--fk-blue);
+        }
+
+        /* --- CONTAINER VIEWS --- */
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* --- HOME & PRODUCT GRID (Flipkart Card Style + DeoDap Wholesale) --- */
+        .banner {
+            background: linear-gradient(135deg, #2874f0, #1652b1);
+            color: var(--white);
+            padding: 40px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .banner h2 { font-size: 28px; margin-bottom: 10px; }
+        .banner p { font-size: 14px; opacity: 0.9; }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 4px;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .wholesale-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--fk-orange);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .vendor-tag {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .current-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .original-price {
+            font-size: 13px;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .bulk-tier {
+            font-size: 11px;
+            color: #388e3c;
+            background: #e8f5e9;
+            padding: 4px 6px;
+            border-radius: 2px;
+            margin-bottom: 10px;
+        }
+
+        .btn-add {
+            background: var(--fk-yellow);
+            border: none;
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 2px;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #f4d000;
+        }
+
+        /* --- MEESHO VENDOR PORTAL --- */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        .dashboard-sidebar {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            height: fit-content;
+        }
+
+        .dashboard-sidebar h3 {
+            font-size: 16px;
+            color: var(--fk-blue);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .stat-card h4 { font-size: 13px; color: var(--text-light); margin-bottom: 8px; }
+        .stat-card p { font-size: 24px; font-weight: bold; color: var(--fk-blue); }
+
+        .form-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .form-card h3 { margin-bottom: 15px; font-size: 18px; }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--fk-blue);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-radius: 2px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* --- CART & DEODAP SHIPPING & CHECKOUT VIEW --- */
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .cart-items, .checkout-box {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .cart-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .cart-item-info img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .shipping-options {
+            margin: 15px 0;
+        }
+
+        .shipping-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .checkout-summary {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        /* Notification Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 2000;
+            display: none;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-container, .cart-layout {
+                grid-template-columns: 1fr;
+            }
+            .header-main {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AMAZON-INSPIRED HEADER -->
+    <header>
+        <div class="header-main">
+            <div class="logo-area" onclick="switchView('home')">
+                <h1>SRP SHOPPING</h1>
+                <span>PRO VENDOR & WHOLESALE HUB</span>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for products, wholesale bundles, vendors...">
+                <button onclick="searchProducts()"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="nav-actions">
+                <a class="nav-link" onclick="switchView('vendor-portal')">
+                    <i class="fa fa-store"></i> Become a Vendor
+                </a>
+                <button class="nav-btn" onclick="switchView('cart')">
+                    <i class="fa fa-shopping-cart"></i> Cart <span id="cartCount">(0)</span>
+                </button>
+            </div>
+        </div>
+        <!-- SUB NAV -->
+        <div class="sub-nav">
+            <a href="#" onclick="filterCategory('All')">All Categories</a>
+            <a href="#" onclick="filterCategory('Electronics')">Electronics</a>
+            <a href="#" onclick="filterCategory('Home & Kitchen')">Home & Kitchen (DeoDap Style)</a>
+            <a href="#" onclick="filterCategory('Fashion')">Fashion & Apparel</a>
+            <a href="#" onclick="filterCategory('Wholesale Lots')">Wholesale Bulk Deals</a>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="container">
+
+        <!-- VIEW 1: HOME / SHOPFRONT -->
+        <div id="home-view" class="view-section active">
+            <div class="banner">
+                <div>
+                    <h2>Direct Wholesale & Multi-Vendor Superstore</h2>
+                    <p>Amazon Layout UX + Flipkart Pricing + Meesho Vendor Network + DeoDap Wholesale Rates.</p>
+                </div>
+                <button class="nav-btn" onclick="switchView('vendor-portal')">Start Selling Today</button>
+            </div>
+
+            <div class="section-title">
+                <span>Trending Products & Wholesale Deals</span>
+                <span style="font-size: 13px; color: var(--text-light);">Showing Verified Supplier Inventory</span>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- Products dynamically inserted via JavaScript -->
+            </div>
+        </div>
+
+        <!-- VIEW 2: MEESHO VENDOR PORTAL -->
+        <div id="vendor-portal-view" class="view-section">
+            <div class="dashboard-container">
+                <div class="dashboard-sidebar">
+                    <h3>Vendor Control Panel</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+                        <li><a href="#" style="color: var(--fk-blue); text-decoration: none; font-weight: bold;"><i class="fa fa-chart-line"></i> Dashboard Stats</a></li>
+                        <li><a href="#" style="color: var(--text-main); text-decoration: none;" onclick="switchView('home')"><i class="fa fa-box"></i> View Storefront</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Total Earnings</h4>
+                            <p>₹48,250</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Active Listings</h4>
+                            <p id="vendorListingCount">4</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Pending Orders</h4>
+                            <p>12</p>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h3><i class="fa fa-plus-circle"></i> Add New Product (Meesho/DeoDap Style)</h3>
+                        <form id="addችProductForm" onsubmit="handleVendorAddProduct(event)">
+                            <div class="form-group">
+                                <label>Product Title</label>
+                                <input type="text" id="vTitle" required placeholder="e.g. 360 Rotating Mop / Smart Watch">
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="vCategory">
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Home & Kitchen">Home & Kitchen</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Wholesale Lots">Wholesale Lots</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Selling Price (₹)</label>
+                                <input type="number" id="vPrice" required placeholder="299">
+                            </div>
+                            <div class="form-group">
+                                <label>Wholesale / Bulk Tier Price (₹)</label>
+                                <input type="number" id="vBulkPrice" required placeholder="249 (Min 5 pcs)">
+                            </div>
+                            <div class="form-group">
+                                <label>Image URL</label>
+                                <input type="url" id="vImage" required placeholder="https://images.unsplash.com/photo-...">
+                            </div>
+                            <div class="form-group">
+                                <label>Supplier / Vendor Name</label>
+                                <input type="text" id="vVendorName" required placeholder="SRP Direct Wholesale">
+                            </div>
+                            <button type="submit" class="btn-primary">Publish Product to Storefront</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: CART & DEODAP CHECKOUT -->
+        <div id="cart-view" class="view-section">
+            <h2 style="margin-bottom: 20px;">Shopping Cart & Wholesale Checkout</h2>
+            <div class="cart-layout">
+                <div class="cart-items" id="cartItemsContainer">
+                    <!-- Cart items loaded dynamically -->
+                </div>
+                <div class="checkout-box">
+                    <h3>Shipping & Payment Options</h3>
+                    <div class="shipping-options">
+                        <label class="shipping-option">
+                            <input type="radio" name="shipping" checked> Standard Express Shipping (Free over ₹500) - ₹40
+                        </label>
+                        <label class="shipping-option">
+                            <input type="radio" name="shipping"> DeoDap Bulk Direct Dispatch (2-3 days) - ₹90
+                        </label>
+                    </div>
+
+                    <h3 style="margin-top: 15px; font-size: 15px;">Payment Method</h3>
+                    <div class="shipping-options">
+                        <label class="shipping-option">
+                            <input type="radio" name="payment" checked> Cash on Delivery (COD Available)
+                        </label>
+                        <label class="shipping-option">
+                            <input type="radio" name="payment"> UPI / Online Payment (Extra 5% Off)
+                        </label>
+                    </div>
+
+                    <div class="checkout-summary">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal">₹0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span>₹40</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total Amount</span>
+                            <span id="cartTotal">₹40</span>
+                        </div>
+                        <button class="btn-primary" style="margin-top: 15px; background: var(--fk-yellow); color: var(--text-main);" onclick="checkoutOrder()">Place Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast Popup Notification -->
+    <div id="toast">Item added successfully!</div>
+
+    <!-- JAVASCRIPT SYSTEM LOGIC -->
+    <script>
+        // Initial Mock Database combining Amazon Layout, Flipkart colors, Meesho vendors, DeoDap wholesale
+        let products = [
+            {
+                id: 1,
+                title: "360 Rotating Floor Mop with Microfiber Refill",
+                category: "Home & Kitchen",
+                price: 349,
+                originalPrice: 999,
+                bulkPrice: 299,
+                minBulk: "Min 5 pcs",
+                image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80",
+                vendor: "DeoDap Direct House"
+            },
+            {
+                id: 2,
+                title: "Wireless Bluetooth Earbuds with ANC Base",
+                category: "Electronics",
+                price: 699,
+                originalPrice: 2499,
+                bulkPrice: 599,
+                minBulk: "Min 10 pcs",
+                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=80",
+                vendor: "SRP Tech Wholesale"
+            },
+            {
+                id: 3,
+                title: "Multipurpose Vegetable & Fruit Chopper",
+                category: "Home & Kitchen",
+                price: 199,
+                originalPrice: 599,
+                bulkPrice: 159,
+                minBulk: "Min 12 pcs",
+                image: "https://images.unsplash.com/photo-1584990347426-c785bc675753?w=400&q=80",
+                vendor: "Global Traders"
+            },
+            {
+                id: 4,
+                title: "Men's Casual Cotton Slim Fit Shirt",
+                category: "Fashion",
+                price: 449,
+                originalPrice: 1299,
+                bulkPrice: 399,
+                minBulk: "Min 6 pcs",
+                image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=80",
+                vendor: "Rajpurohit Apparels"
+            }
+        ];
+
+        let cart = [];
+
+        // Switch application views
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            if(viewName === 'home') document.getElementById('home-view').classList.add('active');
+            if(viewName === 'vendor-portal') document.getElementById('vendor-portal-view').classList.add('active');
+            if(viewName === 'cart') {
+                document.getElementById('cart-view').classList.add('active');
+                renderCart();
+            }
+            window.scrollTo(0,0);
+        }
+
+        // Render products onto grid
+        function renderProducts(list = products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            
+            if(list.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-light);">No products found.</p>`;
+                return;
+            }
+
+            list.forEach(item => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <span class="wholesale-badge">Wholesale Deal</span>
+                        <img src="${item.image}" alt="${item.title}" class="product-img">
+                        <div>
+                            <div class="vendor-tag"><i class="fa fa-store"></i> ${item.vendor}</div>
+                            <div class="product-title">${item.title}</div>
+                            <div class="price-box">
+                                <span class="current-price">₹${item.price}</span>
+                                <span class="original-price">₹${item.originalPrice}</span>
+                            </div>
+                            <div class="bulk-tier">Bulk Rate: ₹${item.bulkPrice} (${item.minBulk})</div>
+                        </div>
+                        <button class="btn-add" onclick="addToCart(${item.id})">ADD TO CART</button>
+                    </div>
+                `;
+            });
+            document.getElementById('vendorListingCount').innerText = products.length;
+        }
+
+        // Add item to cart
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const cartItem = cart.find(c => c.id === id);
+            if(cartItem) {
+                cartItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartCount();
+            showToast(`Added to Cart: ${product.title}`);
+        }
+
+        // Update Cart badge counter
+        function updateCartCount() {
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').innerText = `(${totalCount})`;
+        }
+
+        // Render Cart View
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            container.innerHTML = '';
+
+            if(cart.length === 0) {
+                container.innerHTML = `<p style="padding: 20px; text-align:center; color:var(--text-light);">Your shopping cart is empty.</p>`;
+                document.getElementById('cartSubtotal').innerText = '₹0';
+                document.getElementById('cartTotal').innerText = '₹40';
+                return;
+            }
+
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                container.innerHTML += `
+                    <div class="cart-item-row">
+                        <div class="cart-item-info">
+                            <img src="${item.image}" alt="">
+                            <div>
+                                <h4 style="font-size: 14px; margin-bottom: 4px;">${item.title}</h4>
+                                <p style="font-size: 12px; color: var(--text-light);">Supplier: ${item.vendor}</p>
+                                <p style="font-size: 13px; font-weight: bold; margin-top: 4px;">₹${item.price} x ${item.qty}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <button style="padding: 5px 10px; background: #ddd; border: none; cursor:pointer;" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span style="margin: 0 10px; font-weight: bold;">${item.qty}</span>
+                            <button style="padding: 5px 10px; background: #ddd; border: none; cursor:pointer;" onclick="changeQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cartSubtotal').innerText = `₹${subtotal}`;
+            document.getElementById('cartTotal').innerText = `₹${subtotal > 500 ? subtotal : subtotal + 40}`;
+        }
+
+        // Change quantity in cart
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) {
+                    cart = cart.filter(c => c.id !== id);
+                }
+            }
+            updateCartCount();
+            renderCart();
+        }
+
+        // Vendor form submission (Meesho feature)
+        function handleVendorAddProduct(e) {
+            e.preventDefault();
+            const newProduct = {
+                id: products.length + 1,
+                title: document.getElementById('vTitle').value,
+                category: document.getElementById('vCategory').value,
+                price: Number(document.getElementById('vPrice').value),
+                originalPrice: Number(document.getElementById('vPrice').value) * 2,
+                bulkPrice: Number(document.getElementById('vBulkPrice').value),
+                minBulk: "Min 5 pcs",
+                image: document.getElementById('vImage').value,
+                vendor: document.getElementById('vVendorName').value
+            };
+
+            products.unshift(newProduct);
+            renderProducts();
+            showToast("Product successfully published by vendor!");
+            document.getElementById('addችProductForm').reset();
+            switchView('home');
+        }
+
+        // Filter by category
+        function filterCategory(cat) {
+            if(cat === 'All') {
+                renderProducts(products);
+            } else {
+                const filtered = products.filter(p => p.category === cat);
+                renderProducts(filtered);
+            }
+        }
+
+        // Search bar functionality
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.title.toLowerCase().includes(query) || p.vendor.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        // Checkout simulation
+        function checkoutOrder() {
+            if(cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            alert("Order placed successfully via SRP Shopping Pro Gateway! Tracking ID generated.");
+            cart = [];
+            updateCartCount();
+            switchView('home');
+        }
+
+        // Toast alert helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        // Initial render on load
+        renderProducts();
+    </script>
+</body>
+</html>
