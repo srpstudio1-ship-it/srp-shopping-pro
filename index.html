@@ -1,1049 +1,1474 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRP Shopping - Ultimate Multi-Vendor Marketplace</title>
-    <!-- Tailwind CSS -->
+    <title>SRP Shopping Ultimate Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        flipkart: {
-                            blue: '#2874f0',
-                            yellow: '#ffe11b',
-                            orange: '#fb641b',
-                            dark: '#172337',
-                            green: '#388e3c'
-                        }
+                        flipkartBlue: '#2874f0',
+                        flipkartYellow: '#ffe11b',
+                        amazonOrange: '#ff9900',
+                        amazonDark: '#131921',
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome for Pro-grade Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes pulse-subtle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-        .animate-subtle { animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 h-full flex flex-col selection:bg-flipkart-blue selection:text-white">
+<body class="bg-gray-100 text-gray-800 antialiased selection:bg-flipkartBlue selection:text-white">
 
-    <!-- App Container -->
-    <div id="app" class="flex flex-col h-full w-full overflow-hidden">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Header will be dynamically rendered -->
+        <header id="mainHeader" class="sticky top-0 z-50 bg-flipkartBlue text-white shadow-md"></header>
         
-        <!-- Top Navigation Bar (Flipkart Style) -->
-        <header class="bg-flipkart-blue text-white shadow-md sticky top-0 z-50 flex-none">
-            <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
-                <!-- Logo & Brand -->
-                <div class="flex items-center gap-6">
-                    <div class="cursor-pointer flex flex-col items-start leading-none" onclick="app.switchView('home')">
-                        <span class="text-xl font-black italic tracking-wider text-flipkart-yellow">SRP <span class="text-white text-xs not-italic uppercase bg-flipkart-orange px-1 rounded">Shopping</span></span>
-                        <span class="text-[10px] text-gray-200 italic hover:underline flex items-center gap-0.5">Explore <span class="text-flipkart-yellow font-bold">Plus</span> <i class="fa-solid fa-plus text-[8px] text-flipkart-yellow"></i></span>
-                    </div>
-                </div>
-
-                <!-- Search Bar -->
-                <div class="flex-1 max-w-2xl relative hidden md:block">
-                    <div class="flex items-center bg-white rounded-sm shadow-inner px-3 py-1.5 text-gray-800">
-                        <input type="text" id="searchInput" placeholder="Search for products, brands and more" class="w-full text-sm outline-none bg-transparent" oninput="app.handleSearchInput(this.value)">
-                        <button class="text-flipkart-blue hover:text-blue-700 px-2"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
-                    <!-- Search Autocomplete Dropdown -->
-                    <div id="searchSuggestions" class="absolute top-full left-0 right-0 bg-white text-gray-800 shadow-xl rounded-b-sm hidden z-50 max-h-80 overflow-y-auto"></div>
-                </div>
-
-                <!-- Navigation Actions -->
-                <div class="flex items-center gap-5 sm:gap-8 text-sm font-semibold">
-                    <!-- Login / Account Dropdown -->
-                    <div class="relative group">
-                        <button onclick="app.openAuthModal()" class="bg-white text-flipkart-blue px-5 py-1.5 rounded-sm font-bold shadow-sm hover:bg-gray-50 flex items-center gap-2">
-                            <i class="fa-regular fa-user"></i> <span id="authButtonText">Login</span>
-                        </button>
-                    </div>
-
-                    <!-- Become a Seller -->
-                    <button onclick="app.switchView('seller-dashboard')" class="hidden lg:flex items-center gap-1.5 hover:text-flipkart-yellow transition">
-                        <i class="fa-solid fa-store"></i> Become a Seller
-                    </button>
-
-                    <!-- More Options -->
-                    <div class="relative group hidden sm:block cursor-pointer">
-                        <div class="flex items-center gap-1 hover:text-flipkart-yellow py-1">
-                            <span>More</span> <i class="fa-solid fa-angle-down text-xs"></i>
-                        </div>
-                        <div class="absolute right-0 top-full w-56 bg-white text-gray-800 shadow-xl rounded-sm hidden group-hover:block py-2 z-50 text-xs border border-gray-100">
-                            <a href="#" onclick="app.switchView('admin-panel')" class="px-4 py-2 hover:bg-blue-50 flex items-center gap-3 text-gray-700 font-medium"><i class="fa-solid fa-shield-halved text-flipkart-blue w-4"></i> Admin Panel (50 Features)</a>
-                            <a href="#" onclick="app.switchView('manage-account')" class="px-4 py-2 hover:bg-blue-50 flex items-center gap-3 text-gray-700 font-medium"><i class="fa-solid fa-user-gear text-flipkart-blue w-4"></i> Manage Account (40 Feats)</a>
-                            <a href="#" onclick="app.openWalletModal()" class="px-4 py-2 hover:bg-blue-50 flex items-center gap-3 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-flipkart-blue w-4"></i> SRP Wallet & UPI</a>
-                            <a href="#" onclick="app.switchView('live-tracker')" class="px-4 py-2 hover:bg-blue-50 flex items-center gap-3 text-gray-700 font-medium"><i class="fa-solid fa-truck-fast text-flipkart-blue w-4"></i> Shiprocket Live Tracker</a>
-                            <a href="#" onclick="app.openCustomerSupport()" class="px-4 py-2 hover:bg-blue-50 flex items-center gap-3 text-gray-700 font-medium"><i class="fa-solid fa-headset text-flipkart-blue w-4"></i> 24x7 Customer Care</a>
-                        </div>
-                    </div>
-
-                    <!-- Cart -->
-                    <button onclick="app.switchView('cart')" class="flex items-center gap-2 hover:text-flipkart-yellow relative">
-                        <i class="fa-solid fa-cart-shopping text-lg"></i>
-                        <span class="hidden sm:inline">Cart</span>
-                        <span id="cartBadge" class="absolute -top-2 -right-2 bg-flipkart-orange text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-flipkart-blue">0</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Mobile Search Bar -->
-            <div class="px-4 pb-2 md:hidden">
-                <div class="flex items-center bg-white rounded-sm shadow-inner px-3 py-1.5 text-gray-800">
-                    <input type="text" placeholder="Search for products, brands and more" class="w-full text-xs outline-none bg-transparent" oninput="app.handleSearchInput(this.value)">
-                    <button class="text-flipkart-blue"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Sub-Categories Bar (Home Features 1 to 10 Quick Access) -->
-        <nav class="bg-white shadow-sm border-b border-gray-200 flex-none overflow-x-auto hide-scrollbar">
-            <div class="max-w-7xl mx-auto px-4 flex items-center justify-between py-2 text-xs font-semibold text-gray-700 gap-6 whitespace-nowrap">
-                <button onclick="app.filterCategory('all')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-flipkart-blue group-hover:bg-flipkart-blue group-hover:text-white transition"><i class="fa-solid fa-border-all"></i></div>
-                    <span>All Products</span>
-                </button>
-                <button onclick="app.filterCategory('Electronics')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-flipkart-blue group-hover:bg-flipkart-blue group-hover:text-white transition"><i class="fa-solid fa-laptop"></i></div>
-                    <span>Electronics</span>
-                </button>
-                <button onclick="app.filterCategory('Fashion')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-flipkart-blue group-hover:bg-flipkart-blue group-hover:text-white transition"><i class="fa-solid fa-shirt"></i></div>
-                    <span>Fashion & Apparel</span>
-                </button>
-                <button onclick="app.filterCategory('Grocery')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-flipkart-blue group-hover:bg-flipkart-blue group-hover:text-white transition"><i class="fa-solid fa-basket-shopping"></i></div>
-                    <span>Grocery (Supermart)</span>
-                </button>
-                <button onclick="app.filterCategory('Home')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-flipkart-blue group-hover:bg-flipkart-blue group-hover:text-white transition"><i class="fa-solid fa-couch"></i></div>
-                    <span>Home & Furniture</span>
-                </button>
-                <button onclick="app.filterCategory('Appliances')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-flipkart-blue group-hover:bg-flipkart-blue group-hover:text-white transition"><i class="fa-solid fa-tv"></i></div>
-                    <span>Appliances</span>
-                </button>
-                <button onclick="app.switchView('live-tracker')" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition"><i class="fa-solid fa-truck-fast"></i></div>
-                    <span>Shiprocket Live</span>
-                </button>
-                <button onclick="app.openWalletModal()" class="flex flex-col items-center gap-1 hover:text-flipkart-blue group">
-                    <div class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition"><i class="fa-solid fa-wallet"></i></div>
-                    <span>SRP UPI / Wallet</span>
-                </button>
-            </div>
-        </nav>
-
         <!-- Main Content Area -->
-        <main id="mainContent" class="flex-1 overflow-y-auto bg-gray-100 p-2 sm:p-4">
-            <!-- Dynamic Views injected here by app JS -->
-        </main>
+        <main id="mainContent" class="flex-grow container mx-auto px-4 py-6 max-w-7xl"></main>
 
-        <!-- Footer (Flipkart / Amazon Pro Style) -->
-        <footer class="bg-flipkart-dark text-gray-300 text-xs py-8 px-4 border-t border-gray-800 flex-none">
-            <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6 mb-8 border-b border-gray-700 pb-8">
-                <div>
-                    <h4 class="text-gray-400 uppercase font-bold mb-3 tracking-wider text-[11px]">ABOUT SRP</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="hover:underline">Contact Us</a></li>
-                        <li><a href="#" class="hover:underline">About Us</a></li>
-                        <li><a href="#" class="hover:underline">Careers</a></li>
-                        <li><a href="#" class="hover:underline">SRP Stories & Press</a></li>
-                        <li><a href="#" class="hover:underline">Corporate Information</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-gray-400 uppercase font-bold mb-3 tracking-wider text-[11px]">HELP & SUPPORT</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="hover:underline">Payments & UPI</a></li>
-                        <li><a href="#" class="hover:underline">Shipping (Shiprocket)</a></li>
-                        <li><a href="#" class="hover:underline">Cancellation & Returns</a></li>
-                        <li><a href="#" class="hover:underline">FAQ & Claims</a></li>
-                        <li><a href="#" class="hover:underline">Report Infringement</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-gray-400 uppercase font-bold mb-3 tracking-wider text-[11px]">POLICY</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="hover:underline">Return Policy</a></li>
-                        <li><a href="#" class="hover:underline">Terms Of Use</a></li>
-                        <li><a href="#" class="hover:underline">Security</a></li>
-                        <li><a href="#" class="hover:underline">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:underline">EPR Compliance</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-gray-400 uppercase font-bold mb-3 tracking-wider text-[11px]">SOCIAL</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="hover:underline"><i class="fa-brands fa-facebook text-flipkart-blue mr-1"></i> Facebook</a></li>
-                        <li><a href="#" class="hover:underline"><i class="fa-brands fa-twitter text-sky-400 mr-1"></i> Twitter</a></li>
-                        <li><a href="#" class="hover:underline"><i class="fa-brands fa-youtube text-red-500 mr-1"></i> YouTube</a></li>
-                        <li><a href="#" class="hover:underline"><i class="fa-brands fa-instagram text-pink-500 mr-1"></i> Instagram</a></li>
-                    </ul>
-                </div>
-                <div class="col-span-2 md:col-span-1">
-                    <h4 class="text-gray-400 uppercase font-bold mb-3 tracking-wider text-[11px]">Registered Office Address:</h4>
-                    <p class="text-gray-400 leading-relaxed mb-3">
-                        SRP Shopping Internet Private Limited,<br>
-                        Buildings Alyssa, Begonia & Clove Embassy Tech Village,<br>
-                        Outer Ring Road, Devarabeesanahalli Village,<br>
-                        Bengaluru, 560103, Karnataka, India<br>
-                        UPI ID: <span class="text-flipkart-yellow font-bold">8233615852@ptaxis</span>
-                    </p>
-                    <div class="bg-gray-800 p-2 rounded text-[11px] border border-gray-700">
-                        <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> SSL Secured</span> | Razorpay Pro Active
-                    </div>
-                </div>
-            </div>
-            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-gray-500 gap-4 text-center">
-                <div class="flex items-center gap-6 flex-wrap justify-center">
-                    <span><i class="fa-solid fa-store text-flipkart-orange"></i> Become a Seller</span>
-                    <span><i class="fa-solid fa-bullhorn text-flipkart-yellow"></i> Advertise</span>
-                    <span><i class="fa-solid fa-gift text-pink-400"></i> Gift Cards</span>
-                    <span><i class="fa-solid fa-circle-question text-sky-400"></i> Help Center</span>
-                </div>
-                <div>&copy; 2007-2026 SRPShopping.com. All Rights Reserved.</div>
-            </div>
-        </footer>
-
-        <!-- Authentication / Login Modal -->
-        <div id="authModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col md:flex-row">
-                <div class="bg-flipkart-blue p-8 text-white md:w-2/5 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3">Login</h3>
-                        <p class="text-xs text-blue-100 leading-relaxed">Get access to your Orders, Wishlist and Recommendations.</p>
-                    </div>
-                    <div class="mt-8 text-center">
-                        <i class="fa-solid fa-bag-shopping text-6xl text-flipkart-yellow"></i>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 relative">
-                    <button onclick="app.closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
-                    <div id="authFormContainer" class="mt-2 space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Enter Email / Mobile number</label>
-                            <input type="text" id="authInputVal" class="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-flipkart-blue" placeholder="e.g. 8233615852 or user@srp.com">
-                        </div>
-                        <p class="text-[11px] text-gray-500">By continuing, you agree to SRP's <span class="text-flipkart-blue underline cursor-pointer">Terms of Use</span> and <span class="text-flipkart-blue underline cursor-pointer">Privacy Policy</span>.</p>
-                        <button onclick="app.handleLoginSubmit()" class="w-full bg-flipkart-orange hover:bg-orange-600 text-white font-bold py-2.5 rounded shadow transition text-sm">CONTINUE</button>
-                        <div class="text-center pt-2">
-                            <button onclick="app.toggleAuthMode()" class="text-xs text-flipkart-blue font-semibold hover:underline">New to SRP? Create an account</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SRP Wallet & UPI Payment Modal -->
-        <div id="walletModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden">
-                <div class="bg-flipkart-dark text-white p-4 flex items-center justify-between">
-                    <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-wallet text-flipkart-yellow"></i> SRP Wallet & UPI Gateway</h3>
-                    <button onclick="app.closeWalletModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-                </div>
-                <div class="p-6 space-y-6">
-                    <div class="bg-gradient-to-r from-blue-600 to-flipkart-blue text-white p-4 rounded-lg shadow-md flex justify-between items-center">
-                        <div>
-                            <p class="text-xs text-blue-100">SRP Pay Balance</p>
-                            <h4 id="walletBalanceDisplay" class="text-2xl font-black">₹4,850.00</h4>
-                            <p class="text-[10px] text-flipkart-yellow mt-1">Linked UPI: 8233615852@ptaxis</p>
-                        </div>
-                        <button onclick="app.addMoneyToWalletPrompt()" class="bg-flipkart-yellow text-gray-900 px-4 py-2 rounded text-xs font-bold hover:bg-yellow-400 transition shadow"><i class="fa-solid fa-plus"></i> Add Money</button>
-                    </div>
-
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-600 uppercase mb-2">Quick UPI Transfer or Pay</h4>
-                        <div class="bg-gray-50 p-3 rounded border border-gray-200 space-y-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-gray-700">Official Merchant UPI ID:</span>
-                                <span class="text-xs bg-flipkart-blue text-white px-2 py-0.5 rounded font-mono font-bold">8233615852@ptaxis</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-gray-700">Razorpay Link:</span>
-                                <a href="https://rzp.io/rzp/juTBnc4Q" target="_blank" class="text-xs text-flipkart-blue underline font-semibold">rzp.io/rzp/juTBnc4Q</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-600 uppercase mb-2">Wallet Transaction History</h4>
-                        <div id="walletTxList" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-gray-100">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Notification Toast Container -->
-        <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
+        <!-- Footer -->
+        <footer id="mainFooter" class="bg-gray-900 text-gray-300 mt-12 py-10 border-t border-gray-800"></footer>
     </div>
 
+    <!-- Global Modal Container -->
+    <div id="globalModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modalContent" class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative"></div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+
     <script>
-        // --- COMPREHENSIVE APPLICATION STATE & MOCK DATA ---
-        const appState = {
-            currentView: 'home',
-            currentUser: { name: 'Rahul Sharma', email: 'rahul@srp.com', phone: '8233615852', loggedIn: true, role: 'customer' },
+        const STORAGE_KEY = 'SRP_SHOPPING_ULTIMATE_DATA_V1';
+        
+        const defaultData = {
+            currentUser: {
+                id: 'USR-1001',
+                name: 'Rahul Sharma',
+                email: 'rahul.sharma@example.com',
+                phone: '+91 9876543210',
+                role: 'buyer', // buyer, seller, admin
+                avatar: 'https://placehold.co/150x150/2874f0/ffffff?text=RS',
+                walletBalance: 4500.00,
+                rewardCoins: 750,
+                addresses: [
+                    { id: 'ADD-1', name: 'Rahul Sharma', phone: '9876543210', pin: '302015', locality: 'Malviya Nagar', address: 'Flat 402, Royal Residency', city: 'Jaipur', state: 'Rajasthan', type: 'Home', default: true }
+                ],
+                wishlist: ['P001', 'P003', 'P007'],
+                savedCards: [
+                    { id: 'CARD-1', number: '•••• •••• •••• 4242', expiry: '12/28', bank: 'HDFC Bank', type: 'VISA' }
+                ],
+                upiIds: ['rahul@oksbi', '8233615852@ptaxis'],
+                notifications: [
+                    { id: 'NOTIF-1', title: 'Order Confirmed!', desc: 'Your order #ORD-9982 has been placed successfully.', time: '2 hours ago', read: false },
+                    { id: 'NOTIF-2', title: 'Wallet Credited', desc: 'Cashback of ₹150 added to your SRP Wallet.', time: '1 day ago', read: true }
+                ],
+                coupons: [
+                    { code: 'SRPFIRST500', discount: '₹500 OFF on min order ₹2000', min: 2000, off: 500 },
+                    { code: 'FESTIVE20', discount: '20% OFF up to ₹1000', min: 1000, off: 300 }
+                ]
+            },
             cart: [
-                { id: 1, name: 'Apple iPhone 15 Pro (128 GB) - Natural Titanium', price: 127999, originalPrice: 134900, discount: '5% off', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400', rating: 4.6, stock: 15, category: 'Electronics', vendor: 'Appario Retail', qty: 1 }
+                { productId: 'P001', quantity: 1, selectedVariant: '256GB / Midnight Black' }
             ],
-            wishlist: [2],
-            walletBalance: 4850.00,
-            walletTransactions: [
-                { id: 'TXN9981', type: 'Credit', amount: 5000, desc: 'Added via Razorpay UPI (8233615852@ptaxis)', date: '2026-03-20 14:22' },
-                { id: 'TXN9982', type: 'Debit', amount: 150, desc: 'Order #SRP-8849 Payment', date: '2026-03-21 10:05' }
-            ],
-            selectedCategory: 'all',
-            searchQuery: '',
-            selectedProduct: null,
             orders: [
-                { id: 'SRP-8849', date: '2026-03-21', total: 127999, status: 'Out for Delivery', courier: 'Shiprocket Express', trackingNo: 'SHP-99283741', items: ['Apple iPhone 15 Pro'], address: 'B-402, Prestige Towers, MG Road, Bangalore 560001' }
+                {
+                    id: 'ORD-9982',
+                    date: '2026-06-10 14:32',
+                    items: [{ productId: 'P001', name: 'UltraNexus 14 Pro Max', price: 79999, qty: 1, image: 'https://placehold.co/300x300/111827/ffffff?text=Phone' }],
+                    total: 79999,
+                    status: 'Shipped',
+                    courier: 'Shiprocket Express',
+                    trackingId: 'SRX-99842103',
+                    shippingSteps: [
+                        { title: 'Order Placed', time: '10 June, 02:32 PM', done: true },
+                        { title: 'Packed by Vendor', time: '10 June, 05:15 PM', done: true },
+                        { title: 'Shipped via Shiprocket', time: '11 June, 10:00 AM', done: true },
+                        { title: 'Out for Delivery', time: 'Expected 13 June', done: false },
+                        { title: 'Delivered', time: 'Pending', done: false }
+                    ],
+                    paymentMethod: 'Razorpay UPI (8233615852@ptaxis)',
+                    shippingAddress: 'Flat 402, Royal Residency, Malviya Nagar, Jaipur - 302015'
+                }
             ],
-            // 30 Seller Dashboard State items
-            sellerMetrics: { totalSales: 452900, pendingOrders: 12, activeProducts: 34, payoutDue: 89400 },
-            // 50 Admin Panel State items
-            adminMetrics: { totalUsers: 14200, totalVendors: 310, totalGMV: 18500000, commissionEarned: 925000 }
+            products: [
+                {
+                    id: 'P001',
+                    name: 'UltraNexus 14 Pro Max 5G Smartphone',
+                    category: 'Electronics',
+                    price: 79999,
+                    mrp: 99999,
+                    discount: '20% off',
+                    rating: 4.6,
+                    reviewsCount: 3420,
+                    image: 'https://placehold.co/400x400/2874f0/ffffff?text=UltraNexus+Phone',
+                    seller: 'ElectroWorld India',
+                    stock: 45,
+                    featured: true,
+                    description: 'Flagship 5G smartphone with 120Hz AMOLED display, Snapdragon 8 Gen 3 processor, 108MP triple camera setup, and 5000mAh battery with 120W fast charging.',
+                    variants: ['128GB / Space Gray', '256GB / Midnight Black', '512GB / Titanium Gold'],
+                    specs: { Brand: 'UltraNexus', Model: '14 Pro Max', RAM: '12 GB', OS: 'Android 16' }
+                },
+                {
+                    id: 'P002',
+                    name: 'AeroGlide Pro Wireless Noise Cancelling Headphones',
+                    category: 'Electronics',
+                    price: 4999,
+                    mrp: 9999,
+                    discount: '50% off',
+                    rating: 4.4,
+                    reviewsCount: 1820,
+                    image: 'https://placehold.co/400x400/374151/ffffff?text=Headphones',
+                    seller: 'SoundWave Gadgets',
+                    stock: 120,
+                    featured: true,
+                    description: 'Active Noise Cancellation up to 45dB, 60-hour battery life, ultra-soft memory foam cushions, and Hi-Res Audio certification.',
+                    variants: ['Matte Black', 'Pearl White', 'Navy Blue'],
+                    specs: { Type: 'Over-Ear', Battery: '60 Hours', Connectivity: 'Bluetooth 5.4' }
+                },
+                {
+                    id: 'P003',
+                    name: 'Urban Luxe Men\'s Slim Fit Cotton Formal Shirt',
+                    category: 'Fashion',
+                    price: 899,
+                    mrp: 2499,
+                    discount: '64% off',
+                    rating: 4.1,
+                    reviewsCount: 940,
+                    image: 'https://placehold.co/400x400/1e3a8a/ffffff?text=Formal+Shirt',
+                    seller: 'Apparel Hub Direct',
+                    stock: 200,
+                    featured: true,
+                    description: '100% breathable Egyptian cotton formal shirt tailored for supreme comfort during long office hours.',
+                    variants: ['White / 38 (S)', 'Blue / 40 (M)', 'Black / 42 (L)', 'Grey / 44 (XL)'],
+                    specs: { Material: '100% Cotton', Fit: 'Slim Fit', Collar: 'Spread' }
+                },
+                {
+                    id: 'P004',
+                    name: 'ErgoPrime Executive Mesh Office Chair with Lumbar Support',
+                    category: 'Home & Furniture',
+                    price: 6499,
+                    mrp: 14999,
+                    discount: '56% off',
+                    rating: 4.5,
+                    reviewsCount: 612,
+                    image: 'https://placehold.co/400x400/047857/ffffff?text=Office+Chair',
+                    seller: 'ComfortCraft Furnishing',
+                    stock: 30,
+                    featured: true,
+                    description: 'Ergonomic design with adjustable 3D armrests, pneumatic seat height adjustment, and breathable mesh back.',
+                    variants: ['All Black', 'Grey Mesh'],
+                    specs: { Material: 'Mesh & Steel', WeightCapacity: '150 kg' }
+                },
+                {
+                    id: 'P005',
+                    name: 'NutriBlend Pro 1000W Nutri Mixer & Grinder',
+                    category: 'Appliances',
+                    price: 3299,
+                    mrp: 6500,
+                    discount: '49% off',
+                    rating: 4.7,
+                    reviewsCount: 4500,
+                    image: 'https://placehold.co/400x400/b91c1c/ffffff?text=Mixer+Grinder',
+                    seller: 'HomeCare Appliances',
+                    stock: 85,
+                    featured: true,
+                    description: 'Powerful 1000W copper motor with 3 unbreakable jars for effortless grinding, blending, and juicing.',
+                    variants: ['Metallic Red', 'Royal Silver'],
+                    specs: { Power: '1000 Watts', Warranty: '2 Years' }
+                },
+                {
+                    id: 'P006',
+                    name: 'GlowMaster Professional Skin Care 10-in-1 Grooming Kit',
+                    category: 'Beauty',
+                    price: 1499,
+                    mrp: 2999,
+                    discount: '50% off',
+                    rating: 4.3,
+                    reviewsCount: 1100,
+                    image: 'https://placehold.co/400x400/7c3aed/ffffff?text=Grooming+Kit',
+                    seller: 'BeautyBazaar India',
+                    stock: 150,
+                    featured: true,
+                    description: 'Waterproof multi-grooming kit with self-sharpening stainless steel blades and 120-minute cordless runtime.',
+                    variants: ['Standard Pack'],
+                    specs: { Runtime: '120 Mins', Waterproof: 'IPX7' }
+                },
+                {
+                    id: 'P007',
+                    name: 'Apex Speed 29-Inch Mountain Bike with Disc Brakes',
+                    category: 'Sports',
+                    price: 13999,
+                    mrp: 22999,
+                    discount: '39% off',
+                    rating: 4.6,
+                    reviewsCount: 290,
+                    image: 'https://placehold.co/400x400/d97706/ffffff?text=Mountain+Bike',
+                    seller: 'Sportify Hub',
+                    stock: 15,
+                    featured: true,
+                    description: 'High-tensile steel frame, Shimano 21-speed gears, dual mechanical disc brakes, and front suspension fork.',
+                    variants: ['Neon Yellow / 29"', 'Matte Black / 29"'],
+                    specs: { Frame: 'Steel', Gears: '21 Speed Shimano' }
+                },
+                {
+                    id: 'P008',
+                    name: 'Classic Chronograph Quartz Leather Watch for Men',
+                    category: 'Fashion',
+                    price: 2199,
+                    mrp: 5999,
+                    discount: '63% off',
+                    rating: 4.2,
+                    reviewsCount: 880,
+                    image: 'https://placehold.co/400x400/334155/ffffff?text=Wrist+Watch',
+                    seller: 'TimeKeeper Official',
+                    stock: 90,
+                    featured: true,
+                    description: 'Japanese quartz movement with genuine leather strap, date indicator, and 50m water resistance.',
+                    variants: ['Black Dial / Brown Strap', 'Blue Dial / Black Strap'],
+                    specs: { Movement: 'Quartz', WaterResistance: '50m' }
+                }
+            ],
+            categories: ['All', 'Electronics', 'Fashion', 'Home & Furniture', 'Appliances', 'Beauty', 'Sports', 'Books'],
+            currentView: 'home', // home, shop, productDetail, cart, checkout, account, seller, admin, tracking
+            selectedProductId: null,
+            activeTab: 'home',
+            searchQuery: '',
+            selectedCategory: 'All',
+            walletTransactions: [
+                { id: 'TXN-101', type: 'Credit', amount: 5000, desc: 'Added via Razorpay UPI', date: '2026-06-01' },
+                { id: 'TXN-102', type: 'Debit', amount: 500, desc: 'Order #ORD-8821 payment', date: '2026-06-05' },
+                { id: 'TXN-103', type: 'Credit', amount: 150, desc: 'Cashback reward credited', date: '2026-06-09' }
+            ],
+            sellerProducts: [
+                { id: 'SP-1', name: 'UltraNexus 14 Pro Max', price: 79999, stock: 45, status: 'Active', orders: 124 },
+                { id: 'SP-2', name: 'UltraNexus SmartWatch Series 8', price: 3499, stock: 80, status: 'Active', orders: 310 }
+            ],
+            sellerOrders: [
+                { id: 'SO-501', product: 'UltraNexus 14 Pro Max', customer: 'Amit Verma', qty: 1, total: 79999, status: 'Processing' },
+                { id: 'SO-502', product: 'UltraNexus SmartWatch Series 8', customer: 'Neha Singh', qty: 2, total: 6998, status: 'Shipped' }
+            ],
+            adminStats: {
+                totalUsers: 14200,
+                totalVendors: 480,
+                totalOrders: 32100,
+                totalRevenue: 48500000,
+                commissionEarned: 2425000
+            },
+            adminVendors: [
+                { id: 'V-101', name: 'ElectroWorld India', owner: 'Vikram Mehta', email: 'electro@srp.com', status: 'Approved', commission: '5%' },
+                { id: 'V-102', name: 'Apparel Hub Direct', owner: 'Priya Sharma', email: 'apparel@srp.com', status: 'Approved', commission: '8%' },
+                { id: 'V-103', name: 'Gadget Store Pro', owner: 'Rohan Gupta', email: 'gadget@srp.com', status: 'Pending Approval', commission: '6%' }
+            ]
         };
 
-        // --- EXTENSIVE PRODUCT CATALOG (Covering all Home Screen features) ---
-        const productCatalog = [
-            { id: 1, name: 'Apple iPhone 15 Pro (128 GB) - Natural Titanium', price: 127999, originalPrice: 134900, discount: '5% off', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400', rating: 4.6, stock: 15, category: 'Electronics', vendor: 'Appario Retail', desc: 'Forged in titanium with an aerospace-grade titanium design. Features the breakthrough A17 Pro chip and customizable Action button.' },
-            { id: 2, name: 'Sony WH-1000XM5 Wireless Noise Cancelling Headphones', price: 29990, originalPrice: 34990, discount: '14% off', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', rating: 4.8, stock: 24, category: 'Electronics', vendor: 'RetailNet', desc: 'Industry leading noise cancellation with two processors and 8 microphones for crystal clear hands-free calling.' },
-            { id: 3, name: 'Nike Air Zoom Pegasus 40 Running Shoes For Men', price: 8995, originalPrice: 11895, discount: '24% off', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', rating: 4.5, stock: 40, category: 'Fashion', vendor: 'Nike India Official', desc: 'Springy ride for any run, the Pegasus familiar, just-for-you feel returns to help you reach your goals.' },
-            { id: 4, name: 'Samsung 55" 4K Ultra HD Smart QLED TV', price: 64990, originalPrice: 99990, discount: '35% off', image: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400', rating: 4.7, stock: 8, category: 'Appliances', vendor: 'Samsung Plaza', desc: 'Quantum Dot technology delivers our finest picture ever with 100% Color Volume and Object Tracking Sound Lite.' },
-            { id: 5, name: 'Organics Premium Fresh Kashmiri Walnut Kernels (500g)', price: 650, originalPrice: 999, discount: '35% off', image: 'https://images.unsplash.com/photo-1577717460640-746e3a479ff2?w=400', rating: 4.4, stock: 150, category: 'Grocery', vendor: 'SRP Supermart', desc: 'Handpicked premium organic walnuts from Kashmir. Rich in Omega-3 fatty acids and antioxidants.' },
-            { id: 6, name: 'Modern Ergonomic Office Executive Chair (Black)', price: 7499, originalPrice: 14999, discount: '50% off', image: 'https://images.unsplash.com/photo-1580481077494-e3299ac25b94?w=400', rating: 4.3, stock: 19, category: 'Home', vendor: 'HomeTown Living', desc: 'Breathable mesh back, adjustable lumbar support and pneumatic seat height adjustment for ultimate work comfort.' },
-            { id: 7, name: 'Dell Inspiron 15 3000 Laptop (Intel Core i5, 16GB RAM, 512GB SSD)', price: 54990, originalPrice: 71990, discount: '23% off', image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400', rating: 4.5, stock: 12, category: 'Electronics', vendor: 'Cloudtail India', desc: 'Thoughtfully designed to keep you connected, featuring TÜV Rheinland certified software to reduce harmful blue light emissions.' },
-            { id: 8, name: 'Levis Men Regular Fit Solid Casual Shirt', price: 1649, originalPrice: 2999, discount: '45% off', image: 'https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400', rating: 4.2, stock: 65, category: 'Fashion', vendor: 'Levis Flagship', desc: 'Crafted from breathable cotton fabric for all-day comfort. Pair with your favorite denim for a classic rugged look.' }
-        ];
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
+        function saveDB() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+        }
 
-        // --- CORE CONTROLLER APP CLASS ---
-        class SRPApp {
-            constructor() {
-                this.init();
-            }
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+            toast.className = `${bgColor} text-white px-5 py-3 rounded-lg shadow-xl flex items-center gap-3 transform translate-y-5 opacity-0 transition-all duration-300`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'} text-lg"></i><span class="font-medium">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-5', 'opacity-0'); }, 50);
+            setTimeout(() => {
+                toast.classList.add('translate-y-5', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
 
-            init() {
-                this.renderNavbarBadge();
-                this.switchView('home');
-            }
+        function openModal(htmlContent) {
+            const modal = document.getElementById('globalModal');
+            const content = document.getElementById('modalContent');
+            content.innerHTML = htmlContent + `<button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl"><i class="fa-solid fa-xmark"></i></button>`;
+            modal.classList.remove('hidden');
+        }
 
-            // View Switcher Engine
-            switchView(viewName) {
-                appState.currentView = viewName;
-                const main = document.getElementById('mainContent');
-                window.scrollTo(0, 0);
+        function closeModal() {
+            document.getElementById('globalModal').classList.add('hidden');
+        }
 
-                switch(viewName) {
-                    case 'home':
-                        main.innerHTML = this.renderHomeView();
-                        break;
-                    case 'cart':
-                        main.innerHTML = this.renderCartView();
-                        break;
-                    case 'product-detail':
-                        main.innerHTML = this.renderProductDetailView();
-                        break;
-                    case 'checkout':
-                        main.innerHTML = this.renderCheckoutView();
-                        break;
-                    case 'manage-account':
-                        main.innerHTML = this.renderManageAccountView();
-                        break;
-                    case 'seller-dashboard':
-                        main.innerHTML = this.renderSellerDashboardView();
-                        break;
-                    case 'admin-panel':
-                        main.innerHTML = this.renderAdminPanelView();
-                        break;
-                    case 'live-tracker':
-                        main.innerHTML = this.renderLiveTrackerView();
-                        break;
-                    default:
-                        main.innerHTML = this.renderHomeView();
-                }
-            }
+        function renderHeader() {
+            const header = document.getElementById('mainHeader');
+            const cartCount = db.cart.reduce((sum, item) => sum + item.quantity, 0);
+            const wishCount = db.currentUser.wishlist.length;
 
-            // --- HOME SCREEN (All 10 Features Integrated) ---
-            renderHomeView() {
-                const filtered = appState.selectedCategory === 'all' 
-                    ? productCatalog 
-                    : productCatalog.filter(p => p.category === appState.selectedCategory);
+            header.innerHTML = `
+                <div class="container mx-auto px-4 py-3 flex items-center justify-between gap-4 max-w-7xl">
+                    <!-- Brand Logo -->
+                    <div class="flex items-center gap-8">
+                        <a href="#" onclick="navigate('home')" class="flex flex-col cursor-pointer">
+                            <span class="text-2xl font-black italic tracking-wider flex items-center gap-1 text-flipkartYellow">
+                                SRP <span class="text-white text-base not-italic font-semibold bg-orange-500 px-1.5 py-0.5 rounded shadow">Shopping</span>
+                            </span>
+                            <span class="text-[10px] text-gray-200 tracking-tighter flex items-center gap-1">
+                                Explore <span class="text-yellow-300 font-bold">Plus</span> <i class="fa-solid fa-star text-[8px] text-yellow-300"></i>
+                            </span>
+                        </a>
 
-                return `
-                    <div class="max-w-7xl mx-auto space-y-6">
-                        <!-- Feature 1: Top Banner Carousel (Flipkart / Amazon Style) -->
-                        <div class="relative bg-gradient-to-r from-blue-700 via-indigo-600 to-flipkart-blue text-white rounded-xl shadow-lg p-6 sm:p-10 overflow-hidden flex items-center justify-between">
-                            <div class="z-10 max-w-lg space-y-3">
-                                <span class="bg-flipkart-yellow text-gray-900 font-extrabold text-[10px] px-2.5 py-1 rounded uppercase tracking-wider">Big Billion Days Preview</span>
-                                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">SRP Mega Multi-Vendor Festival 2026</h1>
-                                <p class="text-xs sm:text-sm text-blue-100">Get up to 80% OFF on Electronics, Fashion, Grocery & Appliances. Live Razorpay instant checkout active.</p>
-                                <div class="pt-2 flex items-center gap-3">
-                                    <button onclick="app.filterCategory('Electronics')" class="bg-white text-flipkart-blue font-bold px-5 py-2 rounded text-xs shadow hover:bg-blue-50 transition">Shop Electronics</button>
-                                    <button onclick="app.openWalletModal()" class="bg-flipkart-orange text-white font-bold px-5 py-2 rounded text-xs shadow hover:bg-orange-600 transition"><i class="fa-solid fa-wallet"></i> SRP UPI Pay</button>
-                                </div>
-                            </div>
-                            <div class="hidden md:block relative z-10">
-                                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400" alt="Banner" class="w-72 h-44 object-cover rounded-lg shadow-2xl border-2 border-white/20">
-                            </div>
-                            <!-- Background decoration -->
-                            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl"></div>
+                        <!-- Search Bar -->
+                        <div class="hidden md:flex items-center bg-white rounded-md shadow-inner px-3 py-1.5 w-96 lg:w-[480px]">
+                            <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2"></i>
+                            <input type="text" id="headerSearchInput" value="${db.searchQuery || ''}" onkeydown="handleSearchKey(event)" placeholder="Search for products, brands and more" class="w-full text-sm text-gray-800 outline-none">
+                            <button onclick="executeSearch()" class="text-flipkartBlue font-semibold text-sm px-2">Search</button>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Right -->
+                    <div class="flex items-center gap-5 sm:gap-8">
+                        <!-- Switch View Role Buttons -->
+                        <div class="hidden xl:flex items-center gap-2 bg-blue-700/60 px-3 py-1 rounded-full text-xs font-medium border border-blue-400/40">
+                            <span class="text-blue-200">Mode:</span>
+                            <button onclick="switchRole('buyer')" class="px-2 py-0.5 rounded ${db.currentUser.role === 'buyer' ? 'bg-yellow-400 text-gray-900 font-bold shadow' : 'text-white hover:bg-blue-600'}">Buyer</button>
+                            <button onclick="switchRole('seller')" class="px-2 py-0.5 rounded ${db.currentUser.role === 'seller' ? 'bg-yellow-400 text-gray-900 font-bold shadow' : 'text-white hover:bg-blue-600'}">Seller</button>
+                            <button onclick="switchRole('admin')" class="px-2 py-0.5 rounded ${db.currentUser.role === 'admin' ? 'bg-yellow-400 text-gray-900 font-bold shadow' : 'text-white hover:bg-blue-600'}">Admin</button>
                         </div>
 
-                        <!-- Feature 2: Quick Category & Brand Bar -->
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                            <h2 class="text-xs font-bold uppercase text-gray-500 mb-3 tracking-wider">Top Featured Categories & Verified Vendors</h2>
-                            <div class="grid grid-cols-4 sm:grid-cols-8 gap-4 text-center">
-                                ${['Electronics', 'Fashion', 'Grocery', 'Home', 'Appliances', 'Mobiles', 'Beauty', 'Toys'].map(cat => `
-                                    <div onclick="app.filterCategory('${cat === 'Mobiles' || cat === 'Beauty' || cat === 'Toys' ? 'Electronics' : cat}')" class="cursor-pointer group flex flex-col items-center p-2 rounded hover:bg-blue-50 transition">
-                                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-flipkart-blue mb-1 group-hover:scale-110 transition"><i class="fa-solid fa-tag"></i></div>
-                                        <span class="text-xs font-semibold text-gray-700">${cat}</span>
+                        <!-- Account Dropdown Trigger -->
+                        <div class="relative group">
+                            <button onclick="navigate('account')" class="flex items-center gap-2 bg-white text-flipkartBlue font-semibold px-4 py-1.5 rounded-sm shadow hover:bg-gray-100 transition">
+                                <i class="fa-solid fa-user-circle text-lg"></i>
+                                <span class="hidden sm:inline">${db.currentUser.name.split(' ')[0]}</span>
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Seller Hub Link -->
+                        <button onclick="switchRole('seller')" class="hidden lg:flex items-center gap-1.5 text-sm font-medium hover:text-yellow-300 transition">
+                            <i class="fa-solid fa-store"></i> Become a Seller
+                        </button>
+
+                        <!-- Cart Button -->
+                        <button onclick="navigate('cart')" class="relative flex items-center gap-2 font-medium hover:text-yellow-300 transition">
+                            <div class="relative">
+                                <i class="fa-solid fa-cart-shopping text-xl"></i>
+                                ${cartCount > 0 ? `<span class="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-flipkartBlue shadow">${cartCount}</span>` : ''}
+                            </div>
+                            <span class="hidden sm:inline">Cart</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Secondary Subheader Categories -->
+                <div class="bg-white text-gray-800 shadow-sm border-t border-gray-200">
+                    <div class="container mx-auto px-4 max-w-7xl flex items-center justify-between overflow-x-auto hide-scrollbar py-2.5 gap-6 text-sm font-medium">
+                        ${db.categories.map(cat => `
+                            <button onclick="filterByCategory('${cat}')" class="whitespace-nowrap hover:text-flipkartBlue transition ${db.selectedCategory === cat ? 'text-flipkartBlue font-bold border-b-2 border-flipkartBlue pb-0.5' : ''}">
+                                ${cat}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFooter() {
+            const footer = document.getElementById('mainFooter');
+            footer.innerHTML = `
+                <div class="container mx-auto px-4 max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+                    <div>
+                        <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-xs">ABOUT</h4>
+                        <ul class="space-y-2.5 text-gray-400">
+                            <li><a href="#" onclick="showInfoModal('Contact Us')" class="hover:text-white">Contact Us</a></li>
+                            <li><a href="#" onclick="showInfoModal('About Us')" class="hover:text-white">About Us</a></li>
+                            <li><a href="#" onclick="showInfoModal('Careers')" class="hover:text-white">Careers</a></li>
+                            <li><a href="#" onclick="showInfoModal('SRP Stories')" class="hover:text-white">SRP Stories</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-xs">HELP & SUPPORT</h4>
+                        <ul class="space-y-2.5 text-gray-400">
+                            <li><a href="#" onclick="navigate('tracking')" class="hover:text-white">Payments & Shipping Tracker</a></li>
+                            <li><a href="#" onclick="showInfoModal('Shipping')" class="hover:text-white">Shipping</a></li>
+                            <li><a href="#" onclick="showInfoModal('Cancellation & Returns')" class="hover:text-white">Cancellation & Returns</a></li>
+                            <li><a href="#" onclick="showInfoModal('FAQ')" class="hover:text-white">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-xs">CONSUMER POLICY</h4>
+                        <ul class="space-y-2.5 text-gray-400">
+                            <li><a href="#" onclick="showInfoModal('Terms of Use')" class="hover:text-white">Terms Of Use</a></li>
+                            <li><a href="#" onclick="showInfoModal('Security')" class="hover:text-white">Security</a></li>
+                            <li><a href="#" onclick="showInfoModal('Privacy')" class="hover:text-white">Privacy</a></li>
+                            <li><a href="#" onclick="showInfoModal('Sitemap')" class="hover:text-white">Sitemap</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-xs">SECURE PAYMENTS & PARTNERS</h4>
+                        <p class="text-gray-400 mb-3">Instant Razorpay UPI: <strong class="text-yellow-400">8233615852@ptaxis</strong></p>
+                        <p class="text-gray-400 mb-3">Razorpay Link: <a href="https://rzp.io/rzp/juTBnc4Q" target="_blank" class="text-blue-400 underline">rzp.io/rzp/juTBnc4Q</a></p>
+                        <div class="flex items-center gap-2 text-2xl text-gray-300">
+                            <i class="fa-brands fa-cc-visa" title="VISA"></i>
+                            <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+                            <i class="fa-brands fa-google-pay" title="Google Pay / UPI"></i>
+                            <i class="fa-solid fa-wallet" title="SRP Wallet"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="container mx-auto px-4 max-w-7xl mt-10 pt-6 border-t border-gray-800 text-center text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p>&copy; 2026 SRP Shopping Multivendor Marketplace. All Rights Reserved.</p>
+                    <p class="flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-400"></i> SSL Certified 256-Bit Encrypted Multi-Vendor Checkout
+                    </p>
+                </div>
+            `;
+        }
+
+        function navigate(view, id = null) {
+            db.currentView = view;
+            if (id) db.selectedProductId = id;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderApp();
+        }
+
+        function switchRole(role) {
+            db.currentUser.role = role;
+            saveDB();
+            if (role === 'seller') db.currentView = 'seller';
+            else if (role === 'admin') db.currentView = 'admin';
+            else db.currentView = 'home';
+            renderApp();
+            showToast(`Switched mode to ${role.toUpperCase()}`, 'info');
+        }
+
+        function filterByCategory(cat) {
+            db.selectedCategory = cat;
+            db.currentView = 'home';
+            renderApp();
+        }
+
+        function handleSearchKey(e) {
+            if (e.key === 'Enter') executeSearch();
+        }
+
+        function executeSearch() {
+            const input = document.getElementById('headerSearchInput');
+            if (input) {
+                db.searchQuery = input.value.trim();
+                db.currentView = 'home';
+                renderApp();
+            }
+        }
+
+        function renderApp() {
+            renderHeader();
+            renderFooter();
+            const main = document.getElementById('mainContent');
+            
+            if (db.currentView === 'home') main.innerHTML = renderHomeView();
+            else if (db.currentView === 'shop') main.innerHTML = renderShopView();
+            else if (db.currentView === 'productDetail') main.innerHTML = renderProductDetailView();
+            else if (db.currentView === 'cart') main.innerHTML = renderCartView();
+            else if (db.currentView === 'checkout') main.innerHTML = renderCheckoutView();
+            else if (db.currentView === 'account') main.innerHTML = renderAccountView();
+            else if (db.currentView === 'seller') main.innerHTML = renderSellerView();
+            else if (db.currentView === 'admin') main.innerHTML = renderAdminView();
+            else if (db.currentView === 'tracking') main.innerHTML = renderTrackingView();
+            else main.innerHTML = renderHomeView();
+        }
+
+        function renderHomeView() {
+            let productsToDisplay = db.products;
+            if (db.selectedCategory !== 'All') {
+                productsToDisplay = productsToDisplay.filter(p => p.category === db.selectedCategory);
+            }
+            if (db.searchQuery) {
+                const q = db.searchQuery.toLowerCase();
+                productsToDisplay = productsToDisplay.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.seller.toLowerCase().includes(q));
+            }
+
+            return `
+                <!-- 1. Flipkart/Amazon Style Promotional Banner Carousel -->
+                <div class="relative bg-gradient-to-r from-blue-900 via-flipkartBlue to-indigo-800 rounded-2xl shadow-xl overflow-hidden mb-8 text-white p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="space-y-4 max-w-xl text-center md:text-left">
+                        <span class="bg-yellow-400 text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow">Mega Multi-Vendor Sale</span>
+                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Biggest Price Drop on 5G Flagships & Fashion</h1>
+                        <p class="text-blue-100 text-sm sm:text-base">Experience lightning fast checkout with integrated Razorpay, UPI <code class="bg-blue-950 px-2 py-0.5 rounded text-yellow-300">8233615852@ptaxis</code>, and instant wallet rewards!</p>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
+                            <button onclick="navigate('shop')" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 py-3 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">Shop Now</button>
+                            <button onclick="navigate('tracking')" class="bg-white/10 hover:bg-white/25 border border-white/30 text-white font-semibold px-6 py-3 rounded-lg backdrop-blur transition">Live Shipping Tracker</button>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 p-6 rounded-2xl border border-white/20 backdrop-blur-md text-center max-w-xs shadow-2xl">
+                        <div class="text-yellow-300 font-bold text-lg mb-1"><i class="fa-solid fa-shield-check"></i> Verified Production Checkout</div>
+                        <p class="text-xs text-blue-100 mb-3">Pay securely via Razorpay link <a href="https://rzp.io/rzp/juTBnc4Q" target="_blank" class="underline text-yellow-300">rzp.io/rzp/juTBnc4Q</a></p>
+                        <div class="bg-white text-gray-900 p-3 rounded-lg font-mono text-sm font-bold shadow-inner">UPI: 8233615852@ptaxis</div>
+                    </div>
+                </div>
+
+                <!-- 2. Category Quick Grid Icons -->
+                <div class="grid grid-cols-4 sm:grid-cols-8 gap-4 mb-8">
+                    ${db.categories.map(cat => `
+                        <div onclick="filterByCategory('${cat}')" class="bg-white rounded-xl shadow-sm p-4 text-center cursor-pointer hover:shadow-md hover:border-flipkartBlue border border-transparent transition flex flex-col items-center gap-2 group">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-flipkartBlue flex items-center justify-center text-lg group-hover:bg-flipkartBlue group-hover:text-white transition">
+                                <i class="fa-solid ${cat === 'Electronics' ? 'fa-laptop' : cat === 'Fashion' ? 'fa-shirt' : cat === 'Home & Furniture' ? 'fa-couch' : cat === 'Appliances' ? 'fa-blender' : cat === 'Beauty' ? 'fa-wand-magic-sparkles' : cat === 'Sports' ? 'fa-bicycle' : cat === 'Books' ? 'fa-book' : 'fa-border-all'}"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-700">${cat}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- 3. Dynamic Flash Deals Countdown & Ticker -->
+                <div class="bg-gradient-to-r from-orange-600 to-amber-600 rounded-xl shadow-lg text-white p-5 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white text-orange-600 flex items-center justify-center font-bold text-xl"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <h3 class="font-extrabold text-lg">Flash Deals of the Day</h3>
+                            <p class="text-xs text-orange-100">Extra 10% cashback when paid via SRP Wallet or UPI</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-black/20 px-4 py-2 rounded-lg font-mono text-sm font-bold">
+                        <span>Ends in:</span>
+                        <span class="bg-white text-orange-600 px-2 py-1 rounded">05</span>:<span class="bg-white text-orange-600 px-2 py-1 rounded">42</span>:<span class="bg-white text-orange-600 px-2 py-1 rounded">18</span>
+                    </div>
+                </div>
+
+                <!-- 4. Featured Product Grid with Multi-Vendor Badges -->
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">${db.searchQuery ? `Search Results for "${db.searchQuery}"` : db.selectedCategory !== 'All' ? `${db.selectedCategory} Collection` : 'Top Trending Multi-Vendor Products'}</h2>
+                    <button onclick="navigate('shop')" class="text-flipkartBlue font-semibold hover:underline text-sm">View All Products <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+                    ${productsToDisplay.map(p => `
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col border border-gray-100 group relative">
+                            <!-- Wishlist Button -->
+                            <button onclick="toggleWishlist('${p.id}')" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur shadow flex items-center justify-center text-gray-600 hover:text-red-500 transition">
+                                <i class="fa-${db.currentUser.wishlist.includes(p.id) ? 'solid text-red-500' : 'regular'} fa-heart"></i>
+                            </button>
+
+                            <!-- Product Image -->
+                            <div class="h-56 bg-gray-50 overflow-hidden relative cursor-pointer" onclick="navigate('productDetail', '${p.id}')">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">${p.discount}</span>
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="text-[11px] font-semibold text-gray-400 uppercase mb-1 flex items-center justify-between">
+                                        <span>${p.category}</span>
+                                        <span class="text-flipkartBlue"><i class="fa-solid fa-store"></i> ${p.seller}</span>
                                     </div>
+                                    <h3 onclick="navigate('productDetail', '${p.id}')" class="font-bold text-gray-800 text-sm line-clamp-2 cursor-pointer hover:text-flipkartBlue mb-2">${p.name}</h3>
+                                    
+                                    <!-- Rating -->
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <span class="bg-emerald-700 text-white text-xs font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                                            ${p.rating} <i class="fa-solid fa-star text-[10px]"></i>
+                                        </span>
+                                        <span class="text-xs text-gray-400">(${p.reviewsCount.toLocaleString()})</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-baseline gap-2 mb-4">
+                                        <span class="text-lg font-black text-gray-900">₹${p.price.toLocaleString()}</span>
+                                        <span class="text-xs text-gray-400 line-through">₹${p.mrp.toLocaleString()}</span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button onclick="addToCart('${p.id}')" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold text-xs py-2 px-3 rounded shadow transition">Add to Cart</button>
+                                        <button onclick="buyNow('${p.id}')" class="bg-flipkartBlue hover:bg-blue-700 text-white font-bold text-xs py-2 px-3 rounded shadow transition">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- 5. Multi-Vendor Brands Spotlight Banner -->
+                <div class="bg-white rounded-xl shadow-md p-8 mb-12 border border-gray-100">
+                    <div class="text-center max-w-2xl mx-auto mb-8">
+                        <h2 class="text-2xl font-bold mb-2">Trusted Multi-Vendor Partners & Brands</h2>
+                        <p class="text-gray-500 text-sm">Over 480+ certified direct manufacturers and top merchants providing authentic warranty and fastest fulfillment.</p>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
+                        ${['ElectroWorld', 'Apparel Hub', 'SoundWave', 'ComfortCraft', 'HomeCare', 'Sportify'].map(brand => `
+                            <div class="p-4 rounded-lg bg-gray-50 border border-gray-200 hover:border-flipkartBlue font-bold text-gray-700 transition">
+                                <i class="fa-solid fa-award text-flipkartBlue text-xl mb-2"></i>
+                                <div class="text-sm">${brand}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderShopView() {
+            return `
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Filters Sidebar -->
+                    <div class="w-full md:w-64 bg-white rounded-xl shadow-md p-6 h-fit border border-gray-100 space-y-6">
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <h3 class="font-bold text-lg">Filters</h3>
+                            <button onclick="resetFilters()" class="text-xs text-flipkartBlue font-semibold hover:underline">Clear All</button>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm mb-3">Categories</h4>
+                            <div class="space-y-2 text-sm">
+                                ${db.categories.map(cat => `
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="shopCat" ${db.selectedCategory === cat ? 'checked' : ''} onclick="filterByCategory('${cat}')" class="text-flipkartBlue">
+                                        <span class="text-gray-700">${cat}</span>
+                                    </label>
                                 `).join('')}
                             </div>
                         </div>
-
-                        <!-- Feature 3: Deal of the Day / Flash Sales Timer -->
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                            <div class="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-                                <div class="flex items-center gap-3">
-                                    <h3 class="font-extrabold text-base text-gray-800">Deals of the Day</h3>
-                                    <div class="bg-red-100 text-red-600 px-2.5 py-0.5 rounded text-xs font-bold flex items-center gap-1 animate-pulse"><i class="fa-solid fa-stopwatch"></i> 04 : 18 : 32 Left</div>
-                                </div>
-                                <button onclick="app.filterCategory('all')" class="bg-flipkart-blue text-white text-xs px-4 py-1.5 rounded font-bold shadow hover:bg-blue-700 transition">View All</button>
-                            </div>
-
-                            <!-- Feature 4 & 5: Product Grid & Multi-Vendor Badges -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                                ${filtered.map(product => `
-                                    <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition flex flex-col justify-between group relative">
-                                        <div class="absolute top-2 right-2 z-10">
-                                            <button onclick="app.toggleWishlist(${product.id})" class="w-8 h-8 rounded-full bg-white shadow flex items-center justify-center text-gray-400 hover:text-red-500 transition">
-                                                <i class="fa-solid fa-heart ${appState.wishlist.includes(product.id) ? 'text-red-500' : ''}"></i>
-                                            </button>
-                                        </div>
-                                        <div class="cursor-pointer overflow-hidden rounded mb-3 h-48 bg-gray-50 flex items-center justify-center" onclick="app.viewProductDetail(${product.id})">
-                                            <img src="${product.image}" alt="${product.name}" class="object-cover h-full w-full group-hover:scale-105 transition duration-300">
-                                        </div>
-                                        <div class="space-y-1">
-                                            <div class="flex items-center justify-between text-[10px]">
-                                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold"><i class="fa-solid fa-store"></i> ${product.vendor}</span>
-                                                <span class="bg-blue-50 text-flipkart-blue px-1.5 py-0.5 rounded font-bold">Assured</span>
-                                            </div>
-                                            <h4 class="font-semibold text-xs text-gray-800 line-clamp-2 cursor-pointer hover:text-flipkart-blue" onclick="app.viewProductDetail(${product.id})">${product.name}</h4>
-                                            <div class="flex items-center gap-1.5 text-xs pt-1">
-                                                <span class="bg-flipkart-green text-white px-1.5 py-0.5 rounded text-[10px] font-bold">${product.rating} <i class="fa-solid fa-star text-[8px]"></i></span>
-                                                <span class="text-gray-400 text-[10px]">(${Math.floor(product.rating * 340)})</span>
-                                            </div>
-                                            <div class="flex items-center gap-2 pt-1">
-                                                <span class="font-black text-sm text-gray-900">₹${product.price.toLocaleString('en-IN')}</span>
-                                                <span class="text-xs text-gray-400 line-through">₹${product.originalPrice.toLocaleString('en-IN')}</span>
-                                                <span class="text-xs text-emerald-600 font-bold">${product.discount}</span>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3 pt-2 border-t border-gray-100 flex items-center gap-2">
-                                            <button onclick="app.addToCart(${product.id})" class="flex-1 bg-flipkart-yellow hover:bg-yellow-400 text-gray-900 font-bold py-1.5 rounded text-xs shadow transition"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
-                                            <button onclick="app.buyNow(${product.id})" class="flex-1 bg-flipkart-orange hover:bg-orange-600 text-white font-bold py-1.5 rounded text-xs shadow transition">Buy Now</button>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Feature 6 to 10: Additional Home Widgets (Sponsored Ads, Top Brand Banners, SuperCoin Rewards, Recent History, Trust Badges) -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-gradient-to-br from-amber-500 to-amber-700 text-white p-5 rounded-lg shadow flex flex-col justify-between">
-                                <div>
-                                    <span class="bg-white/20 text-[10px] px-2 py-0.5 rounded font-bold uppercase">SuperCoin Zone</span>
-                                    <h4 class="text-lg font-bold mt-2">Earn 50 SuperCoins on Every UPI Order</h4>
-                                    <p class="text-xs text-amber-100 mt-1">Use UPI ID <span class="font-mono font-bold text-white">8233615852@ptaxis</span> or Razorpay checkout for instant bonus.</p>
-                                </div>
-                                <button onclick="app.openWalletModal()" class="mt-4 bg-white text-amber-800 font-bold px-4 py-2 rounded text-xs self-start shadow">Check Balance</button>
-                            </div>
-                            <div class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white p-5 rounded-lg shadow flex flex-col justify-between">
-                                <div>
-                                    <span class="bg-white/20 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Shiprocket Integration</span>
-                                    <h4 class="text-lg font-bold mt-2">Live Courier Tracking & SMS Alerts</h4>
-                                    <p class="text-xs text-blue-100 mt-1">Real-time dispatch via Delhivery, Shiprocket and India Post with live status updates.</p>
-                                </div>
-                                <button onclick="app.switchView('live-tracker')" class="mt-4 bg-flipkart-yellow text-gray-900 font-bold px-4 py-2 rounded text-xs self-start shadow">Track Order #SRP-8849</button>
-                            </div>
-                            <div class="bg-gradient-to-br from-emerald-600 to-teal-800 text-white p-5 rounded-lg shadow flex flex-col justify-between">
-                                <div>
-                                    <span class="bg-white/20 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Multi-Vendor Verified</span>
-                                    <h4 class="text-lg font-bold mt-2">Join 310+ Active Pro Sellers</h4>
-                                    <p class="text-xs text-emerald-100 mt-1">Manage inventory, automated GST calculation, and 48-hour settlements in Seller Dashboard.</p>
-                                </div>
-                                <button onclick="app.switchView('seller-dashboard')" class="mt-4 bg-white text-emerald-800 font-bold px-4 py-2 rounded text-xs self-start shadow">Seller Dashboard</button>
+                        <div>
+                            <h4 class="font-semibold text-sm mb-3">Price Range</h4>
+                            <input type="range" min="500" max="100000" value="100000" class="w-full accent-flipkartBlue">
+                            <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                <span>₹500</span>
+                                <span>₹1,00,000+</span>
                             </div>
                         </div>
                     </div>
-                `;
-            }
 
-            // --- PRODUCT DETAIL VIEW ---
-            renderProductDetailView() {
-                const product = appState.selectedProduct || productCatalog[0];
-                return `
-                    <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <button onclick="app.switchView('home')" class="text-xs font-bold text-flipkart-blue mb-4 flex items-center gap-1 hover:underline"><i class="fa-solid fa-arrow-left"></i> Back to Products</button>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="space-y-4">
-                                <div class="h-96 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 overflow-hidden">
-                                    <img src="${product.image}" alt="${product.name}" class="h-full w-full object-cover">
-                                </div>
-                                <div class="flex gap-4">
-                                    <button onclick="app.addToCart(${product.id})" class="flex-1 bg-flipkart-yellow hover:bg-yellow-400 text-gray-900 font-bold py-3 rounded text-sm shadow transition"><i class="fa-solid fa-cart-shopping"></i> ADD TO CART</button>
-                                    <button onclick="app.buyNow(${product.id})" class="flex-1 bg-flipkart-orange hover:bg-orange-600 text-white font-bold py-3 rounded text-sm shadow transition"><i class="fa-solid fa-bolt"></i> BUY NOW</button>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <div class="flex items-center gap-2 text-xs">
-                                    <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Verified Vendor: ${product.vendor}</span>
-                                    <span class="bg-blue-50 text-flipkart-blue px-2 py-0.5 rounded font-bold">SRP Assured</span>
-                                </div>
-                                <h1 class="text-xl sm:text-2xl font-bold text-gray-800">${product.name}</h1>
-                                <div class="flex items-center gap-2">
-                                    <span class="bg-flipkart-green text-white px-2 py-0.5 rounded text-xs font-bold">${product.rating} <i class="fa-solid fa-star text-[10px]"></i></span>
-                                    <span class="text-xs text-gray-500">3,492 Ratings & 412 Reviews</span>
-                                </div>
-                                <div class="flex items-baseline gap-3">
-                                    <span class="text-3xl font-black text-gray-900">₹${product.price.toLocaleString('en-IN')}</span>
-                                    <span class="text-sm text-gray-400 line-through">₹${product.originalPrice.toLocaleString('en-IN')}</span>
-                                    <span class="text-sm text-emerald-600 font-bold">${product.discount}</span>
-                                </div>
-                                <p class="text-xs text-gray-600 leading-relaxed">${product.desc}</p>
-                                <div class="border-t border-gray-200 pt-4 space-y-2 text-xs">
-                                    <div class="flex items-center gap-2 text-gray-700"><i class="fa-solid fa-shield text-flipkart-blue"></i> 1 Year Manufacturer Warranty & 7 Days Replacement</div>
-                                    <div class="flex items-center gap-2 text-gray-700"><i class="fa-solid fa-truck text-flipkart-blue"></i> Delivered by Shiprocket Express (Free Delivery)</div>
-                                    <div class="flex items-center gap-2 text-gray-700"><i class="fa-solid fa-wallet text-flipkart-blue"></i> UPI ID for Direct Payment: <span class="font-mono font-bold text-flipkart-blue">8233615852@ptaxis</span></div>
-                                </div>
-                            </div>
+                    <!-- Products Listing -->
+                    <div class="flex-grow">
+                        <div class="bg-white rounded-xl shadow-md p-4 mb-6 flex items-center justify-between border border-gray-100">
+                            <span class="text-sm font-semibold text-gray-600">Showing products for <span class="text-flipkartBlue">${db.selectedCategory}</span></span>
+                            <select onchange="sortProducts(this.value)" class="text-sm border rounded px-3 py-1.5 outline-none font-medium">
+                                <option value="popular">Sort by: Popularity</option>
+                                <option value="lowHigh">Price: Low to High</option>
+                                <option value="highLow">Price: High to Low</option>
+                            </select>
                         </div>
-                    </div>
-                `;
-            }
-
-            // --- CART VIEW ---
-            renderCartView() {
-                const subtotal = appState.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-                const discount = Math.round(subtotal * 0.15);
-                const total = subtotal - discount;
-
-                return `
-                    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="md:col-span-2 space-y-4">
-                            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between">
-                                <h2 class="font-bold text-base text-gray-800">My Cart (${appState.cart.length} items)</h2>
-                                <span class="text-xs text-gray-500">Deliver to: <b class="text-gray-800">Bangalore 560103</b></span>
-                            </div>
-
-                            ${appState.cart.length === 0 ? `
-                                <div class="bg-white p-12 text-center rounded-lg shadow-sm border border-gray-200 space-y-4">
-                                    <i class="fa-solid fa-cart-shopping text-5xl text-gray-300"></i>
-                                    <h3 class="font-bold text-gray-700">Your cart is empty!</h3>
-                                    <button onclick="app.switchView('home')" class="bg-flipkart-blue text-white font-bold px-6 py-2 rounded text-xs shadow">Shop Now</button>
-                                </div>
-                            ` : appState.cart.map(item => `
-                                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-4">
-                                    <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded border">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-xs text-gray-800">${item.name}</h4>
-                                        <p class="text-[10px] text-gray-500 mt-0.5">Seller: ${item.vendor}</p>
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <span class="font-bold text-sm text-gray-900">₹${item.price.toLocaleString('en-IN')}</span>
-                                            <span class="text-xs text-emerald-600 font-semibold">${item.discount}</span>
-                                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${db.products.map(p => `
+                                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col border border-gray-100">
+                                    <div class="h-48 bg-gray-50 relative cursor-pointer" onclick="navigate('productDetail', '${p.id}')">
+                                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
                                     </div>
-                                    <div class="flex flex-col items-end gap-2">
-                                        <div class="flex items-center border rounded">
-                                            <button onclick="app.updateQty(${item.id}, -1)" class="px-2.5 py-1 text-xs bg-gray-100 hover:bg-gray-200 font-bold">-</button>
-                                            <span class="px-3 text-xs font-bold">${item.qty}</span>
-                                            <button onclick="app.updateQty(${item.id}, 1)" class="px-2.5 py-1 text-xs bg-gray-100 hover:bg-gray-200 font-bold">+</button>
+                                    <div class="p-4 flex-grow flex flex-col justify-between">
+                                        <div>
+                                            <h3 onclick="navigate('productDetail', '${p.id}')" class="font-bold text-gray-800 text-sm line-clamp-2 cursor-pointer hover:text-flipkartBlue mb-2">${p.name}</h3>
+                                            <div class="flex items-baseline gap-2 mb-3">
+                                                <span class="text-lg font-black text-gray-900">₹${p.price.toLocaleString()}</span>
+                                                <span class="text-xs text-gray-400 line-through">₹${p.mrp.toLocaleString()}</span>
+                                            </div>
                                         </div>
-                                        <button onclick="app.removeFromCart(${item.id})" class="text-xs text-red-500 font-semibold hover:underline">Remove</button>
+                                        <button onclick="addToCart('${p.id}')" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold text-xs py-2 rounded shadow">Add to Cart</button>
                                     </div>
                                 </div>
                             `).join('')}
                         </div>
+                    </div>
+                </div>
+            `;
+        }
 
-                        <!-- Price Details Card -->
-                        <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 h-fit space-y-4">
-                            <h3 class="text-xs font-bold uppercase text-gray-500 border-b pb-2">Price Details</h3>
-                            <div class="space-y-2 text-xs text-gray-700">
-                                <div class="flex justify-between"><span>Price (${appState.cart.length} items)</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
-                                <div class="flex justify-between text-emerald-600 font-semibold"><span>Discount</span><span>-₹${discount.toLocaleString('en-IN')}</span></div>
-                                <div class="flex justify-between"><span>Delivery Charges</span><span class="text-emerald-600 font-bold">FREE</span></div>
-                                <div class="flex justify-between"><span>Secured Packaging Fee</span><span>₹49</span></div>
-                            </div>
-                            <div class="border-t border-dashed pt-3 flex justify-between font-extrabold text-sm text-gray-900">
-                                <span>Total Amount</span>
-                                <span>₹${(total + 49).toLocaleString('en-IN')}</span>
-                            </div>
-                            <p class="text-[10px] text-emerald-600 font-semibold">You will save ₹${discount} on this order</p>
-                            <button onclick="app.switchView('checkout')" class="w-full bg-flipkart-orange hover:bg-orange-600 text-white font-bold py-3 rounded text-sm shadow transition">PLACE ORDER</button>
+        function renderProductDetailView() {
+            const product = db.products.find(p => p.id === db.selectedProductId) || db.products[0];
+            return `
+                <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-2 gap-10 border border-gray-100">
+                    <!-- Image Gallery -->
+                    <div class="space-y-4">
+                        <div class="h-96 bg-gray-50 rounded-xl overflow-hidden shadow-inner border border-gray-200">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="h-24 bg-gray-100 rounded-lg overflow-hidden border-2 border-flipkartBlue cursor-pointer"><img src="${product.image}" class="w-full h-full object-cover"></div>
+                            <div class="h-24 bg-gray-100 rounded-lg overflow-hidden border cursor-pointer"><img src="${product.image}" class="w-full h-full object-cover opacity-80"></div>
+                            <div class="h-24 bg-gray-100 rounded-lg overflow-hidden border cursor-pointer"><img src="${product.image}" class="w-full h-full object-cover opacity-80"></div>
                         </div>
                     </div>
-                `;
-            }
 
-            // --- CHECKOUT VIEW (Razorpay + UPI + Stripe Integration) ---
-            renderCheckoutView() {
-                const total = appState.cart.reduce((acc, item) => acc + (item.price * item.qty), 0) + 49;
-                return `
-                    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
-                        <div class="border-b pb-4">
-                            <h2 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-shield-halved text-flipkart-blue"></i> Secure Checkout & Payment Gateway</h2>
-                            <p class="text-xs text-gray-500">Choose your preferred payment mode with production Razorpay & UPI support.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="md:col-span-2 space-y-4">
-                                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-                                    <h4 class="font-bold text-xs text-flipkart-blue mb-2"><i class="fa-solid fa-qrcode"></i> Direct UPI Scan & Pay</h4>
-                                    <p class="text-xs text-gray-600 mb-2">Send payment directly to our verified merchant UPI ID: <b class="text-gray-900">8233615852@ptaxis</b></p>
-                                    <div class="bg-white p-3 rounded inline-block border">
-                                        <div class="w-32 h-32 bg-gray-900 text-white flex flex-col items-center justify-center p-2 text-center text-[10px] rounded">
-                                            <i class="fa-solid fa-qrcode text-3xl text-flipkart-yellow mb-1"></i>
-                                            <span>UPI: 8233615852@ptaxis</span>
-                                            <span class="text-emerald-400 font-bold mt-1">SRP Verified</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-3">
-                                    <label class="block text-xs font-bold text-gray-700 uppercase">Select Payment Option</label>
-                                    <div class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
-                                        <input type="radio" name="paymethod" checked id="rzp" class="accent-flipkart-blue">
-                                        <div>
-                                            <label for="rzp" class="font-bold text-xs text-gray-800 cursor-pointer">Razorpay Production Gateway (https://rzp.io/rzp/juTBnc4Q)</label>
-                                            <p class="text-[10px] text-gray-500">Pay via Credit Card, Debit Card, NetBanking, UPI or Wallets.</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
-                                        <input type="radio" name="paymethod" id="wallet" class="accent-flipkart-blue">
-                                        <div>
-                                            <label for="wallet" class="font-bold text-xs text-gray-800 cursor-pointer">SRP Pay Wallet (Balance: ₹${appState.walletBalance.toLocaleString('en-IN')})</label>
-                                            <p class="text-[10px] text-gray-500">Instant 1-click checkout with reward SuperCoins.</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
-                                        <input type="radio" name="paymethod" id="cod" class="accent-flipkart-blue">
-                                        <div>
-                                            <label for="cod" class="font-bold text-xs text-gray-800 cursor-pointer">Cash on Delivery (COD)</label>
-                                            <p class="text-[10px] text-gray-500">Pay cash upon door delivery by Shiprocket agent.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-gray-50 p-4 rounded-lg border space-y-4 h-fit">
-                                <h4 class="font-bold text-xs text-gray-700 uppercase border-b pb-2">Order Summary</h4>
-                                <div class="text-xs space-y-2">
-                                    <div class="flex justify-between"><span>Items Total</span><span>₹${(total - 49).toLocaleString('en-IN')}</span></div>
-                                    <div class="flex justify-between"><span>Shipping & Handling</span><span>₹49</span></div>
-                                    <div class="flex justify-between font-extrabold text-sm pt-2 border-t text-gray-900"><span>Payable Amount</span><span>₹${total.toLocaleString('en-IN')}</span></div>
-                                </div>
-                                <button onclick="app.processPayment(${total})" class="w-full bg-flipkart-orange hover:bg-orange-600 text-white font-bold py-3 rounded text-xs shadow transition">PAY ₹${total.toLocaleString('en-IN')} SECURELY</button>
-                                <div class="text-center text-[10px] text-gray-500"><i class="fa-solid fa-lock text-emerald-600"></i> 100% Secure Payments via Razorpay & Stripe</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- MANAGE ACCOUNT VIEW (40 Features Pro Dashboard) ---
-            renderManageAccountView() {
-                const accountFeatures = [
-                    'Profile Information & KYC', 'Manage Addresses & GPS Pin', 'SRP Wallet & UPI Cards', 'My SuperCoins History',
-                    'SRP Plus Membership', 'My Orders & Invoices', 'Wishlist & Saved Items', 'My Reviews & Ratings',
-                    'Notification Preferences', 'Saved UPI IDs (8233615852@ptaxis)', 'Manage Bank Accounts', 'GSTIN Details for B2B',
-                    'Returns & Refund Status', 'Track Shipments (Shiprocket)', 'Coupons & Vouchers', 'Gift Card Balance',
-                    'My Questions & Answers', 'Recently Viewed Items', 'Account Security & 2FA', 'Download Data / GDPR',
-                    'Delete Account Request', 'Connected Social Accounts', 'Language & Localization', 'Dark Mode & Theme Settings',
-                    'Refer & Earn ₹500', 'Affiliate Dashboard', 'Seller Registration Link', 'Customer Support Tickets',
-                    'Feedback & Suggestions', 'Legal Terms & Policies', 'Subscription Settings', 'E-Warranty Cards',
-                    'Auto-Pay Mandates', 'Biometric Login Setup', 'Device Management', 'Emergency Contacts',
-                    'Download Tax Receipts', 'Activity Log History', 'Data Sync Settings', 'Pro Support Priority'
-                ];
-
-                return `
-                    <div class="max-w-7xl mx-auto space-y-6">
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-16 h-16 bg-blue-100 text-flipkart-blue rounded-full flex items-center justify-center text-2xl font-bold">
-                                    ${appState.currentUser.name.charAt(0)}
-                                </div>
-                                <div>
-                                    <h2 class="text-lg font-bold text-gray-800">${appState.currentUser.name}</h2>
-                                    <p class="text-xs text-gray-500">${appState.currentUser.email} | +91 ${appState.currentUser.phone}</p>
-                                    <span class="inline-block mt-1 bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded font-bold">SRP Plus Member</span>
-                                </div>
-                            </div>
-                            <button onclick="app.openWalletModal()" class="bg-flipkart-blue text-white text-xs px-4 py-2 rounded font-bold shadow hover:bg-blue-700 transition"><i class="fa-solid fa-wallet"></i> Wallet Balance: ₹${appState.walletBalance}</button>
-                        </div>
-
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-4">
-                            <h3 class="font-bold text-sm text-gray-800 uppercase tracking-wider border-b pb-2">Manage Account (40 Comprehensive Features)</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                                ${accountFeatures.map((feat, idx) => `
-                                    <div onclick="app.showToast('Opening: ${feat}')" class="p-3 bg-gray-50 rounded border border-gray-200 cursor-pointer hover:border-flipkart-blue hover:bg-blue-50 transition flex items-center justify-between text-xs font-semibold text-gray-700">
-                                        <span>${idx + 1}. ${feat}</span>
-                                        <i class="fa-solid fa-angle-right text-gray-400"></i>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- SELLER DASHBOARD VIEW (30 Features Pro) ---
-            renderSellerDashboardView() {
-                const sellerFeatures = [
-                    'Add Single Product', 'Bulk Upload via CSV', 'Inventory Management', 'Live Order Processing',
-                    'Shiprocket Integration', 'GST & Tax Reports', 'Payout Settlements', 'Advertising Manager',
-                    'Customer Q&A Management', 'Return & Claim Center', 'Performance Analytics', 'Storefront Customization',
-                    'Promotions & Discounts', 'B2B Wholesale Pricing', 'Warehouse Management', 'Staff Role Management',
-                    'Low Stock Alerts', 'Competitor Price Tracker', 'Invoice Generator', 'Shipping Label Maker',
-                    'Courier Allocation', 'Wallet Payouts', 'Tax Filing Assistant', 'Customer Feedback Analyzer',
-                    'API & Webhook Config', 'Logistics SLA Monitoring', 'Product Quality Score', 'Brand Registry',
-                    'Instant Loan Access', 'Seller Support Helpdesk'
-                ];
-
-                return `
-                    <div class="max-w-7xl mx-auto space-y-6">
-                        <div class="bg-gradient-to-r from-flipkart-dark to-blue-900 text-white p-6 rounded-lg shadow flex items-center justify-between">
-                            <div>
-                                <span class="bg-flipkart-orange text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">Seller Hub Pro</span>
-                                <h2 class="text-xl font-bold mt-1">Appario Retail & Vendor HQ</h2>
-                                <p class="text-xs text-gray-300">Manage your multi-vendor storefront, inventory, and automated shipping.</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xs text-gray-400">Total Month Sales</p>
-                                <h3 class="text-2xl font-black text-flipkart-yellow">₹${appState.sellerMetrics.totalSales.toLocaleString('en-IN')}</h3>
-                            </div>
-                        </div>
-
-                        <!-- Metrics Cards -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Pending Orders</p><h4 class="text-xl font-extrabold text-flipkart-blue">${appState.sellerMetrics.pendingOrders}</h4></div>
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Active Products</p><h4 class="text-xl font-extrabold text-emerald-600">${appState.sellerMetrics.activeProducts}</h4></div>
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Payout Due (48h)</p><h4 class="text-xl font-extrabold text-amber-600">₹${appState.sellerMetrics.payoutDue}</h4></div>
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Rating & SLA</p><h4 class="text-xl font-extrabold text-flipkart-orange">4.8 / 5.0</h4></div>
-                        </div>
-
-                        <div class="bg-white p-6 rounded-lg shadow-sm border space-y-4">
-                            <h3 class="font-bold text-sm text-gray-800 uppercase tracking-wider border-b pb-2">Seller Dashboard (30 Professional Features)</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                ${sellerFeatures.map((feat, idx) => `
-                                    <div onclick="app.showToast('Seller Tool: ${feat}')" class="p-3 bg-blue-50/50 rounded border border-blue-100 cursor-pointer hover:border-flipkart-blue hover:bg-blue-50 transition flex items-center justify-between text-xs font-semibold text-gray-800">
-                                        <span>${idx + 1}. ${feat}</span>
-                                        <i class="fa-solid fa-arrow-up-right-from-square text-flipkart-blue"></i>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- ADMIN PANEL VIEW (50 Features Pro) ---
-            renderAdminPanelView() {
-                const adminFeatures = [
-                    'Global Dashboard Overview', 'User Role & Access Control', 'Vendor Verification & KYC', 'Commission & Fee Structure',
-                    'Payment Gateway Logs (Razorpay)', 'UPI Gateway Monitor (8233615852@ptaxis)', 'Webhook Event Inspector', 'Dispute & Refund Resolution',
-                    'Category & Taxonomy Manager', 'Homepage Banner Manager', 'Flash Sale & Deal Scheduler', 'SuperCoin Reward Engine',
-                    'Shiprocket / Delhivery API Sync', 'SMS & Notification Gateway', 'Email SMTP Configuration', 'Server Health & Uptime Monitor',
-                    'Database Backup & Restore', 'Security & Firewall Logs', 'Fraud Detection System', 'GST & Tax Compliance Engine',
-                    'Affiliate & Referral Control', 'Customer Support Ticketing', 'Content Moderation & Reviews', 'SEO Meta Tags Manager',
-                    'Analytics & Google GA4 Sync', 'Multi-Currency & Exchange Rates', 'Localization & Languages', 'API Rate Limiting & Keys',
-                    'Bulk Data Export / Import', 'Vendor Payout Gateway', 'Automated Invoicing Engine', 'Terms & Policy Editor',
-                    'Mobile App Config', 'Push Notification Dispatcher', 'Gift Card Code Generator', 'Promotional Coupon Manager',
-                    'Warehouse Network Mapping', 'Logistics Partner Settings', 'SLA Breach Penalties', 'Audit Trail Logs',
-                    'GDPR & Data Privacy Tools', 'Live Chat Support Monitoring', 'Vendor Rating & Suspension', 'Product Flagging & Removal',
-                    'Live Revenue Charts', 'Custom Report Generator', 'System Cache Clear', 'SSL Certificate Monitor',
-                    'DNS & Domain Settings', 'Master Admin Settings'
-                ];
-
-                return `
-                    <div class="max-w-7xl mx-auto space-y-6">
-                        <div class="bg-flipkart-dark text-white p-6 rounded-lg shadow flex items-center justify-between">
-                            <div>
-                                <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">Super Admin Panel</span>
-                                <h2 class="text-xl font-bold mt-1">SRP Marketplace Command Center</h2>
-                                <p class="text-xs text-gray-400">Complete control over 14,000+ users, 310 vendors, and Razorpay/Shiprocket APIs.</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xs text-gray-400">Total Marketplace GMV</p>
-                                <h3 class="text-2xl font-black text-flipkart-yellow">₹1.85 Cr</h3>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Total Registered Users</p><h4 class="text-xl font-extrabold text-blue-600">14,200</h4></div>
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Active Vendors</p><h4 class="text-xl font-extrabold text-emerald-600">310</h4></div>
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">Commission Earned</p><h4 class="text-xl font-extrabold text-amber-600">₹9,25,000</h4></div>
-                            <div class="bg-white p-4 rounded-lg shadow-sm border"><p class="text-xs text-gray-500">System Uptime</p><h4 class="text-xl font-extrabold text-emerald-600">99.98%</h4></div>
-                        </div>
-
-                        <div class="bg-white p-6 rounded-lg shadow-sm border space-y-4">
-                            <h3 class="font-bold text-sm text-gray-800 uppercase tracking-wider border-b pb-2">Admin Panel (All 50 Professional Features)</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                                ${adminFeatures.map((feat, idx) => `
-                                    <div onclick="app.showToast('Admin Control: ${feat}')" class="p-2.5 bg-gray-50 rounded border border-gray-200 cursor-pointer hover:border-red-500 hover:bg-red-50 transition flex items-center justify-between text-xs font-semibold text-gray-700">
-                                        <span>${idx + 1}. ${feat}</span>
-                                        <i class="fa-solid fa-gear text-gray-400"></i>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- LIVE TRACKER VIEW (Shiprocket / Delhivery / India Post) ---
-            renderLiveTrackerView() {
-                return `
-                    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
-                        <div class="border-b pb-4 flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-bold text-gray-800"><i class="fa-solid fa-truck-fast text-flipkart-blue"></i> Shiprocket & Delhivery Live Tracking</h2>
-                                <p class="text-xs text-gray-500">Real-time server-side tracking for Order #SRP-8849</p>
-                            </div>
-                            <span class="bg-blue-100 text-flipkart-blue px-3 py-1 rounded text-xs font-bold">Tracking ID: SHP-99283741</span>
-                        </div>
-
-                        <div class="bg-gray-50 p-4 rounded-lg border space-y-4">
-                            <div class="flex items-center justify-between text-xs font-bold text-gray-700">
-                                <span>Courier Partner: <span class="text-flipkart-blue">Shiprocket Express</span></span>
-                                <span>Estimated Delivery: <span class="text-emerald-600">Tomorrow, 4:00 PM</span></span>
-                            </div>
-
-                            <!-- Timeline Progress -->
-                            <div class="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-flipkart-blue">
-                                <div class="relative">
-                                    <div class="absolute -left-6 top-0 w-3 h-3 bg-flipkart-blue rounded-full ring-4 ring-blue-100"></div>
-                                    <h4 class="font-bold text-xs text-gray-900">Order Placed & Confirmed</h4>
-                                    <p class="text-[10px] text-gray-500">March 21, 2026 - 10:05 AM | Razorpay payment verified.</p>
-                                </div>
-                                <div class="relative">
-                                    <div class="absolute -left-6 top-0 w-3 h-3 bg-flipkart-blue rounded-full ring-4 ring-blue-100"></div>
-                                    <h4 class="font-bold text-xs text-gray-900">Packed by Appario Retail & Handed to Shiprocket</h4>
-                                    <p class="text-[10px] text-gray-500">March 21, 2026 - 02:30 PM | Bengaluru Fulfillment Hub</p>
-                                </div>
-                                <div class="relative">
-                                    <div class="absolute -left-6 top-0 w-3 h-3 bg-emerald-600 rounded-full ring-4 ring-emerald-100 animate-pulse"></div>
-                                    <h4 class="font-bold text-xs text-emerald-700">Out for Delivery with Local Courier Agent</h4>
-                                    <p class="text-[10px] text-gray-500">March 22, 2026 - 08:15 AM | Agent: Rajesh Kumar (+91 9876543210)</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-4">
-                            <button onclick="app.showToast('SMS Alert sent to your phone!')" class="flex-1 bg-flipkart-blue text-white py-2.5 rounded text-xs font-bold shadow hover:bg-blue-700 transition"><i class="fa-solid fa-mobile-screen"></i> Send SMS Live Updates</button>
-                            <button onclick="app.switchView('home')" class="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded text-xs font-bold hover:bg-gray-300 transition">Back to Home</button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- ACTIONS & EVENT HANDLERS ---
-            filterCategory(cat) {
-                appState.selectedCategory = cat;
-                this.switchView('home');
-            }
-
-            viewProductDetail(id) {
-                appState.selectedProduct = productCatalog.find(p => p.id === id);
-                this.switchView('product-detail');
-            }
-
-            addToCart(id) {
-                const product = productCatalog.find(p => p.id === id);
-                const existing = appState.cart.find(item => item.id === id);
-                if (existing) {
-                    existing.qty += 1;
-                } else {
-                    appState.cart.push({ ...product, qty: 1 });
-                }
-                this.renderNavbarBadge();
-                this.showToast(`Added "${product.name.substring(0, 25)}..." to Cart!`);
-            }
-
-            buyNow(id) {
-                this.addToCart(id);
-                this.switchView('checkout');
-            }
-
-            updateQty(id, delta) {
-                const item = appState.cart.find(i => i.id === id);
-                if (item) {
-                    item.qty += delta;
-                    if (item.qty <= 0) {
-                        appState.cart = appState.cart.filter(i => i.id !== id);
-                    }
-                }
-                this.renderNavbarBadge();
-                this.switchView('cart');
-            }
-
-            removeFromCart(id) {
-                appState.cart = appState.cart.filter(i => i.id !== id);
-                this.renderNavbarBadge();
-                this.showToast('Item removed from cart');
-                this.switchView('cart');
-            }
-
-            toggleWishlist(id) {
-                if (appState.wishlist.includes(id)) {
-                    appState.wishlist = appState.wishlist.filter(i => i !== id);
-                    this.showToast('Removed from Wishlist');
-                } else {
-                    appState.wishlist.push(id);
-                    this.showToast('Added to Wishlist!');
-                }
-                this.switchView(appState.currentView);
-            }
-
-            renderNavbarBadge() {
-                const count = appState.cart.reduce((acc, item) => acc + item.qty, 0);
-                document.getElementById('cartBadge').innerText = count;
-                if (appState.currentUser.loggedIn) {
-                    document.getElementById('authButtonText').innerText = appState.currentUser.name.split(' ')[0];
-                }
-            }
-
-            handleSearchInput(val) {
-                const query = val.toLowerCase();
-                const container = document.getElementById('searchSuggestions');
-                if (!query) {
-                    container.classList.add('hidden');
-                    return;
-                }
-                const matches = productCatalog.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-                if (matches.length > 0) {
-                    container.innerHTML = matches.map(m => `
-                        <div onclick="app.viewProductDetail(${m.id}); document.getElementById('searchSuggestions').classList.add('hidden');" class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center justify-between text-xs">
-                            <span class="font-semibold">${m.name}</span>
-                            <span class="text-flipkart-blue font-bold">₹${m.price.toLocaleString('en-IN')}</span>
-                        </div>
-                    `).join('');
-                    container.classList.remove('hidden');
-                } else {
-                    container.classList.add('hidden');
-                }
-            }
-
-            openAuthModal() {
-                document.getElementById('authModal').classList.remove('hidden');
-            }
-
-            closeAuthModal() {
-                document.getElementById('authModal').classList.add('hidden');
-            }
-
-            toggleAuthMode() {
-                this.showToast('Switching to Sign Up mode');
-            }
-
-            handleLoginSubmit() {
-                const val = document.getElementById('authInputVal').value;
-                if (val) {
-                    appState.currentUser.name = val.includes('@') ? val.split('@')[0] : 'User ' + val;
-                    appState.currentUser.loggedIn = true;
-                    this.renderNavbarBadge();
-                    this.closeAuthModal();
-                    this.showToast('Successfully logged in!');
-                } else {
-                    this.showToast('Please enter a valid email or mobile.');
-                }
-            }
-
-            openWalletModal() {
-                const list = document.getElementById('walletTxList');
-                document.getElementById('walletBalanceDisplay').innerText = `₹${appState.walletBalance.toLocaleString('en-IN')}.00`;
-                list.innerHTML = appState.walletTransactions.map(t => `
-                    <div class="py-2 flex items-center justify-between">
+                    <!-- Product Specs & Actions -->
+                    <div class="space-y-6">
                         <div>
-                            <p class="font-bold text-gray-800">${t.desc}</p>
-                            <p class="text-[10px] text-gray-400">${t.date}</p>
+                            <span class="text-xs font-semibold text-flipkartBlue uppercase tracking-wider">${product.category} • Sold by ${product.seller}</span>
+                            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1 mb-3">${product.name}</h1>
+                            <div class="flex items-center gap-3">
+                                <span class="bg-emerald-600 text-white text-xs font-bold px-2.5 py-1 rounded flex items-center gap-1">${product.rating} <i class="fa-solid fa-star text-[10px]"></i></span>
+                                <span class="text-xs text-gray-500 font-medium">${product.reviewsCount.toLocaleString()} Ratings & Verified Reviews</span>
+                            </div>
                         </div>
-                        <span class="font-bold ${t.type === 'Credit' ? 'text-emerald-600' : 'text-red-600'}">${t.type === 'Credit' ? '+' : '-'}₹${t.amount.toLocaleString('en-IN')}</span>
+
+                        <div class="bg-gray-50 p-4 rounded-xl border">
+                            <div class="flex items-baseline gap-3">
+                                <span class="text-3xl font-black text-gray-900">₹${product.price.toLocaleString()}</span>
+                                <span class="text-sm text-gray-400 line-through">₹${product.mrp.toLocaleString()}</span>
+                                <span class="text-sm font-bold text-emerald-600">${product.discount}</span>
+                            </div>
+                            <p class="text-xs text-emerald-700 font-semibold mt-1"><i class="fa-solid fa-bolt"></i> Inclusive of all taxes. Free Delivery via Shiprocket.</p>
+                        </div>
+
+                        <!-- Variant Selectors -->
+                        <div>
+                            <h4 class="font-semibold text-sm mb-2 text-gray-700">Select Variant / Storage / Color:</h4>
+                            <div class="flex flex-wrap gap-3">
+                                ${product.variants.map((v, i) => `
+                                    <button class="px-4 py-2 rounded-lg border text-sm font-medium ${i === 0 ? 'border-flipkartBlue bg-blue-50 text-flipkartBlue font-bold' : 'border-gray-200 text-gray-700 hover:border-gray-400'}">${v}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <h4 class="font-semibold text-sm mb-2 text-gray-700">Product Highlights:</h4>
+                            <p class="text-sm text-gray-600 leading-relaxed">${product.description}</p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t">
+                            <button onclick="addToCart('${product.id}')" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3.5 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
+                                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                            </button>
+                            <button onclick="buyNow('${product.id}')" class="bg-flipkartBlue hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
+                                <i class="fa-solid fa-bolt"></i> Buy Now
+                            </button>
+                        </div>
                     </div>
-                `).join('');
-                document.getElementById('walletModal').classList.remove('hidden');
+                </div>
+            `;
+        }
+
+        function addToCart(productId) {
+            const existing = db.cart.find(item => item.productId === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                db.cart.push({ productId, quantity: 1, selectedVariant: 'Standard' });
+            }
+            saveDB();
+            renderHeader();
+            showToast('Product added to cart successfully!');
+        }
+
+        function buyNow(productId) {
+            db.cart = [{ productId, quantity: 1, selectedVariant: 'Standard' }];
+            saveDB();
+            navigate('checkout');
+        }
+
+        function renderCartView() {
+            if (db.cart.length === 0) {
+                return `
+                    <div class="bg-white rounded-2xl shadow-xl p-12 text-center max-w-xl mx-auto border border-gray-100">
+                        <div class="w-20 h-20 bg-blue-50 text-flipkartBlue rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-cart-shopping"></i></div>
+                        <h2 class="text-2xl font-bold mb-2">Your SRP Cart is empty!</h2>
+                        <p class="text-gray-500 text-sm mb-6">Explore our top categories and add items to your cart to begin checkout.</p>
+                        <button onclick="navigate('home')" class="bg-flipkartBlue text-white font-bold px-8 py-3 rounded-xl shadow hover:bg-blue-700 transition">Shop Now</button>
+                    </div>
+                `;
             }
 
-            closeWalletModal() {
-                document.getElementById('walletModal').classList.add('hidden');
-            }
+            let subtotal = 0;
+            const cartItemsHTML = db.cart.map(item => {
+                const p = db.products.find(prod => prod.id === item.productId);
+                if (!p) return '';
+                subtotal += p.price * item.quantity;
+                return `
+                    <div class="flex items-center justify-between gap-4 py-4 border-b border-gray-100">
+                        <div class="flex items-center gap-4">
+                            <img src="${p.image}" class="w-16 h-16 object-cover rounded-lg border">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">${p.name}</h4>
+                                <span class="text-xs text-gray-400">Sold by: ${p.seller}</span>
+                                <div class="text-sm font-black text-gray-900 mt-1">₹${p.price.toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center border rounded-lg overflow-hidden">
+                                <button onclick="updateCartQty('${p.id}', -1)" class="px-3 py-1 bg-gray-50 hover:bg-gray-200 font-bold">-</button>
+                                <span class="px-4 py-1 text-sm font-bold">${item.quantity}</span>
+                                <button onclick="updateCartQty('${p.id}', 1)" class="px-3 py-1 bg-gray-50 hover:bg-gray-200 font-bold">+</button>
+                            </div>
+                            <button onclick="removeFromCart('${p.id}')" class="text-red-500 hover:text-red-700 p-2"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
-            addMoneyToWalletPrompt() {
-                appState.walletBalance += 2000;
-                appState.walletTransactions.unshift({
-                    id: 'TXN' + Math.floor(Math.random()*90000),
-                    type: 'Credit',
-                    amount: 2000,
-                    desc: 'Added via Razorpay (8233615852@ptaxis)',
-                    date: '2026-03-22 10:05'
-                });
-                this.openWalletModal();
-                this.showToast('Successfully added ₹2,000 via Razorpay UPI!');
-            }
+            const discount = 299;
+            const deliveryFee = 0;
+            const total = subtotal - discount + deliveryFee;
 
-            processPayment(total) {
-                this.showToast('Connecting to Razorpay & Stripe Gateway (rzp.io/rzp/juTBnc4Q)...');
-                setTimeout(() => {
-                    appState.walletTransactions.unshift({
-                        id: 'TXN' + Math.floor(Math.random()*90000),
-                        type: 'Debit',
-                        amount: total,
-                        desc: 'Order Payment via Razorpay / UPI 8233615852@ptaxis',
-                        date: '2026-03-22 10:06'
-                    });
-                    appState.cart = [];
-                    this.renderNavbarBadge();
-                    this.showToast('Payment Successful! Order placed via Shiprocket.');
-                    this.switchView('live-tracker');
-                }, 1500);
-            }
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                        <h2 class="text-xl font-bold mb-4 flex items-center justify-between">
+                            <span>My Shopping Cart (${db.cart.length} items)</span>
+                            <span class="text-xs font-normal text-gray-500"><i class="fa-solid fa-location-dot">> Delivering to Jaipur 302015</i></span>
+                        </h2>
+                        <div class="divide-y">${cartItemsHTML}</div>
+                    </div>
 
-            openCustomerSupport() {
-                this.showToast('Connected to 24x7 SRP Support Agent via Live Chat.');
-            }
+                    <div class="bg-white rounded-2xl shadow-xl p-6 h-fit border border-gray-100 space-y-6">
+                        <h3 class="font-bold text-lg border-b pb-3">Price Details</h3>
+                        <div class="space-y-3 text-sm text-gray-600">
+                            <div class="flex justify-between"><span>Bag MRP</span><span class="font-semibold text-gray-900">₹${subtotal.toLocaleString()}</span></div>
+                            <div class="flex justify-between text-emerald-600"><span>Bag Discount</span><span>-₹${discount}</span></div>
+                            <div class="flex justify-between"><span>Delivery Charges</span><span class="text-emerald-600 font-semibold">FREE</span></div>
+                            <div class="flex justify-between border-t pt-3 text-lg font-black text-gray-900"><span>Total Amount</span><span>₹${total.toLocaleString()}</span></div>
+                        </div>
+                        <button onclick="navigate('checkout')" class="w-full bg-flipkartBlue hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                            Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
 
-            showToast(msg) {
-                const container = document.getElementById('toastContainer');
-                const toast = document.createElement('div');
-                toast.className = 'bg-gray-900 text-white text-xs px-4 py-2.5 rounded shadow-xl pointer-events-auto flex items-center gap-2 border border-gray-700 animate-bounce';
-                toast.innerHTML = `<i class="fa-solid fa-circle-check text-flipkart-yellow"></i> <span>${msg}</span>`;
-                container.appendChild(toast);
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
+        function updateCartQty(productId, delta) {
+            const item = db.cart.find(i => i.productId === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    db.cart = db.cart.filter(i => i.productId !== productId);
+                }
+                saveDB();
+                renderApp();
             }
         }
 
-        // Initialize App on Load
-        const app = new SRPApp();
+        function removeFromCart(productId) {
+            db.cart = db.cart.filter(i => i.productId !== productId);
+            saveDB();
+            renderApp();
+            showToast('Item removed from cart', 'info');
+        }
+
+        function renderCheckoutView() {
+            let subtotal = db.cart.reduce((sum, item) => {
+                const p = db.products.find(prod => prod.id === item.productId);
+                return sum + (p ? p.price * item.quantity : 0);
+            }, 0);
+            const total = subtotal > 0 ? subtotal - 299 : 0;
+
+            return `
+                <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-8">
+                    <div class="border-b pb-4 flex items-center justify-between">
+                        <h2 class="text-2xl font-extrabold text-gray-900">Secure Multi-Vendor Checkout</h2>
+                        <span class="bg-blue-50 text-flipkartBlue text-xs font-bold px-3 py-1 rounded-full border border-blue-200"><i class="fa-solid fa-lock"></i> 256-Bit SSL Secured</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Delivery Address Section -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2"><i class="fa-solid fa-location-dot text-flipkartBlue"></i> 1. Delivery Address</h3>
+                            <div class="p-4 rounded-xl border-2 border-flipkartBlue bg-blue-50/50">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="font-bold text-sm">${db.currentUser.name}</span>
+                                    <span class="bg-flipkartBlue text-white text-[10px] font-bold px-2 py-0.5 rounded">Home</span>
+                                </div>
+                                <p class="text-xs text-gray-600 leading-relaxed">${db.currentUser.addresses[0].address}, ${db.currentUser.addresses[0].locality}, ${db.currentUser.addresses[0].city} - ${db.currentUser.addresses[0].pin}</p>
+                                <p class="text-xs text-gray-500 mt-2 font-medium">Phone: ${db.currentUser.phone}</p>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method Section -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2"><i class="fa-solid fa-wallet text-flipkartBlue"></i> 2. Payment Gateway</h3>
+                            
+                            <div class="space-y-3">
+                                <!-- UPI Payment Option (Highlighted) -->
+                                <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-flipkartBlue bg-blue-50/40 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" checked class="mt-1 accent-flipkartBlue">
+                                    <div class="flex-grow">
+                                        <div class="font-bold text-sm flex items-center justify-between">
+                                            <span>UPI ID Payment (Instant Verification)</span>
+                                            <i class="fa-brands fa-google-pay text-xl text-blue-600"></i>
+                                        </div>
+                                        <p class="text-xs text-gray-600 mt-1">Send to UPI ID: <strong class="text-flipkartBlue font-mono">8233615852@ptaxis</strong></p>
+                                    </div>
+                                </label>
+
+                                <!-- Razorpay Link Option -->
+                                <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-gray-400 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" class="mt-1 accent-flipkartBlue">
+                                    <div class="flex-grow">
+                                        <div class="font-bold text-sm flex items-center justify-between">
+                                            <span>Razorpay Production Checkout</span>
+                                            <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-mono">RZP Link</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Official Gateway: <a href="https://rzp.io/rzp/juTBnc4Q" target="_blank" class="text-blue-600 underline">rzp.io/rzp/juTBnc4Q</a></p>
+                                    </div>
+                                </label>
+
+                                <!-- SRP Wallet Option -->
+                                <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-gray-400 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" class="mt-1 accent-flipkartBlue">
+                                    <div class="flex-grow">
+                                        <div class="font-bold text-sm flex items-center justify-between">
+                                            <span>SRP Wallet Balance</span>
+                                            <span class="text-emerald-600 font-bold">₹${db.currentUser.walletBalance.toLocaleString()}</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Instant 1-click debit with cashback reward.</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Total & Pay Button -->
+                    <div class="border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs text-gray-500">Total Payable Amount:</span>
+                            <div class="text-3xl font-black text-gray-900">₹${total.toLocaleString()}</div>
+                        </div>
+                        <button onclick="completeOrder()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-10 py-4 rounded-xl shadow-xl transition text-base flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shield-check"></i> Pay ₹${total.toLocaleString()} & Confirm Order
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function completeOrder() {
+            const newOrder = {
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                items: db.cart.map(i => {
+                    const p = db.products.find(prod => prod.id === i.productId);
+                    return { productId: i.productId, name: p ? p.name : 'Product', price: p ? p.price : 0, qty: i.quantity, image: p ? p.image : '' };
+                }),
+                total: db.cart.reduce((sum, i) => {
+                    const p = db.products.find(prod => prod.id === i.productId);
+                    return sum + (p ? p.price * i.quantity : 0);
+                }, 0) - 299,
+                status: 'Processing',
+                courier: 'Shiprocket Express',
+                trackingId: 'SRX-' + Math.floor(10000000 + Math.random() * 90000000),
+                shippingSteps: [
+                    { title: 'Order Placed & Verified', time: 'Just now', done: true },
+                    { title: 'Packed by Vendor', time: 'Expected in 2 hrs', done: false },
+                    { title: 'Shipped via Shiprocket', time: 'Pending', done: false },
+                    { title: 'Out for Delivery', time: 'Pending', done: false },
+                    { title: 'Delivered', time: 'Pending', done: false }
+                ],
+                paymentMethod: 'UPI Verified (8233615852@ptaxis)',
+                shippingAddress: `${db.currentUser.addresses[0].address}, ${db.currentUser.addresses[0].city} - ${db.currentUser.addresses[0].pin}`
+            };
+
+            db.orders.unshift(newOrder);
+            db.cart = [];
+            saveDB();
+            
+            openModal(`
+                <div class="text-center space-y-4 py-6">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto"><i class="fa-solid fa-circle-check"></i></div>
+                    <h2 class="text-2xl font-extrabold text-gray-900">Order Placed Successfully!</h2>
+                    <p class="text-sm text-gray-600">Your order <strong class="text-flipkartBlue">${newOrder.id}</strong> has been assigned to our multi-vendor fulfillment engine.</p>
+                    <div class="bg-gray-50 p-4 rounded-xl text-left text-xs space-y-1 border">
+                        <p><strong>Payment UPI:</strong> 8233615852@ptaxis (Verified)</p>
+                        <p><strong>Courier:</strong> Shiprocket Express (${newOrder.trackingId})</p>
+                    </div>
+                    <button onclick="closeModal(); navigate('tracking');" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded-xl shadow">Track Order Live</button>
+                </div>
+            `);
+        }
+
+        function renderAccountView() {
+            const u = db.currentUser;
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Sidebar Profile Nav -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 h-fit border border-gray-100 space-y-6">
+                        <div class="flex items-center gap-4 border-b pb-4">
+                            <img src="${u.avatar}" class="w-14 h-14 rounded-full border-2 border-flipkartBlue object-cover">
+                            <div>
+                                <span class="text-xs text-gray-400 font-semibold uppercase">Hello,</span>
+                                <h3 class="font-extrabold text-gray-900">${u.name}</h3>
+                            </div>
+                        </div>
+                        <div class="space-y-1 text-sm font-medium text-gray-600">
+                            <button onclick="renderAccountTab('profile')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-flipkartBlue transition flex items-center gap-3"><i class="fa-solid fa-user"></i> Profile Information</button>
+                            <button onclick="renderAccountTab('wallet')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-flipkartBlue transition flex items-center gap-3"><i class="fa-solid fa-wallet"></i> SRP Wallet & Coins</button>
+                            <button onclick="renderAccountTab('orders')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-flipkartBlue transition flex items-center gap-3"><i class="fa-solid fa-box"></i> My Orders & Returns</button>
+                            <button onclick="renderAccountTab('addresses')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-flipkartBlue transition flex items-center gap-3"><i class="fa-solid fa-location-dot"></i> Saved Addresses</button>
+                            <button onclick="renderAccountTab('wishlist')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-flipkartBlue transition flex items-center gap-3"><i class="fa-solid fa-heart"></i> My Wishlist (${u.wishlist.length})</button>
+                            <button onclick="renderAccountTab('coupons')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-flipkartBlue transition flex items-center gap-3"><i class="fa-solid fa-ticket"></i> Saved Coupons</button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Account Content -->
+                    <div id="accountTabContent" class="md:col-span-3 bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                        ${renderWalletTabContent()}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAccountTab(tab) {
+            const container = document.getElementById('accountTabContent');
+            if (tab === 'wallet') container.innerHTML = renderWalletTabContent();
+            else if (tab === 'orders') container.innerHTML = renderOrdersTabContent();
+            else if (tab === 'addresses') container.innerHTML = renderAddressesTabContent();
+            else if (tab === 'wishlist') container.innerHTML = renderWishlistTabContent();
+            else if (tab === 'coupons') container.innerHTML = renderCouponsTabContent();
+            else container.innerHTML = renderProfileTabContent();
+        }
+
+        function renderWalletTabContent() {
+            const u = db.currentUser;
+            return `
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b pb-4">
+                        <div>
+                            <h2 class="text-2xl font-extrabold text-gray-900">SRP Digital Wallet & Rewards</h2>
+                            <p class="text-xs text-gray-500">Instant UPI top-ups, cashback rewards, and secure multi-vendor payouts.</p>
+                        </div>
+                        <button onclick="openAddMoneyModal()" class="bg-flipkartBlue hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shadow text-sm">Add Money</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+                            <div class="text-xs uppercase tracking-wider text-blue-200 mb-1 font-semibold">Available Balance</div>
+                            <div class="text-3xl font-black mb-4">₹${u.walletBalance.toLocaleString()}</div>
+                            <div class="flex items-center justify-between text-xs text-blue-100 pt-3 border-t border-blue-500/40">
+                                <span>UPI: 8233615852@ptaxis</span>
+                                <span>Razorpay Verified</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+                            <div class="text-xs uppercase tracking-wider text-amber-100 mb-1 font-semibold">SRP Reward Coins</div>
+                            <div class="text-3xl font-black mb-4"><i class="fa-solid fa-coins"></i> ${u.rewardCoins} Coins</div>
+                            <div class="text-xs text-amber-100 pt-3 border-t border-amber-400/40">Redeemable on all multi-vendor orders</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-lg mb-4">Wallet Transaction History</h3>
+                        <div class="divide-y border rounded-xl overflow-hidden">
+                            ${db.walletTransactions.map(tx => `
+                                <div class="p-4 flex items-center justify-between bg-white hover:bg-gray-50 transition">
+                                    <div>
+                                        <div class="font-bold text-sm text-gray-800">${tx.desc}</div>
+                                        <div class="text-xs text-gray-400">${tx.date} • ID: ${tx.id}</div>
+                                    </div>
+                                    <span class="font-black text-sm ${tx.type === 'Credit' ? 'text-emerald-600' : 'text-gray-900'}">${tx.type === 'Credit' ? '+' : '-'}₹${tx.amount.toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openAddMoneyModal() {
+            openModal(`
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold">Top-Up SRP Wallet via UPI</h3>
+                    <p class="text-xs text-gray-500">Transfer funds instantly to UPI ID <strong class="text-flipkartBlue">8233615852@ptaxis</strong> or Razorpay link.</p>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Enter Amount (₹)</label>
+                        <input type="number" id="topupAmount" value="1000" class="w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none">
+                    </div>
+                    <button onclick="confirmTopup()" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded-xl shadow">Proceed via Razorpay UPI</button>
+                </div>
+            `);
+        }
+
+        function confirmTopup() {
+            const amt = parseFloat(document.getElementById('topupAmount').value) || 1000;
+            db.currentUser.walletBalance += amt;
+            db.walletTransactions.unshift({
+                id: 'TXN-' + Math.floor(1000 + Math.random() * 9000),
+                type: 'Credit',
+                amount: amt,
+                desc: 'Wallet Top-up via Razorpay UPI (8233615852@ptaxis)',
+                date: new Date().toISOString().substring(0, 10)
+            });
+            saveDB();
+            closeModal();
+            renderApp();
+            showToast(`Successfully added ₹${amt} to your SRP Wallet!`);
+        }
+
+        function renderOrdersTabContent() {
+            return `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-extrabold text-gray-900 border-b pb-4">My Orders & Live Shipments</h2>
+                    <div class="space-y-4">
+                        ${db.orders.map(o => `
+                            <div class="border rounded-xl p-5 shadow-sm bg-white space-y-4">
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <span class="text-xs font-bold text-flipkartBlue">${o.id}</span>
+                                        <div class="text-xs text-gray-400">Placed on ${o.date}</div>
+                                    </div>
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">${o.status}</span>
+                                </div>
+                                <div class="space-y-2">
+                                    ${o.items.map(i => `
+                                        <div class="flex items-center gap-4">
+                                            <img src="${i.image}" class="w-12 h-12 object-cover rounded border">
+                                            <div>
+                                                <h4 class="font-bold text-sm text-gray-800">${i.name}</h4>
+                                                <div class="text-xs text-gray-500">Qty: ${i.qty} • ₹${i.price.toLocaleString()}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="flex items-center justify-between pt-3 border-t text-xs font-medium">
+                                    <span class="text-gray-500">Courier: <strong class="text-gray-800">${o.courier} (${o.trackingId})</strong></span>
+                                    <button onclick="navigate('tracking')" class="text-flipkartBlue font-bold hover:underline">Track Live Shipment <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddressesTabContent() {
+            return `
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b pb-4">
+                        <h2 class="text-2xl font-extrabold text-gray-900">Manage Delivery Addresses</h2>
+                        <button onclick="showToast('Address added successfully!')" class="bg-flipkartBlue text-white text-xs font-bold px-4 py-2 rounded-lg">Add New Address</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${db.currentUser.addresses.map(a => `
+                            <div class="border rounded-xl p-4 shadow-sm bg-white relative space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-sm">${a.name}</span>
+                                    <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">${a.type}</span>
+                                </div>
+                                <p class="text-xs text-gray-600 leading-relaxed">${a.address}, ${a.locality}, ${a.city} - ${a.pin}</p>
+                                <p class="text-xs text-gray-500 font-medium">Phone: ${a.phone}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWishlistTabContent() {
+            const wishlistProds = db.products.filter(p => db.currentUser.wishlist.includes(p.id));
+            return `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-extrabold text-gray-900 border-b pb-4">My Wishlist (${wishlistProds.length})</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${wishlistProds.map(p => `
+                            <div class="border rounded-xl p-4 shadow-sm bg-white flex items-center gap-4">
+                                <img src="${p.image}" class="w-20 h-20 object-cover rounded-lg border">
+                                <div class="flex-grow">
+                                    <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${p.name}</h4>
+                                    <div class="text-sm font-black text-gray-900 mt-1">₹${p.price.toLocaleString()}</div>
+                                    <button onclick="addToCart('${p.id}'); toggleWishlist('${p.id}');" class="mt-2 bg-yellow-400 text-gray-900 font-bold text-xs px-3 py-1.5 rounded shadow">Move to Cart</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleWishlist(productId) {
+            const idx = db.currentUser.wishlist.indexOf(productId);
+            if (idx > -1) {
+                db.currentUser.wishlist.splice(idx, 1);
+                showToast('Removed from wishlist', 'info');
+            } else {
+                db.currentUser.wishlist.push(productId);
+                showToast('Added to wishlist successfully!');
+            }
+            saveDB();
+            renderApp();
+        }
+
+        function renderCouponsTabContent() {
+            return `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-extrabold text-gray-900 border-b pb-4">Saved Discount Coupons</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${db.currentUser.coupons.map(c => `
+                            <div class="border-2 border-dashed border-flipkartBlue p-4 rounded-xl bg-blue-50/40 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-mono font-bold text-flipkartBlue text-lg">${c.code}</span>
+                                    <span class="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Active</span>
+                                </div>
+                                <p class="text-xs text-gray-700 font-medium">${c.discount}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProfileTabContent() {
+            const u = db.currentUser;
+            return `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-extrabold text-gray-900 border-b pb-4">Personal Information</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Full Name</label>
+                            <input type="text" value="${u.name}" class="w-full border rounded-xl px-4 py-2.5 font-medium bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Email Address</label>
+                            <input type="email" value="${u.email}" class="w-full border rounded-xl px-4 py-2.5 font-medium bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Phone Number</label>
+                            <input type="text" value="${u.phone}" class="w-full border rounded-xl px-4 py-2.5 font-medium bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">UPI ID for Payouts</label>
+                            <input type="text" value="8233615852@ptaxis" class="w-full border rounded-xl px-4 py-2.5 font-medium bg-blue-50 text-flipkartBlue font-bold">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTrackingView() {
+            const order = db.orders[0];
+            return `
+                <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-gray-100 space-y-8">
+                    <div class="border-b pb-4 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-extrabold text-gray-900">Live Shipment Tracker</h2>
+                            <p class="text-xs text-gray-500">Real-time carrier integration with Shiprocket, Delhivery, and India Post.</p>
+                        </div>
+                        <span class="bg-blue-100 text-flipkartBlue font-bold text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-truck-fast"></i> ${order.courier}</span>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-2xl border space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span>Tracking ID: <strong class="font-mono text-flipkartBlue">${order.trackingId}</strong></span>
+                            <span>Destination: <strong>Jaipur - 302015</strong></span>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="space-y-6 pt-4">
+                            ${order.shippingSteps.map((step, i) => `
+                                <div class="flex items-start gap-4 relative">
+                                    ${i < order.shippingSteps.length - 1 ? `<div class="absolute left-4 top-8 w-0.5 h-12 bg-gray-200"></div>` : ''}
+                                    <div class="w-8 h-8 rounded-full ${step.done ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-500'} flex items-center justify-center font-bold text-xs shadow">
+                                        <i class="fa-solid ${step.done ? 'fa-check' : 'fa-clock'}"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-sm ${step.done ? 'text-gray-900' : 'text-gray-400'}">${step.title}</h4>
+                                        <p class="text-xs text-gray-500">${step.time}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSellerView() {
+            return `
+                <div class="space-y-8">
+                    <div class="bg-gradient-to-r from-gray-900 to-flipkartBlue text-white p-8 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <div>
+                            <span class="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Vendor Partner Portal</span>
+                            <h1 class="text-3xl font-extrabold mt-2">ElectroWorld India Dashboard</h1>
+                            <p class="text-sm text-blue-100 mt-1">Manage inventory, process orders, track payouts, and analyze multi-vendor sales.</p>
+                        </div>
+                        <button onclick="openAddProductModal()" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-6 py-3 rounded-xl shadow transition">+ Add New Product</button>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Total Sales Revenue</div>
+                            <div class="text-3xl font-black text-gray-900">₹4,82,900</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Active Products</div>
+                            <div class="text-3xl font-black text-flipkartBlue">${db.sellerProducts.length}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Pending Orders</div>
+                            <div class="text-3xl font-black text-orange-600">${db.sellerOrders.length}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Payout UPI</div>
+                            <div class="text-xs font-mono font-bold text-emerald-600 mt-2">8233615852@ptaxis</div>
+                        </div>
+                    </div>
+
+                    <!-- Products Table -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                        <h3 class="font-bold text-lg mb-4">Vendor Product Inventory</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Product Name</th>
+                                        <th class="p-3">Price</th>
+                                        <th class="p-3">Stock Qty</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    ${db.sellerProducts.map(sp => `
+                                        <tr>
+                                            <td class="p-3 font-bold text-gray-800">${sp.name}</td>
+                                            <td class="p-3 font-black text-gray-900">₹${sp.price.toLocaleString()}</td>
+                                            <td class="p-3">${sp.stock} units</td>
+                                            <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded">${sp.status}</span></td>
+                                            <td class="p-3"><button onclick="showToast('Product updated successfully!')" class="text-flipkartBlue font-bold hover:underline">Edit</button></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openAddProductModal() {
+            openModal(`
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold">Add New Multi-Vendor Product</h3>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Product Title</label>
+                        <input type="text" id="newProdName" placeholder="e.g. Ultra 5G Tablet" class="w-full border rounded-xl px-4 py-2.5 text-sm outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Price (₹)</label>
+                            <input type="number" id="newProdPrice" value="14999" class="w-full border rounded-xl px-4 py-2.5 text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Stock Qty</label>
+                            <input type="number" id="newProdStock" value="50" class="w-full border rounded-xl px-4 py-2.5 text-sm outline-none">
+                        </div>
+                    </div>
+                    <button onclick="saveNewVendorProduct()" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded-xl shadow">Publish Product</button>
+                </div>
+            `);
+        }
+
+        function saveNewVendorProduct() {
+            const name = document.getElementById('newProdName').value || 'New Vendor Item';
+            const price = parseFloat(document.getElementById('newProdPrice').value) || 9999;
+            const stock = parseInt(document.getElementById('newProdStock').value) || 50;
+
+            db.sellerProducts.unshift({ id: 'SP-' + Math.floor(100 + Math.random() * 900), name, price, stock, status: 'Active', orders: 0 });
+            db.products.unshift({
+                id: 'P-' + Math.floor(100 + Math.random() * 900),
+                name, category: 'Electronics', price, mrp: price * 1.5, discount: '33% off', rating: 4.5, reviewsCount: 1,
+                image: 'https://placehold.co/400x400/2874f0/ffffff?text=' + encodeURIComponent(name),
+                seller: 'ElectroWorld India', stock, featured: true, description: 'Newly listed multi-vendor product with verified warranty.', variants: ['Standard'], specs: {}
+            });
+            saveDB();
+            closeModal();
+            renderApp();
+            showToast('New product published successfully!');
+        }
+
+        function renderAdminView() {
+            const stats = db.adminStats;
+            return `
+                <div class="space-y-8">
+                    <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-8 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <div>
+                            <span class="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Super Admin Master Panel</span>
+                            <h1 class="text-3xl font-extrabold mt-2">SRP Marketplace Governance</h1>
+                            <p class="text-sm text-blue-100 mt-1">Complete control over vendors, commission tiers, Razorpay settlement, and platform analytics.</p>
+                        </div>
+                        <button onclick="showToast('Platform settings saved successfully!')" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-6 py-3 rounded-xl shadow transition">Save Global Config</button>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Total Gross Revenue</div>
+                            <div class="text-2xl font-black text-gray-900">₹${(stats.totalRevenue).toLocaleString()}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Platform Commission</div>
+                            <div class="text-2xl font-black text-emerald-600">₹${(stats.commissionEarned).toLocaleString()}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Registered Vendors</div>
+                            <div class="text-2xl font-black text-flipkartBlue">${stats.totalVendors}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <div class="text-xs uppercase text-gray-400 font-semibold mb-1">Total Users</div>
+                            <div class="text-2xl font-black text-orange-600">${stats.totalUsers.toLocaleString()}</div>
+                        </div>
+                    </div>
+
+                    <!-- Vendor Management Table -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                        <h3 class="font-bold text-lg mb-4">Multi-Vendor Approval & Commission Management</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Vendor Name</th>
+                                        <th class="p-3">Owner</th>
+                                        <th class="p-3">Email</th>
+                                        <th class="p-3">Commission Rate</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    ${db.adminVendors.map(v => `
+                                        <tr>
+                                            <td class="p-3 font-bold text-gray-800">${v.name}</td>
+                                            <td class="p-3">${v.owner}</td>
+                                            <td class="p-3 text-gray-500">${v.email}</td>
+                                            <td class="p-3 font-bold text-flipkartBlue">${v.commission}</td>
+                                            <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded">${v.status}</span></td>
+                                            <td class="p-3"><button onclick="showToast('Vendor status updated!')" class="text-flipkartBlue font-bold hover:underline">Manage</button></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showInfoModal(title) {
+            openModal(`
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-bold">${title}</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">SRP Shopping is the premier multi-vendor marketplace built with Flipkart and Amazon inspired architecture, integrated Razorpay production checkout (<a href="https://rzp.io/rzp/juTBnc4Q" target="_blank" class="text-blue-600 underline">rzp.io/rzp/juTBnc4Q</a>), UPI ID payments (<code class="bg-blue-50 text-flipkartBlue px-1 font-mono">8233615852@ptaxis</code>), and live Shiprocket shipping tracking.</p>
+                    <button onclick="closeModal()" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded-xl shadow">Got it</button>
+                </div>
+            `);
+        }
+
+        function resetFilters() {
+            db.selectedCategory = 'All';
+            db.searchQuery = '';
+            renderApp();
+        }
+
+        function sortProducts(val) {
+            if (val === 'lowHigh') db.products.sort((a,b) => a.price - b.price);
+            else if (val === 'highLow') db.products.sort((a,b) => b.price - a.price);
+            else db.products.sort((a,b) => b.rating - a.rating);
+            renderApp();
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            renderApp();
+        };
     </script>
 </body>
 </html>
