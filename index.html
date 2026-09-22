@@ -1,813 +1,493 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Shopping India - Mobiles, Electronics, Appliances, Grocery & More</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        flipkartBlue: '#2874f0',
-                        flipkartYellow: '#ffe11b',
-                        flipkartDark: '#172337',
-                        flipkartGreen: '#388e3c'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom scrollbar and utilities */
-        ::-webkit-scrollbar {
-            height: 6px;
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-        body {
-            background-color: #f1f3f6;
-            font-family: 'Inter', sans-serif;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SRP Shopping — Online Shopping India</title>
+  <meta name="description" content="SRP Shopping — Flipkart-style marketplace homepage with separate customer, seller, help and account pages." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <style>
+    :root{
+      --blue:#2874f0; --blue-2:#1557c0; --yellow:#ffe11b; --bg:#f1f3f6;
+      --text:#212121; --muted:#666; --line:#e6e6e6; --green:#388e3c; --orange:#ff9f00;
+      --shadow:0 1px 3px rgba(0,0,0,.16); --shadow-lg:0 8px 28px rgba(0,0,0,.18);
+      --radius:2px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--text);font-size:14px}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    .hidden{display:none!important}
+    .container{max-width:1280px;margin:0 auto;padding:0 12px}
+    .topbar{height:64px;background:#fff;box-shadow:var(--shadow);position:sticky;top:0;z-index:100}
+    .topbar-inner{height:64px;display:flex;align-items:center;gap:14px}
+    .logo{min-width:145px;color:var(--blue);font-size:20px;font-weight:800;font-style:italic;line-height:1;letter-spacing:-.7px}
+    .logo small{display:block;color:#8b8b8b;font-size:10px;font-style:normal;font-weight:600;margin-top:3px;letter-spacing:.1px}
+    .search-wrap{flex:1;position:relative;min-width:250px}
+    .search{height:40px;background:#f0f5ff;display:flex;align-items:center;padding:0 14px;border-radius:2px;border:1px solid transparent;transition:.15s}
+    .search:focus-within{background:#fff;border-color:#b7c9f4;box-shadow:0 1px 5px rgba(40,116,240,.16)}
+    .search i{color:#777;margin-right:10px}
+    .search input{border:0;outline:0;background:transparent;width:100%;font-size:14px}
+    .search-suggestions{position:absolute;left:0;right:0;top:42px;background:#fff;border-radius:0 0 2px 2px;box-shadow:var(--shadow-lg);max-height:350px;overflow:auto;z-index:150;border:1px solid var(--line)}
+    .suggestion{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #f4f4f4}
+    .suggestion:hover{background:#f7f9ff}
+    .suggestion small{color:#888}
+    .header-actions{display:flex;align-items:center;gap:4px;white-space:nowrap}
+    .head-btn{border:0;background:#fff;padding:10px 12px;display:flex;align-items:center;gap:7px;font-weight:600;border-radius:2px;color:#212121}
+    .head-btn:hover{background:#f6f6f6;color:var(--blue)}
+    .login-btn{border:1px solid #ddd;color:var(--blue);min-width:90px;justify-content:center}
+    .cart-btn{position:relative}
+    .badge{position:absolute;top:4px;right:1px;min-width:17px;height:17px;background:#f44336;color:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:10px;padding:0 4px;font-weight:800}
+    .dropdown{position:absolute;right:0;top:48px;width:280px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-lg);z-index:180;border-radius:2px;overflow:hidden}
+    .dropdown-head{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .dropdown a,.dropdown button{display:flex;align-items:center;gap:12px;width:100%;padding:12px 15px;border:0;background:#fff;text-align:left}
+    .dropdown a:hover,.dropdown button:hover{background:#f7f8fb}
+    .dropdown i{width:18px;color:var(--blue)}
+    .header-location{background:var(--blue);color:#fff;height:32px}
+    .location-inner{height:32px;display:flex;align-items:center;gap:8px;font-size:12px}
+    .location-inner button{border:0;background:transparent;color:#fff;text-decoration:underline;font-weight:700;padding:0;margin-left:6px}
+    .categorybar{background:#fff;box-shadow:var(--shadow);position:relative;z-index:80}
+    .category-scroll{display:flex;align-items:stretch;gap:22px;overflow-x:auto;scrollbar-width:none;min-height:112px}
+    .category-scroll::-webkit-scrollbar{display:none}
+    .category-item{min-width:82px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 2px 9px;color:#333;font-weight:600;font-size:12px;position:relative}
+    .category-item:hover{color:var(--blue)}
+    .category-item img{height:58px;width:78px;object-fit:contain;margin-bottom:7px}
+    .category-item .arrow{font-size:9px;margin-left:3px;color:#444}
+    main{padding:10px 0 28px}
+    .hero{height:300px;background:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .slides{display:flex;height:100%;transition:transform .45s ease}
+    .slide{min-width:100%;position:relative;overflow:hidden;background:#fff}
+    .slide img{width:100%;height:100%;object-fit:cover}
+    .slide-overlay{position:absolute;inset:0;display:flex;align-items:center;padding:30px 48px;background:linear-gradient(90deg,rgba(0,0,0,.58),rgba(0,0,0,.18),rgba(0,0,0,0))}
+    .slide-copy{color:#fff;max-width:520px}
+    .eyebrow{display:inline-block;background:var(--yellow);color:#111;padding:6px 10px;font-weight:800;font-size:11px;border-radius:2px;margin-bottom:10px}
+    .slide-copy h1{margin:0 0 8px;font-size:37px;line-height:1.08;letter-spacing:-1px}
+    .slide-copy p{margin:0 0 15px;font-size:16px;color:#f1f1f1}
+    .cta{border:0;background:var(--yellow);color:#111;font-weight:800;padding:11px 18px;border-radius:2px;box-shadow:var(--shadow)}
+    .hero-arrow{position:absolute;top:50%;transform:translateY(-50%);height:42px;width:36px;border:0;background:#fff;box-shadow:var(--shadow);z-index:5}
+    .hero-arrow.left{left:0}.hero-arrow.right{right:0}
+    .dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}
+    .dot{width:7px;height:7px;border-radius:50%;border:0;background:#ddd;padding:0}.dot.active{background:var(--blue)}
+    .shop-row{background:#fff;margin-top:10px;box-shadow:var(--shadow)}
+    .row-head{padding:16px 18px 13px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .row-head h2{font-size:20px;margin:0;font-weight:700;letter-spacing:-.25px}
+    .row-head p{margin:4px 0 0;color:#777;font-size:11px}
+    .view-all{background:var(--blue);color:#fff;border:0;padding:9px 15px;border-radius:2px;font-size:12px;font-weight:800}
+    .product-scroller{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;padding:12px 4px 15px}
+    .product-scroller::-webkit-scrollbar{display:none}
+    .product-card{min-width:190px;width:190px;padding:9px 11px;border-right:1px solid #f1f1f1;position:relative}
+    .product-card:last-child{border-right:0}
+    .product-img-wrap{height:158px;display:flex;align-items:center;justify-content:center;position:relative;background:#fff}
+    .product-img{height:150px;width:100%;object-fit:contain;transition:transform .16s}
+    .product-card:hover .product-img{transform:scale(1.035)}
+    .heart{position:absolute;top:2px;right:1px;border:0;background:#fff;width:28px;height:28px;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.14);color:#bbb}
+    .heart.active{color:#e53935}
+    .product-title{font-size:13px;font-weight:500;line-height:1.35;margin:8px 0 5px;height:35px;overflow:hidden}
+    .rating-line{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+    .rating{background:var(--green);color:#fff;font-size:10px;padding:3px 6px;border-radius:2px;font-weight:800;display:inline-flex;align-items:center;gap:2px}
+    .review-count{font-size:10px;color:#8a8a8a}
+    .price-line{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+    .price{font-size:15px;font-weight:800}.old{font-size:11px;color:#888;text-decoration:line-through}.disc{font-size:10px;color:var(--green);font-weight:800}
+    .ship{font-size:10px;color:#666;margin-top:4px}
+    .action-row{display:flex;gap:6px;margin-top:8px}
+    .small-action{border:1px solid #dcdcdc;background:#fff;padding:6px 8px;font-size:10px;font-weight:700;flex:1;border-radius:2px}
+    .small-action.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .banner-strip{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-top:10px}
+    .banner-strip::-webkit-scrollbar{display:none}
+    .mini-banner{min-width:31.8%;height:165px;background:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .mini-banner img{width:100%;height:100%;object-fit:cover}
+    .mini-banner .mini-copy{position:absolute;left:18px;bottom:15px;color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.4)}
+    .mini-copy strong{display:block;font-size:21px}.mini-copy span{font-size:12px}
+    .deal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+    .deal-card{background:#fff;min-height:210px;box-shadow:var(--shadow);padding:14px;cursor:pointer}
+    .deal-card img{width:100%;height:145px;object-fit:contain}.deal-card h3{margin:8px 0 4px;font-size:13px}.deal-card p{margin:0;color:var(--green);font-size:12px;font-weight:700}
+    .product-page{display:grid;grid-template-columns:450px 1fr;gap:24px;background:#fff;box-shadow:var(--shadow);padding:18px}
+    .detail-gallery{border-right:1px solid var(--line);padding-right:20px}.detail-main{height:430px;display:flex;align-items:center;justify-content:center}.detail-main img{height:420px;width:100%;object-fit:contain}
+    .thumbs{display:flex;gap:8px;overflow:auto;padding-top:10px}.thumb{width:64px;height:64px;border:1px solid #ddd;background:#fff}.thumb.active{border:2px solid var(--blue)}.thumb img{width:100%;height:100%;object-fit:contain}
+    .detail-info h1{font-size:25px;line-height:1.3;margin:0 0 8px}.subline{color:#666;font-size:12px;margin-bottom:12px}.detail-price{font-size:28px;font-weight:800}.detail-old{color:#777;text-decoration:line-through;margin-left:8px}.detail-disc{color:var(--green);font-weight:800;margin-left:8px}.feature-box{margin-top:18px;border-top:1px solid var(--line);padding-top:15px}.feature-box h3{font-size:15px;margin:0 0 10px}.feature-box li{margin:7px 0;color:#444}.detail-actions{display:flex;gap:10px;margin-top:20px}.big-btn{border:0;padding:14px 18px;font-weight:800;border-radius:2px;min-width:165px}.big-btn.buy{background:#ff9f00}.big-btn.cart{background:var(--yellow)}
+    .page-shell{background:#fff;box-shadow:var(--shadow);min-height:540px;padding:24px}.page-title{margin:0 0 5px;font-size:28px}.page-subtitle{color:#777;margin:0 0 20px}.page-tabs{display:flex;gap:8px;overflow:auto;margin-bottom:20px}.tab{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:20px;font-weight:700;font-size:12px;white-space:nowrap}.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:#fff;border:1px solid var(--line);padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.05)}.card h3{margin:0 0 10px}.card p{color:#666;line-height:1.6}.input,.select{width:100%;height:42px;border:1px solid #d5d5d5;border-radius:2px;padding:0 12px;outline:0;background:#fff}.input:focus,.select:focus{border-color:var(--blue)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid .full{grid-column:1/-1}.label{display:block;font-size:11px;font-weight:800;color:#666;margin:0 0 5px;text-transform:uppercase}
+    .order{border:1px solid var(--line);padding:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px}.order img{width:74px;height:74px;object-fit:contain}.order-main{flex:1}.order-status{font-size:11px;font-weight:800;color:var(--green)}
+    .empty{padding:60px 20px;text-align:center;color:#777}.empty i{font-size:45px;color:#c7c7c7;margin-bottom:10px}
+    .footer{margin-top:10px;background:#172337;color:#fff}.footer-top{display:grid;grid-template-columns:repeat(4,1fr) 1.4fr;gap:28px;padding:36px 0;border-bottom:1px solid #384252}.footer h4{color:#9ca3af;font-size:11px;margin:0 0 12px}.footer a,.footer span{display:block;color:#eee;font-size:12px;margin:9px 0}.footer-bottom{padding:18px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#aeb4bd;font-size:11px}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center;padding:14px}.modal{background:#fff;width:min(520px,100%);border-radius:4px;box-shadow:var(--shadow-lg);position:relative;padding:24px}.modal.wide{width:min(760px,100%)}.close{position:absolute;right:10px;top:8px;border:0;background:transparent;font-size:23px;color:#999}.modal h2{margin:0 0 7px}.muted{color:#777;font-size:12px}.modal-actions{display:flex;gap:8px;margin-top:14px}.modal-actions button{flex:1}
+    .toast{position:fixed;right:20px;bottom:20px;background:#222;color:#fff;padding:12px 16px;border-radius:2px;box-shadow:var(--shadow-lg);transform:translateY(90px);opacity:0;transition:.22s;z-index:500;font-size:12px}.toast.show{transform:translateY(0);opacity:1}
+    .mobile-bottom{display:none}
+    @media(max-width:1000px){.logo{min-width:110px}.header-actions{gap:0}.head-btn span{display:none}.login-btn span{display:inline}.category-scroll{gap:13px}.mini-banner{min-width:48%}.deal-grid{grid-template-columns:repeat(2,1fr)}.product-page{grid-template-columns:1fr}.detail-gallery{border-right:0;border-bottom:1px solid var(--line);padding-right:0;padding-bottom:20px}.footer-top{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.topbar{height:112px;position:sticky}.topbar-inner{height:68px;flex-wrap:wrap;gap:6px}.logo{min-width:auto;flex:0 0 auto}.search-wrap{order:4;flex-basis:100%}.search{height:38px}.header-location{height:30px}.location-inner{height:30px}.category-scroll{min-height:86px;gap:14px}.category-item{min-width:72px;font-size:10px}.category-item img{height:44px;width:62px}.hero{height:205px}.slide-overlay{padding:18px 30px;background:linear-gradient(90deg,rgba(0,0,0,.68),rgba(0,0,0,.1),rgba(0,0,0,0))}.slide-copy h1{font-size:23px}.slide-copy p{font-size:11px}.cta{font-size:11px;padding:8px 12px}.row-head h2{font-size:16px}.product-card{min-width:160px;width:160px}.product-img-wrap{height:130px}.product-img{height:125px}.mini-banner{min-width:80%;height:145px}.deal-grid{grid-template-columns:1fr 1fr}.page-shell{padding:15px}.two-col,.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.footer-top{grid-template-columns:1fr 1fr}.mobile-bottom{position:fixed;display:flex;left:0;right:0;bottom:0;height:58px;background:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.14);z-index:120;justify-content:space-around}.mobile-bottom button{border:0;background:#fff;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;font-size:10px}.mobile-bottom i{font-size:16px}.footer{padding-bottom:60px}}
+  </style>
 </head>
-<body class="bg-[#f1f3f6] text-gray-800 antialiased selection:bg-blue-500 selection:text-white">
+<body>
+  <div id="app"></div>
+  <div id="toast" class="toast"></div>
 
-    <!-- Top Header -->
-    <header class="bg-white sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-2 sm:px-4 h-14 flex items-center justify-between gap-2 sm:gap-6">
-            
-            <!-- Logo & Travel Section -->
-            <div class="flex items-center gap-6">
-                <div class="flex flex-col cursor-pointer" onclick="window.location.reload()">
-                    <div class="flex items-center text-flipkartBlue font-bold italic text-xl tracking-tighter">
-                        Flipkart <span class="text-flipkartYellow text-xs not-italic font-medium ml-0.5 flex items-center">Explore <span class="text-yellow-500 font-bold ml-0.5">Plus</span> <i class="fa-solid fa-star text-[8px] text-yellow-500 ml-0.5"></i></span>
-                    </div>
-                </div>
-                
-                <!-- Travel quick link -->
-                <div class="hidden md:flex items-center text-xs font-semibold text-gray-700 hover:text-flipkartBlue cursor-pointer gap-1.5 px-2 py-1 rounded transition">
-                    <i class="fa-solid fa-plane text-red-500"></i>
-                    <span>Travel</span>
-                </div>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="flex-1 max-w-2xl relative">
-                <div class="flex items-center bg-[#f0f5ff] rounded-sm px-3 py-2 border border-transparent focus-within:border-flipkartBlue focus-within:bg-white focus-within:shadow-md transition">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3 text-sm"></i>
-                    <input type="text" id="searchInput" placeholder="Search for Products, Brands and More" class="w-full bg-transparent text-sm outline-none text-gray-700 placeholder-gray-400">
-                </div>
-                <!-- Search Suggestions Dropdown -->
-                <div id="searchSuggestions" class="absolute top-full left-0 right-0 bg-white shadow-lg rounded-b-sm hidden z-50 border border-gray-100 max-h-80 overflow-y-auto">
-                    <!-- Populated via JS -->
-                </div>
-            </div>
-
-            <!-- Right Controls: Login, More, Cart -->
-            <div class="flex items-center gap-1 sm:gap-5 text-sm font-medium">
-                
-                <!-- Login Dropdown Button -->
-                <div class="relative" id="loginDropdownContainer">
-                    <button id="loginBtn" class="bg-white text-flipkartBlue hover:bg-flipkartBlue hover:text-white px-4 py-1.5 rounded-sm font-semibold border border-gray-200 flex items-center gap-2 transition shadow-sm">
-                        <i class="fa-regular fa-user"></i>
-                        <span>Login</span>
-                        <i class="fa-solid fa-angle-down text-xs transition-transform duration-200" id="loginChevron"></i>
-                    </button>
-
-                    <!-- Login Menu Modal/Dropdown -->
-                    <div id="loginMenu" class="absolute right-0 mt-2 w-72 bg-white rounded shadow-xl border border-gray-100 hidden z-50 py-2 text-gray-700 text-sm">
-                        <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-                            <span class="font-semibold text-gray-900">New customer?</span>
-                            <a href="#" onclick="openAuthModal('signup')" class="text-flipkartBlue font-semibold text-xs hover:underline">Sign Up</a>
-                        </div>
-                        <a href="#" onclick="openAuthModal('login')" class="flex items-center px-4 py-2.5 hover:bg-gray-50 gap-3"><i class="fa-regular fa-circle-user w-5 text-flipkartBlue"></i> My Profile</a>
-                        <a href="#" onclick="openAuthModal('login')" class="flex items-center px-4 py-2.5 hover:bg-gray-50 gap-3"><i class="fa-solid fa-bolt w-5 text-flipkartBlue"></i> Flipkart Plus Zone</a>
-                        <a href="#" onclick="openAuthModal('login')" class="flex items-center px-4 py-2.5 hover:bg-gray-50 gap-3"><i class="fa-solid fa-box w-5 text-flipkartBlue"></i> Orders</a>
-                        <a href="#" onclick="openAuthModal('login')" class="flex items-center px-4 py-2.5 hover:bg-gray-50 gap-3"><i class="fa-regular fa-heart w-5 text-flipkartBlue"></i> Wishlist</a>
-                        <a href="#" onclick="openAuthModal('login')" class="flex items-center px-4 py-2.5 hover:bg-gray-50 gap-3"><i class="fa-solid fa-ticket w-5 text-flipkartBlue"></i> Rewards</a>
-                        <a href="#" onclick="openAuthModal('login')" class="flex items-center px-4 py-2.5 hover:bg-gray-50 gap-3"><i class="fa-solid fa-gift w-5 text-flipkartBlue"></i> Gift Cards</a>
-                    </div>
-                </div>
-
-                <!-- More Dropdown (Three Dots Menu matching screenshot exactly) -->
-                <div class="relative" id="moreDropdownContainer">
-                    <button id="moreBtn" class="flex items-center gap-1.5 p-2 hover:bg-gray-100 rounded text-gray-700 transition">
-                        <span class="font-semibold hidden sm:inline">More</span>
-                        <i class="fa-solid fa-ellipsis-vertical text-gray-600 sm:hidden"></i>
-                        <i class="fa-solid fa-angle-down text-xs transition-transform duration-200" id="moreChevron"></i>
-                    </button>
-
-                    <!-- More Options Menu -->
-                    <div id="moreMenu" class="absolute right-0 mt-2 w-64 bg-white rounded shadow-xl border border-gray-100 hidden z-50 py-2 text-gray-700 text-sm">
-                        <a href="#" onclick="openSellerModal()" class="flex items-center px-4 py-3 hover:bg-gray-50 gap-3.5 border-b border-gray-100"><i class="fa-solid fa-store w-5 text-flipkartBlue"></i> Become a Seller</a>
-                        <a href="#" onclick="showNotificationSettings()" class="flex items-center px-4 py-3 hover:bg-gray-50 gap-3.5"><i class="fa-regular fa-bell w-5 text-flipkartBlue"></i> Notification Preferences</a>
-                        <a href="#" onclick="showCustomerCare()" class="flex items-center px-4 py-3 hover:bg-gray-50 gap-3.5"><i class="fa-solid fa-headset w-5 text-flipkartBlue"></i> 24x7 Customer Care</a>
-                        <a href="#" onclick="showAdvertise()" class="flex items-center px-4 py-3 hover:bg-gray-50 gap-3.5 border-t border-gray-100"><i class="fa-solid fa-bullhorn w-5 text-flipkartBlue"></i> Advertise on Flipkart</a>
-                        <a href="#" onclick="showDownloadApp()" class="flex items-center px-4 py-3 hover:bg-gray-50 gap-3.5"><i class="fa-solid fa-download w-5 text-flipkartBlue"></i> Download App</a>
-                    </div>
-                </div>
-
-                <!-- Cart Button -->
-                <button onclick="toggleCartDrawer()" class="flex items-center gap-2 hover:text-flipkartBlue font-semibold p-2 relative">
-                    <i class="fa-solid fa-cart-shopping text-lg"></i>
-                    <span class="hidden sm:inline">Cart</span>
-                    <span id="cartCountBadge" class="absolute top-1 right-1 sm:right-9 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Location Bar sub-header -->
-        <div class="bg-[#2874f0] text-white text-xs px-4 py-1 flex items-center justify-between shadow-inner">
-            <div class="max-w-7xl mx-auto flex items-center gap-2 w-full">
-                <i class="fa-solid fa-location-dot text-yellow-300"></i>
-                <span id="deliveryLocationText">Location not set - Select delivery location</span>
-                <button onclick="updateLocation()" class="underline font-semibold ml-2 hover:text-yellow-200">Change</button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Category Icon Navigation Row (Exact Flipkart style) -->
-    <div class="bg-white shadow-sm mb-3">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between overflow-x-auto no-scrollbar gap-6 sm:gap-10">
-            <div onclick="filterCategory('all')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-flipkartBlue group-hover:scale-105 transition shadow-sm border border-blue-100">
-                    <i class="fa-solid fa-fire text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">For You</span>
-            </div>
-            <div onclick="filterCategory('fashion')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 group-hover:scale-105 transition shadow-sm border border-pink-100">
-                    <i class="fa-solid fa-shirt text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Fashion</span>
-            </div>
-            <div onclick="filterCategory('mobiles')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-105 transition shadow-sm border border-purple-100">
-                    <i class="fa-solid fa-mobile-screen text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Mobiles</span>
-            </div>
-            <div onclick="filterCategory('electronics')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-105 transition shadow-sm border border-blue-100">
-                    <i class="fa-solid fa-laptop text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Electronics</span>
-            </div>
-            <div onclick="filterCategory('beauty')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 group-hover:scale-105 transition shadow-sm border border-rose-100">
-                    <i class="fa-solid fa-spray-can-sparkles text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Beauty</span>
-            </div>
-            <div onclick="filterCategory('home')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 group-hover:scale-105 transition shadow-sm border border-amber-100">
-                    <i class="fa-solid fa-couch text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Home</span>
-            </div>
-            <div onclick="filterCategory('appliances')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600 group-hover:scale-105 transition shadow-sm border border-cyan-100">
-                    <i class="fa-solid fa-tv text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Appliances</span>
-            </div>
-            <div onclick="filterCategory('toys')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:scale-105 transition shadow-sm border border-orange-100">
-                    <i class="fa-solid fa-gamepad text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Toys, Baby..</span>
-            </div>
-            <div onclick="filterCategory('grocery')" class="flex flex-col items-center cursor-pointer group min-w-[64px]">
-                <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center text-green-600 group-hover:scale-105 transition shadow-sm border border-green-100">
-                    <i class="fa-solid fa-basket-shopping text-xl"></i>
-                </div>
-                <span class="text-xs font-semibold mt-1.5 text-gray-800 group-hover:text-flipkartBlue">Grocery</span>
-            </div>
-        </div>
+  <div id="authOverlay" class="overlay hidden">
+    <div class="modal">
+      <button class="close" onclick="closeAuth()">&times;</button>
+      <div id="authContent"></div>
     </div>
+  </div>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-2 sm:px-4 space-y-4 pb-12">
-        
-        <!-- Banner Carousel Slider -->
-        <div class="relative bg-white shadow-sm rounded overflow-hidden">
-            <div id="carouselTrack" class="flex transition-transform duration-500 ease-in-out">
-                <!-- Slide 1: Adidas Offer -->
-                <div class="min-w-full relative bg-gradient-to-r from-gray-900 to-black text-white p-6 sm:p-12 flex flex-col md:flex-row items-center justify-between">
-                    <div class="space-y-3 max-w-lg">
-                        <span class="bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded">EARLY BIRD DEALS</span>
-                        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Power every step</h2>
-                        <p class="text-2xl sm:text-4xl font-bold text-yellow-300">Min. 50% Off</p>
-                        <p class="text-gray-300 text-sm">Limited-time deals on ADIDAS footwear, apparel & accessories.</p>
-                        <button onclick="scrollToProducts()" class="mt-4 bg-yellow-400 text-black font-bold px-6 py-2.5 rounded shadow hover:bg-yellow-300 transition">Shop Now</button>
-                    </div>
-                    <div class="mt-6 md:mt-0">
-                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" alt="Adidas Shoes" class="rounded-lg shadow-2xl max-h-64 object-cover">
-                    </div>
-                </div>
-                <!-- Slide 2: Big Billion Days -->
-                <div class="min-w-full relative bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6 sm:p-12 flex flex-col md:flex-row items-center justify-between">
-                    <div class="space-y-3 max-w-lg">
-                        <span class="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded">BIG BILLION DAYS</span>
-                        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Biggest Sale of the Year</h2>
-                        <p class="text-2xl sm:text-4xl font-bold text-yellow-300">Up to 80% Off</p>
-                        <p class="text-gray-200 text-sm">On Mobiles, Electronics, TVs, Appliances and more.</p>
-                        <button onclick="scrollToProducts()" class="mt-4 bg-white text-blue-800 font-bold px-6 py-2.5 rounded shadow hover:bg-gray-100 transition">Explore Deals</button>
-                    </div>
-                    <div class="mt-6 md:mt-0">
-                        <img src="https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80" alt="Electronics Sale" class="rounded-lg shadow-2xl max-h-64 object-cover">
-                    </div>
-                </div>
-                <!-- Slide 3: Realme & Mobiles -->
-                <div class="min-w-full relative bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-6 sm:p-12 flex flex-col md:flex-row items-center justify-between">
-                    <div class="space-y-3 max-w-lg">
-                        <span class="bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded">FLIPKART UNIQUE</span>
-                        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">16 Pro Harry Potter Edition</h2>
-                        <p class="text-2xl sm:text-4xl font-bold text-yellow-300">From ₹4,725/M</p>
-                        <p class="text-gray-300 text-sm">Sale today, 12 PM. Extra ₹5,000 off on exchange.</p>
-                        <button onclick="scrollToProducts()" class="mt-4 bg-yellow-400 text-black font-bold px-6 py-2.5 rounded shadow hover:bg-yellow-300 transition">Pre-book Now</button>
-                    </div>
-                    <div class="mt-6 md:mt-0">
-                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" alt="Smartphone" class="rounded-lg shadow-2xl max-h-64 object-cover">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Carousel Navigation Arrows -->
-            <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-md transition"><i class="fa-solid fa-chevron-left"></i></button>
-            <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-md transition"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-
-        <!-- Promotional Banner Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white p-4 rounded shadow-sm flex items-center justify-between border border-gray-100 hover:shadow-md transition">
-                <div>
-                    <span class="text-xs text-gray-500 uppercase font-semibold">AD</span>
-                    <h3 class="font-bold text-lg text-gray-800 mt-1">Grooming & Skincare</h3>
-                    <p class="text-green-600 font-semibold text-sm mt-0.5">Grab Now</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=150&q=80" alt="Skincare" class="w-24 h-24 object-contain">
-            </div>
-            <div class="bg-white p-4 rounded shadow-sm flex items-center justify-between border border-gray-100 hover:shadow-md transition">
-                <div>
-                    <span class="text-xs text-gray-500 uppercase font-semibold">AD</span>
-                    <h3 class="font-bold text-lg text-gray-800 mt-1">Kitchen Appliances</h3>
-                    <p class="text-green-600 font-semibold text-sm mt-0.5">Up to 70% Off</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=150&q=80" alt="Kitchen" class="w-24 h-24 object-contain">
-            </div>
-            <div class="bg-white p-4 rounded shadow-sm flex items-center justify-between border border-gray-100 hover:shadow-md transition">
-                <div>
-                    <span class="text-xs text-gray-500 uppercase font-semibold">AD</span>
-                    <h3 class="font-bold text-lg text-gray-800 mt-1">Trending Fashion</h3>
-                    <p class="text-green-600 font-semibold text-sm mt-0.5">Min 50% Off</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=150&q=80" alt="Fashion" class="w-24 h-24 object-contain">
-            </div>
-        </div>
-
-        <!-- Product Section: Best of Electronics / Deals of the Day -->
-        <div id="productSection" class="bg-white rounded shadow-sm p-4 sm:p-6">
-            <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-                <div>
-                    <h2 class="text-xl font-bold text-gray-900">Best of Electronics</h2>
-                    <p class="text-xs text-gray-500">Based on your browsing history</p>
-                </div>
-                <button onclick="filterCategory('all')" class="bg-flipkartBlue text-white text-xs font-semibold px-4 py-2 rounded shadow hover:bg-blue-600 transition">View All</button>
-            </div>
-
-            <!-- Product Cards Grid -->
-            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                <!-- Dynamically populated via JavaScript -->
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-[#172337] text-white text-xs pt-12 pb-6 border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-5 gap-8 pb-10 border-b border-gray-700">
-            <div>
-                <h4 class="text-gray-400 font-semibold mb-3 uppercase tracking-wider">ABOUT</h4>
-                <ul class="space-y-2 text-gray-300">
-                    <li><a href="#" class="hover:underline">Contact Us</a></li>
-                    <li><a href="#" class="hover:underline">About Us</a></li>
-                    <li><a href="#" class="hover:underline">Careers</a></li>
-                    <li><a href="#" class="hover:underline">Flipkart Stories</a></li>
-                    <li><a href="#" class="hover:underline">Press</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-gray-400 font-semibold mb-3 uppercase tracking-wider">HELP</h4>
-                <ul class="space-y-2 text-gray-300">
-                    <li><a href="#" class="hover:underline">Payments</a></li>
-                    <li><a href="#" class="hover:underline">Shipping</a></li>
-                    <li><a href="#" class="hover:underline">Cancellation & Returns</a></li>
-                    <li><a href="#" class="hover:underline">FAQ</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-gray-400 font-semibold mb-3 uppercase tracking-wider">CONSUMER POLICY</h4>
-                <ul class="space-y-2 text-gray-300">
-                    <li><a href="#" class="hover:underline">Return Policy</a></li>
-                    <li><a href="#" class="hover:underline">Terms Of Use</a></li>
-                    <li><a href="#" class="hover:underline">Security</a></li>
-                    <li><a href="#" class="hover:underline">Privacy</a></li>
-                    <li><a href="#" class="hover:underline">Sitemap</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-gray-400 font-semibold mb-3 uppercase tracking-wider">SOCIAL</h4>
-                <ul class="space-y-2 text-gray-300">
-                    <li><a href="#" class="hover:underline"><i class="fa-brands fa-facebook-f mr-1"></i> Facebook</a></li>
-                    <li><a href="#" class="hover:underline"><i class="fa-brands fa-twitter mr-1"></i> Twitter</a></li>
-                    <li><a href="#" class="hover:underline"><i class="fa-brands fa-youtube mr-1"></i> YouTube</a></li>
-                </ul>
-            </div>
-            <div class="col-span-2 md:col-span-1 border-l border-gray-700 pl-4">
-                <h4 class="text-gray-400 font-semibold mb-3 uppercase tracking-wider">Registered Office Address:</h4>
-                <p class="text-gray-300 leading-relaxed">
-                    Flipkart Internet Private Limited,<br>
-                    Buildings Alyssa, Begonia &<br>
-                    Clove Embassy Tech Village,<br>
-                    Outer Ring Road, Devarabeesanahalli Village,<br>
-                    Bengaluru, 560103,<br>
-                    Karnataka, India
-                </p>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 pt-6 flex flex-col sm:flex-row items-center justify-between text-gray-400 gap-4">
-            <div class="flex items-center gap-6">
-                <span class="flex items-center gap-2"><i class="fa-solid fa-store text-yellow-400"></i> Become a Seller</span>
-                <span class="flex items-center gap-2"><i class="fa-solid fa-star text-yellow-400"></i> Advertise</span>
-                <span class="flex items-center gap-2"><i class="fa-solid fa-gift text-yellow-400"></i> Gift Cards</span>
-                <span class="flex items-center gap-2"><i class="fa-solid fa-circle-question text-yellow-400"></i> Help Center</span>
-            </div>
-            <div>
-                <p>&copy; 2007-2026 Flipkart.com</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Cart Drawer Modal -->
-    <div id="cartDrawer" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity">
-        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
-            <div class="bg-flipkartBlue text-white px-4 py-4 flex items-center justify-between">
-                <h3 class="font-bold text-lg">My Cart (<span id="drawerCartCount">0</span>)</h3>
-                <button onclick="toggleCartDrawer()" class="text-white hover:text-gray-200 text-xl font-bold px-2">&times;</button>
-            </div>
-            <div id="cartItemsList" class="flex-1 overflow-y-auto p-4 space-y-4">
-                <!-- Cart items populated via JS -->
-            </div>
-            <div class="p-4 border-t border-gray-200 bg-gray-50">
-                <div class="flex justify-between font-bold text-lg mb-4">
-                    <span>Total:</span>
-                    <span id="cartTotalPrice">₹0</span>
-                </div>
-                <button onclick="checkoutCart()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 rounded shadow transition">Place Order</button>
-            </div>
-        </div>
+  <div id="simpleOverlay" class="overlay hidden">
+    <div class="modal wide">
+      <button class="close" onclick="closeSimpleModal()">&times;</button>
+      <div id="simpleContent"></div>
     </div>
+  </div>
 
-    <!-- General Popup Modal (For Seller, Login, Notifications, etc.) -->
-    <div id="appModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 relative animate-fade-in">
-            <button onclick="closeAppModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-700 text-xl font-bold">&times;</button>
-            <div id="modalContent">
-                <!-- Dynamic Content -->
+  <script>
+    /*
+      SRP Shopping single-file application.
+      Home is intentionally compact and customer-focused.
+      Seller/help/admin-like tools are routes/pages, opened from More or Account.
+    */
+
+    const CATEGORIES = [
+      {id:'all',name:'For You',icon:'https://cdn-icons-png.flaticon.com/512/3075/3075977.png'},
+      {id:'fashion',name:'Fashion',icon:'https://cdn-icons-png.flaticon.com/512/3050/3050259.png'},
+      {id:'mobiles',name:'Mobiles',icon:'https://cdn-icons-png.flaticon.com/512/545/545245.png'},
+      {id:'electronics',name:'Electronics',icon:'https://cdn-icons-png.flaticon.com/512/3659/3659899.png'},
+      {id:'beauty',name:'Beauty',icon:'https://cdn-icons-png.flaticon.com/512/3059/3059446.png'},
+      {id:'home',name:'Home & Furniture',icon:'https://cdn-icons-png.flaticon.com/512/679/679720.png'},
+      {id:'appliances',name:'TVs & Appliances',icon:'https://cdn-icons-png.flaticon.com/512/2983/2983788.png'},
+      {id:'toys',name:'Toys, Baby..',icon:'https://cdn-icons-png.flaticon.com/512/3081/3081840.png'},
+      {id:'grocery',name:'Food & Health',icon:'https://cdn-icons-png.flaticon.com/512/3082/3082031.png'},
+      {id:'auto',name:'Auto Accessories',icon:'https://cdn-icons-png.flaticon.com/512/2554/2554936.png'},
+      {id:'sports',name:'Sports & Fitness',icon:'https://cdn-icons-png.flaticon.com/512/857/857418.png'},
+      {id:'furniture',name:'Furniture',icon:'https://cdn-icons-png.flaticon.com/512/2832/2832116.png'},
+      {id:'books',name:'Books',icon:'https://cdn-icons-png.flaticon.com/512/2702/2702134.png'},
+      {id:'bikes',name:'2 Wheelers',icon:'https://cdn-icons-png.flaticon.com/512/2972/2972185.png'}
+    ];
+
+    const products = [
+      {id:1,title:'Apple iPhone 15 (Black, 128 GB)',category:'mobiles',price:65999,originalPrice:79990,rating:4.6,reviews:1420,image:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=85',colors:[]},
+      {id:2,title:'Samsung Galaxy S23 5G',category:'mobiles',price:54999,originalPrice:74999,rating:4.5,reviews:842,image:'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=85'},
+      {id:3,title:'ADIDAS Running Shoes For Men',category:'fashion',price:2199,originalPrice:4999,rating:4.3,reviews:2361,image:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=85'},
+      {id:4,title:'HP Pavilion Ryzen 5 Laptop',category:'electronics',price:56990,originalPrice:75990,rating:4.4,reviews:640,image:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=85'},
+      {id:5,title:'Sony WH-1000XM4 Bluetooth Headset',category:'electronics',price:19990,originalPrice:29990,rating:4.7,reviews:5120,image:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=85'},
+      {id:6,title:'Lakme Absolute Matte Lipstick',category:'beauty',price:450,originalPrice:750,rating:4.2,reviews:1880,image:'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=85'},
+      {id:7,title:'Modern Velvet 3 Seater Sofa',category:'home',price:18999,originalPrice:32999,rating:4.3,reviews:711,image:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=85'},
+      {id:8,title:'Whirlpool 7.5 kg Washing Machine',category:'appliances',price:16490,originalPrice:23400,rating:4.5,reviews:1137,image:'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=600&q=85'},
+      {id:9,title:'Hot Wheels Stunt Garage Playset',category:'toys',price:2499,originalPrice:3999,rating:4.8,reviews:925,image:'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=85'},
+      {id:10,title:'Organic Fresh Farm Almonds 500g',category:'grocery',price:499,originalPrice:899,rating:4.6,reviews:3051,image:'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=600&q=85'},
+      {id:11,title:'Premium Stainless Steel Water Bottle',category:'grocery',price:399,originalPrice:899,rating:4.4,reviews:1290,image:'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=85'},
+      {id:12,title:'Noise ColorFit Smartwatch',category:'electronics',price:1499,originalPrice:3999,rating:4.3,reviews:4012,image:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=85'},
+      {id:13,title:'Minimalist Face Serum',category:'beauty',price:699,originalPrice:999,rating:4.5,reviews:970,image:'https://images.unsplash.com/photo-1620916566398-39f1143ab7ba?auto=format&fit=crop&w=600&q=85'},
+      {id:14,title:'Casual Cotton T-Shirt',category:'fashion',price:499,originalPrice:1299,rating:4.2,reviews:1530,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=85'},
+      {id:15,title:'Kitchen Air Fryer 5L',category:'appliances',price:3899,originalPrice:7999,rating:4.4,reviews:1604,image:'https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=600&q=85'},
+      {id:16,title:'Ergonomic Office Chair',category:'furniture',price:6999,originalPrice:12999,rating:4.3,reviews:842,image:'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?auto=format&fit=crop&w=600&q=85'},
+      {id:17,title:'Yoga Mat Premium Grip',category:'sports',price:799,originalPrice:1499,rating:4.5,reviews:2140,image:'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=600&q=85'},
+      {id:18,title:'Car Vacuum Cleaner Portable',category:'auto',price:1099,originalPrice:1999,rating:4.1,reviews:633,image:'https://images.unsplash.com/photo-1606577924006-27d39b132ae2?auto=format&fit=crop&w=600&q=85'},
+      {id:19,title:'The Psychology of Money',category:'books',price:299,originalPrice:599,rating:4.6,reviews:7650,image:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=85'},
+      {id:20,title:'City Ride Commuter Bike',category:'bikes',price:78999,originalPrice:89999,rating:4.3,reviews:210,image:'https://images.unsplash.com/photo-1502744688674-c619d1586c9e?auto=format&fit=crop&w=600&q=85'}
+    ];
+
+    const banners = [
+      {image:'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=1600&q=85',tag:'BIG SALE',title:'Big deals on electronics',text:'Mobiles, laptops, TVs & more at special prices',button:'Shop Electronics'},
+      {image:'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=85',tag:'FASHION DAYS',title:'Style for every day',text:'Trending looks with new season prices',button:'Explore Fashion'},
+      {image:'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1600&q=85',tag:'HOME SPECIALS',title:'Upgrade your space',text:'Furniture, decor and essentials',button:'Shop Home'}
+    ];
+
+    const miniBanners = [
+      {image:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=85',title:'Grooming & Beauty',text:'Special prices'},
+      {image:'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=85',title:'Kitchen Essentials',text:'Up to 70% off'},
+      {image:'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=800&q=85',title:'Trending Fashion',text:'New styles daily'}
+    ];
+
+    let cart = load('srp_cart',[]);
+    let wishlist = load('srp_wishlist',[]);
+    let orders = load('srp_orders',[]);
+    let user = load('srp_user',null);
+    let selectedCategory = 'all';
+    let selectedProduct = null;
+    let slideIndex = 0;
+    let slideTimer = null;
+
+    function load(k,fallback){try{return JSON.parse(localStorage.getItem(k)) ?? fallback}catch{return fallback}}
+    function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+    function money(n){return '₹'+Number(n).toLocaleString('en-IN')}
+    function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+    function discount(p){return Math.round((1-p.price/p.originalPrice)*100)+'% off'}
+    function findProduct(id){return products.find(p=>p.id===Number(id))}
+
+    function render(){
+      const route = location.hash.replace(/^#/,'') || '/';
+      const [path,...raw] = route.split('/').map(decodeURIComponent);
+      const arg = raw.join('/');
+      document.getElementById('app').innerHTML = headerHtml();
+      if(path==='/'||path==='home'||path==='') homePage();
+      else if(path==='product'&&arg) productPage(Number(arg));
+      else if(path==='category'&&arg) categoryPage(arg);
+      else if(path==='cart') cartPage();
+      else if(path==='payment') paymentPage();
+      else if(path==='account') accountPage();
+      else if(path==='orders') ordersPage();
+      else if(path==='wishlist') wishlistPage();
+      else if(path==='plus') infoPage('SRP Plus Zone','Membership-style benefits, early access and offers.','fa-star');
+      else if(path==='rewards') infoPage('Rewards','Track and redeem shopping rewards.','fa-gift');
+      else if(path==='gift-cards') giftCardPage();
+      else if(path==='seller') sellerPage();
+      else if(path==='notifications') notificationsPage();
+      else if(path==='customer-care') customerCarePage();
+      else if(path==='advertise') advertisePage();
+      else if(path==='download-app') downloadAppPage();
+      else if(path==='about') infoPage('About SRP Shopping','Customer-first online shopping experience across categories.','fa-circle-info');
+      else if(path==='contact') contactPage();
+      else if(path==='careers') infoPage('Careers','Explore open opportunities and build with SRP Shopping.','fa-briefcase');
+      else if(path==='press') infoPage('Press','Press contacts, updates and company information.','fa-newspaper');
+      else if(path==='payments') infoPage('Payments','Payment methods, failed-payment guidance and order payment status.','fa-credit-card');
+      else if(path==='shipping') infoPage('Shipping','Delivery windows, tracking and address updates.','fa-truck');
+      else if(path==='returns') infoPage('Cancellation & Returns','Return and cancellation information for placed orders.','fa-rotate-left');
+      else if(path==='faq') faqPage();
+      else if(path==='terms') infoPage('Terms of Use','Terms governing access and use of this storefront.','fa-file-contract');
+      else if(path==='security') infoPage('Security','Account and payment safety information.','fa-shield-halved');
+      else if(path==='privacy') infoPage('Privacy','Privacy and data-handling information.','fa-user-shield');
+      else if(path==='sitemap') sitemapPage();
+      else homePage();
+      attachGlobal();
+      startHero();
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+    }
+
+    function headerHtml(){
+      return `
+      <header class="topbar">
+        <div class="container topbar-inner">
+          <a class="logo" href="#/">SRP Shopping<small>Explore <b style="color:#f3c400">Plus ✦</b></small></a>
+          <div class="search-wrap">
+            <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" autocomplete="off" placeholder="Search for Products, Brands and More" /></div>
+            <div id="searchSuggestions" class="search-suggestions hidden"></div>
+          </div>
+          <div class="header-actions">
+            <div style="position:relative">
+              <button class="head-btn login-btn" id="loginHeadBtn"><i class="fa-regular fa-user"></i><span>${user?'Hi, '+esc((user.name||'User').split(' ')[0]):'Login'}</span><i class="fa-solid fa-angle-down" style="font-size:9px"></i></button>
+              <div class="dropdown hidden" id="loginDropdown">
+                <div class="dropdown-head"><b>${user?esc(user.name):'New customer?'}</b>${user?'':'<a href="#/account" style="color:#2874f0;font-size:12px;font-weight:800">Sign Up</a>'}</div>
+                ${menuLink('/account','fa-user','My Profile')}
+                ${menuLink('/plus','fa-star','SRP Plus Zone')}
+                ${menuLink('/orders','fa-box','Orders')}
+                ${menuLink('/wishlist','fa-heart','Wishlist')}
+                ${menuLink('/rewards','fa-gift','Rewards')}
+                ${menuLink('/gift-cards','fa-credit-card','Gift Cards')}
+                ${user?`<button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>`:''}
+              </div>
             </div>
+            <div style="position:relative">
+              <button class="head-btn" id="moreHeadBtn"><span>More</span><i class="fa-solid fa-angle-down" style="font-size:9px"></i></button>
+              <div class="dropdown hidden" id="moreDropdown">
+                ${menuLink('/seller','fa-store','Become a Seller')}
+                ${menuLink('/notifications','fa-bell','Notification Preferences')}
+                ${menuLink('/customer-care','fa-headset','24x7 Customer Care')}
+                ${menuLink('/advertise','fa-bullhorn','Advertise')}
+                ${menuLink('/download-app','fa-mobile-screen-button','Download App')}
+              </div>
+            </div>
+            <a class="head-btn cart-btn" href="#/cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span><b class="badge" id="cartBadge">${cartCount()}</b></a>
+          </div>
         </div>
-    </div>
+        <div class="header-location"><div class="container location-inner"><i class="fa-solid fa-location-dot"></i><span id="locationText">${esc(localStorage.getItem('srp_location')||'Location not set — Select delivery location')}</span><button onclick="updateLocation()">Change</button></div></div>
+      </header>
+      <nav class="categorybar"><div class="container"><div class="category-scroll">${CATEGORIES.map(c=>`<a class="category-item" href="#/category/${c.id}"><img src="${c.icon}" alt="${esc(c.name)}"/><span>${esc(c.name)}${['fashion','mobiles','electronics','home','appliances','toys'].includes(c.id)?'':''}</span></a>`).join('')}</div></div></nav>
+      <div class="mobile-bottom">
+        <button onclick="go('/')"><i class="fa-solid fa-house"></i><span>Home</span></button>
+        <button onclick="openLogin()"><i class="fa-regular fa-user"></i><span>Account</span></button>
+        <button onclick="go('/orders')"><i class="fa-solid fa-box"></i><span>Orders</span></button>
+        <button onclick="go('/wishlist')"><i class="fa-regular fa-heart"></i><span>Wishlist</span></button>
+        <button onclick="go('/cart')"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></button>
+      </div>`;
+    }
+    function menuLink(href,icon,label){return `<a href="#${href}"><i class="fa-solid ${icon}"></i>${label}</a>`}
 
-    <!-- Toast Notification -->
-    <div id="toastNotification" class="fixed bottom-5 right-5 bg-gray-900 text-white px-5 py-3 rounded shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 font-medium text-sm">
-        Item added to cart successfully!
-    </div>
+    function homePage(){
+      const app=document.getElementById('app');
+      app.insertAdjacentHTML('beforeend',`<main><div class="container">
+        <section class="hero"><div class="slides" id="slides">${banners.map((b,i)=>`<div class="slide"><img src="${b.image}" alt="${esc(b.title)}"><div class="slide-overlay"><div class="slide-copy"><span class="eyebrow">${esc(b.tag)}</span><h1>${esc(b.title)}</h1><p>${esc(b.text)}</p><button class="cta" onclick="homeAction('${i}')">${esc(b.button)}</button></div></div></div>`).join('')}</div><button class="hero-arrow left" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button><button class="hero-arrow right" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button><div class="dots">${banners.map((_,i)=>`<button class="dot ${i===0?'active':''}" onclick="setSlide(${i})"></button>`).join('')}</div></section>
+        ${rowSection('Top Selection',products.slice(0,8),'Curated picks for your shopping day')}
+        ${rowSection('Best Deals on Smartphones',products.filter(p=>p.category==='mobiles').concat(products.filter(p=>p.category==='electronics')).slice(0,8),'Mobiles, watches and tech picks')}
+        <div class="banner-strip">${miniBanners.map(b=>`<div class="mini-banner"><img src="${b.image}" alt="${esc(b.title)}"><div class="mini-copy"><strong>${esc(b.title)}</strong><span>${esc(b.text)}</span></div></div>`).join('')}</div>
+        ${rowSection('Fashion & Lifestyle',products.filter(p=>['fashion','beauty'].includes(p.category)).slice(0,8),'New looks and everyday essentials')}
+        ${rowSection('Home & Electronics',products.filter(p=>['home','appliances','electronics','furniture'].includes(p.category)).slice(0,10),'Upgrade your space and daily routines')}
+        ${rowSection('Food, Fitness & More',products.filter(p=>['grocery','sports','auto','books'].includes(p.category)).slice(0,10),'Useful picks for everyday life')}
+      </div></main>`);
+      app.insertAdjacentHTML('beforeend',footerHtml());
+    }
+    function rowSection(title,items,sub){
+      return `<section class="shop-row"><div class="row-head"><div><h2>${esc(title)}</h2><p>${esc(sub)}</p></div><button class="view-all" onclick="go('/category/all')">VIEW ALL</button></div><div class="product-scroller">${items.map(productCard).join('')}</div></section>`;
+    }
+    function productCard(p){
+      const active=wishlist.includes(p.id);
+      return `<article class="product-card" onclick="go('/product/${p.id}')"><div class="product-img-wrap"><img class="product-img" src="${p.image}" alt="${esc(p.title)}" loading="lazy"><button class="heart ${active?'active':''}" onclick="event.stopPropagation();toggleWishlist(${p.id})"><i class="fa-${active?'solid':'regular'} fa-heart"></i></button></div><div class="product-title">${esc(p.title)}</div><div class="rating-line"><span class="rating">${p.rating} <i class="fa-solid fa-star"></i></span><span class="review-count">(${p.reviews.toLocaleString('en-IN')})</span></div><div class="price-line"><span class="price">${money(p.price)}</span><span class="old">${money(p.originalPrice)}</span><span class="disc">${discount(p)}</span></div><div class="ship">Free delivery · 7 days return</div><div class="action-row"><button class="small-action primary" onclick="event.stopPropagation();addToCart(${p.id})">Add to Cart</button><button class="small-action" onclick="event.stopPropagation();buyNow(${p.id})">Buy Now</button></div></article>`;
+    }
+    function footerHtml(){
+      return `<footer class="footer"><div class="container footer-top"><div><h4>ABOUT</h4><a href="#/contact">Contact Us</a><a href="#/about">About Us</a><a href="#/careers">Careers</a><a href="#/about">Stories</a><a href="#/press">Press</a></div><div><h4>HELP</h4><a href="#/payments">Payments</a><a href="#/shipping">Shipping</a><a href="#/returns">Cancellation & Returns</a><a href="#/faq">FAQ</a></div><div><h4>CONSUMER POLICY</h4><a href="#/returns">Return Policy</a><a href="#/terms">Terms Of Use</a><a href="#/security">Security</a><a href="#/privacy">Privacy</a><a href="#/sitemap">Sitemap</a></div><div><h4>SHOPPING</h4><a href="#/">Home</a><a href="#/orders">Orders</a><a href="#/wishlist">Wishlist</a><a href="#/cart">Cart</a><a href="#/gift-cards">Gift Cards</a></div><div><h4>REGISTERED OFFICE / SUPPORT</h4><span>SRP Shopping Internet Private Limited</span><span>India</span><span>Customer support available through the Help Center</span></div></div><div class="container footer-bottom"><span>© 2026 SRP Shopping</span><span>Secure checkout · Easy returns · Customer support</span></div></footer>`;
+    }
 
-    <!-- JavaScript Application Logic -->
-    <script>
-        // Sample Products Database matching Flipkart categories
-        const products = [
-            { id: 1, title: 'Apple iPhone 15 (Black, 128 GB)', category: 'mobiles', price: 65999, originalPrice: 79990, rating: 4.6, discount: '17% off', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=300&q=80' },
-            { id: 2, title: 'Samsung Galaxy S23 5G', category: 'mobiles', price: 54999, originalPrice: 74999, rating: 4.5, discount: '26% off', image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=300&q=80' },
-            { id: 3, title: 'ADIDAS Running Shoes For Men', category: 'fashion', price: 2199, originalPrice: 4999, rating: 4.3, discount: '56% off', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80' },
-            { id: 4, title: 'HP Pavilion Ryzen 5 Hexa Core', category: 'electronics', price: 56990, originalPrice: 75990, rating: 4.4, discount: '24% off', image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=300&q=80' },
-            { id: 5, title: 'Sony WH-1000XM4 Bluetooth Headset', category: 'electronics', price: 19990, originalPrice: 29990, rating: 4.7, discount: '33% off', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=300&q=80' },
-            { id: 6, title: 'Lakme Absolute Matte Lipstick', category: 'beauty', price: 450, originalPrice: 750, rating: 4.2, discount: '40% off', image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=300&q=80' },
-            { id: 7, title: 'Modern Velvet 3 Seater Sofa', category: 'home', price: 18999, originalPrice: 32999, rating: 4.3, discount: '42% off', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=300&q=80' },
-            { id: 8, title: 'Whirlpool 7.5 kg Inverter Washing Machine', category: 'appliances', price: 16490, originalPrice: 23400, rating: 4.5, discount: '29% off', image: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=300&q=80' },
-            { id: 9, title: 'Hot Wheels Stunt Garage Playset', category: 'toys', price: 2499, originalPrice: 3999, rating: 4.8, discount: '37% off', image: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=300&q=80' },
-            { id: 10, title: 'Organic Fresh Farm Almonds 500g', category: 'grocery', price: 499, originalPrice: 899, rating: 4.6, discount: '44% off', image: 'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=300&q=80' }
-        ];
+    function categoryPage(cat){
+      const name=(CATEGORIES.find(c=>c.id===cat)||{name:'All Products'}).name;
+      const items=cat==='all'?products:products.filter(p=>p.category===cat);
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">${esc(name)}</h1><p class="page-subtitle">Browse products without leaving the shopping flow.</p><div class="page-tabs">${CATEGORIES.map(c=>`<a class="tab ${c.id===cat?'active':''}" href="#/category/${c.id}">${esc(c.name)}</a>`).join('')}</div><div class="product-scroller" style="flex-wrap:wrap;overflow:visible;justify-content:flex-start">${items.length?items.map(productCard).join(''):`<div class="empty" style="width:100%"><i class="fa-regular fa-face-frown"></i><div>No products in this category yet.</div></div>`}</div></div></div></main><div class="container">${footerHtml()}</div>`);
+    }
 
-        let cart = [];
-        let currentSlideIndex = 0;
-        const totalSlides = 3;
+    function productPage(id){
+      const p=findProduct(id); if(!p){return homePage()}
+      selectedProduct=id;
+      const related=products.filter(x=>x.category===p.category&&x.id!==p.id).slice(0,6);
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="product-page"><div class="detail-gallery"><div class="detail-main"><img id="detailMainImg" src="${p.image}" alt="${esc(p.title)}"></div><div class="thumbs">${[p.image,...related.slice(0,4).map(x=>x.image)].map((src,i)=>`<button class="thumb ${i===0?'active':''}" onclick="setDetailImage('${src}',this)"><img src="${src}" alt="thumbnail"></button>`).join('')}</div></div><div class="detail-info"><h1>${esc(p.title)}</h1><div class="subline">Special price · ${p.reviews.toLocaleString('en-IN')} ratings & reviews</div><div><span class="rating">${p.rating} <i class="fa-solid fa-star"></i></span></div><div style="margin-top:15px"><span class="detail-price">${money(p.price)}</span><span class="detail-old">${money(p.originalPrice)}</span><span class="detail-disc">${discount(p)}</span></div><div class="feature-box"><h3>Available offers</h3><ul><li>Bank offers may apply at checkout.</li><li>Free delivery on eligible pincodes.</li><li>7 day replacement / return as applicable.</li><li>Secure payment options available.</li></ul></div><div class="feature-box"><h3>Delivery</h3><div style="display:flex;gap:8px;max-width:430px"><input class="input" id="productPincode" maxlength="6" inputmode="numeric" placeholder="Enter delivery pincode"><button class="view-all" onclick="checkPincode()">Check</button></div><p class="muted" id="deliveryMsg" style="margin-top:8px"></p></div><div class="detail-actions"><button class="big-btn cart" onclick="addToCart(${p.id});go('/cart')"><i class="fa-solid fa-cart-shopping"></i> ADD TO CART</button><button class="big-btn buy" onclick="buyNow(${p.id})"><i class="fa-solid fa-bolt"></i> BUY NOW</button></div></div></div>${rowSection('You may also like',related,'Similar products')}</div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-        // DOM Loaded Init
-        document.addEventListener('DOMContentLoaded', () => {
-            renderProducts(products);
-            setupDropdowns();
-            setupSearch();
-            startCarouselAutoPlay();
-        });
+    function cartPage(){
+      const count=cartCount(); const total=cartTotal();
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">My Cart <span style="font-size:13px;color:#777">(${count} item${count===1?'':'s'})</span></h1><p class="page-subtitle">Review quantities, delivery and payment before placing the order.</p>${cart.length?`<div class="two-col"><div>${cart.map(cartItemHtml).join('')}</div><div class="card" style="height:max-content;position:sticky;top:120px"><h3>PRICE DETAILS</h3><div style="display:flex;justify-content:space-between;margin:12px 0"><span>Price (${count} item${count===1?'':'s'})</span><span>${money(total)}</span></div><div style="display:flex;justify-content:space-between;margin:12px 0"><span>Delivery Charges</span><span style="color:var(--green)">${total>999?'FREE':money(40)}</span></div><hr style="border:0;border-top:1px solid #eee"><div style="display:flex;justify-content:space-between;font-weight:800;margin:14px 0"><span>Total Amount</span><span>${money(total+(total>999?0:40))}</span></div><p style="color:var(--green);font-size:12px;font-weight:700">Safe and secure payments</p><button class="view-all" style="width:100%;padding:13px" onclick="checkout()">PROCEED TO PAYMENT</button></div></div>`:`<div class="empty"><i class="fa-solid fa-cart-shopping"></i><h3>Your cart is empty</h3><p>Add products you love and they will appear here.</p><button class="view-all" onclick="go('/')">CONTINUE SHOPPING</button></div>`}</div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
+    function cartItemHtml(item){const p=findProduct(item.id);return `<div class="card" style="display:flex;gap:15px;margin-bottom:10px"><img src="${p.image}" style="width:110px;height:110px;object-fit:contain"><div style="flex:1"><h3 style="font-size:15px">${esc(p.title)}</h3><div class="price-line"><span class="price">${money(p.price)}</span><span class="old">${money(p.originalPrice)}</span><span class="disc">${discount(p)}</span></div><div style="margin-top:15px;display:flex;align-items:center;gap:8px"><button class="small-action" onclick="changeQty(${p.id},-1)">−</button><b>${item.qty}</b><button class="small-action" onclick="changeQty(${p.id},1)">+</button><button class="small-action" onclick="removeCart(${p.id})">Remove</button></div></div></div>`}
 
-        // Dropdown Menus Setup (Login and More)
-        function setupDropdowns() {
-            const loginBtn = document.getElementById('loginBtn');
-            const loginMenu = document.getElementById('loginMenu');
-            const loginChevron = document.getElementById('loginChevron');
+    function accountPage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">My Account</h1><p class="page-subtitle">Manage profile, orders, addresses and shopping preferences.</p>${user?`<div class="two-col"><div class="card"><h3>Profile</h3><p><b>${esc(user.name)}</b><br>${esc(user.email||'No email added')}<br>${esc(user.phone||'')}</p><button class="small-action primary" onclick="editProfile()">Edit Profile</button></div><div class="card"><h3>Quick links</h3><p><a href="#/orders">Orders</a><br><a href="#/wishlist">Wishlist</a><br><a href="#/rewards">Rewards</a><br><a href="#/gift-cards">Gift Cards</a></p></div></div>`:`<div class="empty"><i class="fa-regular fa-user"></i><h3>Login to see your account</h3><p>Access orders, wishlist, rewards and profile settings.</p><button class="view-all" onclick="openLogin()">LOGIN / SIGN UP</button></div>`}</div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-            const moreBtn = document.getElementById('moreBtn');
-            const moreMenu = document.getElementById('moreMenu');
-            const moreChevron = document.getElementById('moreChevron');
+    function ordersPage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">My Orders</h1><p class="page-subtitle">Track placed orders and payment status.</p>${orders.length?orders.map(o=>`<div class="order"><img src="${findProduct(o.productId)?.image||''}" alt=""><div class="order-main"><b>${esc(findProduct(o.productId)?.title||'Product')}</b><div class="muted">Order ID: ${esc(o.orderId)}</div><div class="order-status">${esc(o.status)}</div></div><div><b>${money(o.total)}</b><div class="muted">${new Date(o.createdAt).toLocaleDateString('en-IN')}</div></div></div>`).join(''):`<div class="empty"><i class="fa-solid fa-box-open"></i><h3>No orders yet</h3><p>Your successfully paid orders will appear here.</p><button class="view-all" onclick="go('/')">SHOP NOW</button></div>`}</div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-            loginBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                loginMenu.classList.toggle('hidden');
-                moreMenu.classList.add('hidden');
-                loginChevron.classList.toggle('rotate-180');
-                moreChevron.classList.remove('rotate-180');
-            });
+    function wishlistPage(){
+      const items=products.filter(p=>wishlist.includes(p.id));
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">My Wishlist</h1><p class="page-subtitle">Save favourites for later.</p>${items.length?`<div class="product-scroller" style="flex-wrap:wrap;overflow:visible">${items.map(productCard).join('')}</div>`:`<div class="empty"><i class="fa-regular fa-heart"></i><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p><button class="view-all" onclick="go('/')">EXPLORE PRODUCTS</button></div>`}</div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-            moreBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                moreMenu.classList.toggle('hidden');
-                loginMenu.classList.add('hidden');
-                moreChevron.classList.toggle('rotate-180');
-                loginChevron.classList.remove('rotate-180');
-            });
+    function sellerPage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">Become a Seller</h1><p class="page-subtitle">Seller onboarding lives on its own page, away from the customer homepage.</p><div class="two-col"><div class="card"><h3>Seller registration</h3><div class="form-grid"><div><label class="label">Full name</label><input id="sellerName" class="input" placeholder="Your name"></div><div><label class="label">Mobile</label><input id="sellerPhone" class="input" placeholder="10-digit mobile"></div><div class="full"><label class="label">Business / Store name</label><input id="sellerStore" class="input" placeholder="Store name"></div><div class="full"><label class="label">Email</label><input id="sellerEmail" class="input" placeholder="seller@example.com"></div></div><button class="view-all" style="margin-top:14px" onclick="registerSeller()">START SELLING</button></div><div class="card"><h3>Seller features</h3><p>Product listing, inventory, orders, payouts, returns, shipping information and seller support can be managed from this dedicated area.</p><button class="small-action" onclick="showSimple('Seller Dashboard','This front-end demo is ready for backend/API integration. Live seller payouts and verification require your server and payment provider credentials.')">Open Seller Dashboard</button></div></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-            document.addEventListener('click', () => {
-                loginMenu.classList.add('hidden');
-                moreMenu.classList.add('hidden');
-                loginChevron.classList.remove('rotate-180');
-                moreChevron.classList.remove('rotate-180');
-            });
-        }
+    function notificationsPage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">Notification Preferences</h1><p class="page-subtitle">Control order, shipping and promotional alerts.</p><div class="card"><label style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eee"><span>Order updates & shipping</span><input id="notifyOrders" type="checkbox" checked></label><label style="display:flex;justify-content:space-between;padding:14px 0"><span>Promotions & offers</span><input id="notifyPromo" type="checkbox" checked></label><button class="view-all" style="margin-top:15px" onclick="saveNotifications()">SAVE PREFERENCES</button></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-        // Render Products Grid
-        function renderProducts(itemsToRender) {
-            const grid = document.getElementById('productGrid');
-            if (itemsToRender.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500">No products found matching your search or category.</div>`;
-                return;
-            }
+    function customerCarePage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">24x7 Customer Care</h1><p class="page-subtitle">Help with orders, payments, returns and account access.</p><div class="two-col"><div class="card"><h3>Start support</h3><p>Choose an issue and continue to the support flow.</p><select id="careTopic" class="select"><option>Order issue</option><option>Payment issue</option><option>Return / refund</option><option>Account login</option><option>Other</option></select><button class="view-all" style="margin-top:12px" onclick="showToast('Support request started')">START LIVE CHAT</button></div><div class="card"><h3>Quick help</h3><p><a href="#/payments">Payments</a><br><a href="#/shipping">Shipping</a><br><a href="#/returns">Cancellation & Returns</a><br><a href="#/faq">FAQ</a></p></div></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-            grid.innerHTML = itemsToRender.map(product => `
-                <div class="bg-white border border-gray-100 rounded p-3 flex flex-col justify-between hover:shadow-lg transition group relative">
-                    <div>
-                        <div class="h-44 flex items-center justify-center overflow-hidden mb-3 relative">
-                            <img src="${product.image}" alt="${product.title}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300">
-                            <button onclick="addToWishlist(${product.id})" class="absolute top-1 right-1 text-gray-300 hover:text-red-500 text-lg transition"><i class="fa-solid fa-heart"></i></button>
-                        </div>
-                        <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-1">${product.title}</h3>
-                        <div class="flex items-center gap-1.5 mb-2">
-                            <span class="bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                ${product.rating} <i class="fa-solid fa-star text-[8px]"></i>
-                            </span>
-                            <span class="text-gray-400 text-xs">(1,420)</span>
-                        </div>
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="font-bold text-gray-900 text-base">₹${product.price.toLocaleString()}</span>
-                            <span class="text-gray-400 line-through text-xs">₹${product.originalPrice.toLocaleString()}</span>
-                            <span class="text-green-600 text-xs font-semibold">${product.discount}</span>
-                        </div>
-                    </div>
-                    <button onclick="addToCart(${product.id})" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-1.5 rounded text-xs shadow-sm transition">
-                        Add to Cart
-                    </button>
-                </div>
-            `).join('');
-        }
+    function advertisePage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">Advertise</h1><p class="page-subtitle">Dedicated advertising workspace for sellers and brands.</p><div class="card"><div class="form-grid"><div><label class="label">Campaign name</label><input class="input" id="adName"></div><div><label class="label">Budget</label><input class="input" id="adBudget" type="number"></div><div><label class="label">Target category</label><select class="select" id="adCat">${CATEGORIES.filter(c=>c.id!=='all').map(c=>`<option>${esc(c.name)}</option>`).join('')}</select></div><div><label class="label">Duration</label><select class="select" id="adDays"><option>7 days</option><option>14 days</option><option>30 days</option></select></div></div><button class="view-all" style="margin-top:14px" onclick="createAd()">CREATE CAMPAIGN</button></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-        // Filter by Category
-        function filterCategory(category) {
-            if (category === 'all') {
-                renderProducts(products);
-            } else {
-                const filtered = products.filter(p => p.category === category);
-                renderProducts(filtered);
-            }
-        }
+    function downloadAppPage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell" style="text-align:center"><div style="font-size:60px;color:var(--blue);margin-bottom:10px"><i class="fa-solid fa-mobile-screen-button"></i></div><h1 class="page-title">Download the App</h1><p class="page-subtitle">Mobile app links can be connected here when your store packages are published.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="big-btn" style="background:#111;color:#fff" onclick="showToast('Google Play link placeholder')"><i class="fa-brands fa-google-play"></i> Google Play</button><button class="big-btn" style="background:#111;color:#fff" onclick="showToast('App Store link placeholder')"><i class="fa-brands fa-apple"></i> App Store</button></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-        // Search functionality
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            const suggestions = document.getElementById('searchSuggestions');
+    function giftCardPage(){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">Gift Cards</h1><p class="page-subtitle">Create a gift card order from a dedicated page.</p><div class="two-col"><div class="card"><h3>Choose amount</h3><div style="display:flex;gap:8px;flex-wrap:wrap">${[500,1000,2000,5000].map(v=>`<button class="tab" onclick="setGift(${v})">${money(v)}</button>`).join('')}</div><input id="giftAmount" class="input" style="margin-top:12px" type="number" min="100" placeholder="Custom amount"><button class="view-all" style="margin-top:12px" onclick="buyGift()">CONTINUE</button></div><div class="card"><h3>Gift card details</h3><p>Send as a digital gift to an email or mobile number after payment.</p></div></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                if (query.length === 0) {
-                    suggestions.classList.add('hidden');
-                    renderProducts(products);
-                    return;
-                }
+    function setGift(v){document.getElementById('giftAmount').value=v}
+    function buyGift(){const v=Number(document.getElementById('giftAmount').value);if(!v||v<100)return showToast('Enter a valid gift card amount');showToast('Gift card checkout opened');go('/cart')}
+    function infoPage(title,desc,icon){
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><div style="font-size:42px;color:var(--blue);margin-bottom:10px"><i class="fa-solid ${icon}"></i></div><h1 class="page-title">${esc(title)}</h1><p class="page-subtitle">${esc(desc)}</p><div class="card"><p>This dedicated page keeps supporting information out of the customer homepage, so the main shopping experience stays compact and easy to scan.</p></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
+    function contactPage(){infoPage('Contact Us','Customer support and business contact routes.','fa-headset')}
+    function faqPage(){
+      const qs=[['How do I place an order?','Open a product, add it to cart or tap Buy Now, then complete checkout.'],['How do I change delivery location?','Use Change next to the delivery location in the header.'],['Where can I see orders?','Open Login > Orders or the mobile Orders tab.'],['How do returns work?','Open Cancellation & Returns for the policy page.']];
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">FAQ</h1><p class="page-subtitle">Common shopping questions.</p>${qs.map(q=>`<details class="card" style="margin-bottom:9px"><summary style="font-weight:800;cursor:pointer">${esc(q[0])}</summary><p>${esc(q[1])}</p></details>`).join('')}</div></div></main>`);document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
+    function sitemapPage(){
+      const links=['/','/category/all','/account','/orders','/wishlist','/cart','/seller','/notifications','/customer-care','/advertise','/download-app','/gift-cards','/payments','/shipping','/returns','/faq','/terms','/security','/privacy'];
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">Sitemap</h1><p class="page-subtitle">All major storefront pages.</p><div class="product-scroller" style="flex-wrap:wrap;overflow:visible">${links.map(x=>`<a class="tab" href="#${x}">${x==='/'?'Home':x.slice(1).replaceAll('-',' ')}</a>`).join('')}</div></div></div></main>`);document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
 
-                const matches = products.filter(p => p.title.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-                renderProducts(matches);
+    function editProfile(){
+      showSimple('Edit Profile',`<div class="form-grid"><div><label class="label">Name</label><input id="editName" class="input" value="${esc(user.name||'')}"></div><div><label class="label">Mobile</label><input id="editPhone" class="input" value="${esc(user.phone||'')}"></div><div class="full"><label class="label">Email</label><input id="editEmail" class="input" value="${esc(user.email||'')}"></div></div><div class="modal-actions"><button class="small-action" onclick="closeSimpleModal()">Cancel</button><button class="big-btn cart" onclick="saveProfile()">Save</button></div>`)
+    }
+    function saveProfile(){user.name=document.getElementById('editName').value.trim()||user.name;user.phone=document.getElementById('editPhone').value.trim();user.email=document.getElementById('editEmail').value.trim();save('srp_user',user);closeSimpleModal();render();showToast('Profile updated')}
+    function registerSeller(){const n=document.getElementById('sellerName').value.trim();if(!n)return showToast('Enter seller name first');save('srp_seller',{name:n,phone:document.getElementById('sellerPhone').value.trim(),store:document.getElementById('sellerStore').value.trim(),email:document.getElementById('sellerEmail').value.trim(),createdAt:new Date().toISOString()});showToast('Seller registration saved');}
+    function saveNotifications(){save('srp_notifications',{orders:document.getElementById('notifyOrders').checked,promo:document.getElementById('notifyPromo').checked});showToast('Preferences updated')}
+    function createAd(){const n=document.getElementById('adName').value.trim();if(!n)return showToast('Enter a campaign name');showToast('Campaign draft created')}
 
-                if (matches.length > 0) {
-                    suggestions.innerHTML = matches.map(m => `
-                        <div onclick="selectSearchMatch('${m.title}')" class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm flex items-center justify-between">
-                            <span><i class="fa-solid fa-magnifying-glass text-gray-400 mr-2"></i> ${m.title}</span>
-                            <span class="text-xs text-gray-400 uppercase">${m.category}</span>
-                        </div>
-                    `).join('');
-                    suggestions.classList.remove('hidden');
-                } else {
-                    suggestions.innerHTML = `<div class="px-4 py-3 text-sm text-gray-500">No matching products found</div>`;
-                    suggestions.classList.remove('hidden');
-                }
-            });
-        }
+    function attachGlobal(){
+      const loginBtn=document.getElementById('loginHeadBtn'),moreBtn=document.getElementById('moreHeadBtn');
+      loginBtn?.addEventListener('click',e=>{e.stopPropagation();document.getElementById('loginDropdown').classList.toggle('hidden');document.getElementById('moreDropdown').classList.add('hidden')});
+      moreBtn?.addEventListener('click',e=>{e.stopPropagation();document.getElementById('moreDropdown').classList.toggle('hidden');document.getElementById('loginDropdown').classList.add('hidden')});
+      document.addEventListener('click',globalClick,{once:true});
+      setupSearch();
+    }
+    function globalClick(){document.getElementById('loginDropdown')?.classList.add('hidden');document.getElementById('moreDropdown')?.classList.add('hidden')}
+    function setupSearch(){
+      const input=document.getElementById('searchInput'); const box=document.getElementById('searchSuggestions'); if(!input)return;
+      input.value='';
+      input.addEventListener('input',()=>{
+        const q=input.value.trim().toLowerCase(); if(!q){box.classList.add('hidden');return}
+        const matches=products.filter(p=>(p.title+' '+p.category).toLowerCase().includes(q)).slice(0,7);
+        box.innerHTML=matches.length?matches.map(p=>`<div class="suggestion" onclick="go('/product/${p.id}')"><span><i class="fa-solid fa-magnifying-glass" style="color:#999;margin-right:8px"></i>${esc(p.title)}</span><small>${esc(p.category)}</small></div>`).join(''):`<div class="suggestion"><span>No matching products found</span></div>`;
+        box.classList.remove('hidden');
+      });
+      input.addEventListener('keydown',e=>{if(e.key==='Enter'&&input.value.trim()){const p=products.find(p=>(p.title+' '+p.category).toLowerCase().includes(input.value.trim().toLowerCase()));if(p)go('/product/'+p.id)}})
+    }
 
-        function selectSearchMatch(title) {
-            document.getElementById('searchInput').value = title;
-            document.getElementById('searchSuggestions').classList.add('hidden');
-            const matches = products.filter(p => p.title.toLowerCase() === title.toLowerCase());
-            renderProducts(matches);
-        }
+    function go(path){location.hash='#'+(path.startsWith('/')?path:'/'.concat(path));}
+    function startHero(){clearInterval(slideTimer);slideTimer=setInterval(nextSlide,4500);updateSlide()}
+    function updateSlide(){const el=document.getElementById('slides');if(!el)return;el.style.transform=`translateX(-${slideIndex*100}%)`;document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===slideIndex))}
+    function nextSlide(){slideIndex=(slideIndex+1)%banners.length;updateSlide()}
+    function prevSlide(){slideIndex=(slideIndex-1+banners.length)%banners.length;updateSlide()}
+    function setSlide(i){slideIndex=i;updateSlide()}
+    function homeAction(i){go(i===0?'/category/electronics':i===1?'/category/fashion':'/category/home')}
 
-        // Carousel Logic
-        function updateCarousel() {
-            const track = document.getElementById('carouselTrack');
-            track.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-        }
+    function cartCount(){return cart.reduce((s,x)=>s+x.qty,0)}
+    function cartTotal(){return cart.reduce((s,x)=>s+findProduct(x.id).price*x.qty,0)}
+    function addToCart(id){const item=cart.find(x=>x.id===id);item?item.qty++:cart.push({id,qty:1});save('srp_cart',cart);updateBadge();showToast('Added to cart')}
+    function changeQty(id,d){const item=cart.find(x=>x.id===id);if(!item)return;item.qty+=d;if(item.qty<=0)cart=cart.filter(x=>x.id!==id);save('srp_cart',cart);render()}
+    function removeCart(id){cart=cart.filter(x=>x.id!==id);save('srp_cart',cart);render();showToast('Item removed')}
+    function updateBadge(){document.querySelectorAll('#cartBadge').forEach(b=>b.textContent=cartCount())}
+    function toggleWishlist(id){wishlist.includes(id)?wishlist=wishlist.filter(x=>x!==id):wishlist.push(id);save('srp_wishlist',wishlist);render()}
+    function buyNow(id){addToCart(id);checkout()}
+    function checkout(){if(!cart.length)return showToast('Your cart is empty');if(!user)return openAuth('login','checkout');go('/payment')}
+    function paymentPage(){
+      const total=cartTotal()+(cartTotal()>999?0:40);
+      document.getElementById('app').insertAdjacentHTML('beforeend',`<main><div class="container"><div class="page-shell"><h1 class="page-title">Payment</h1><p class="page-subtitle">Complete the order only after payment confirmation.</p><div class="two-col"><div><div class="card"><h3>Delivery Address</h3><p>${esc(user?.name||'Customer')}<br>${esc(user?.phone||'')}<br>Demo address — replace this form with your saved address system.</p></div><div class="card" style="margin-top:10px"><h3>Choose Payment Method</h3><label class="card" style="display:block;margin:8px 0"><input type="radio" name="pay" value="UPI" checked> UPI</label><label class="card" style="display:block;margin:8px 0"><input type="radio" name="pay" value="Card"> Card</label><label class="card" style="display:block;margin:8px 0"><input type="radio" name="pay" value="Net Banking"> Net Banking</label><label class="card" style="display:block;margin:8px 0"><input type="radio" name="pay" value="Cash on Delivery"> Cash on Delivery</label></div></div><div class="card" style="height:max-content"><h3>Order Summary</h3>${cart.map(x=>{const p=findProduct(x.id);return `<div style="display:flex;justify-content:space-between;margin:9px 0"><span>${esc(p.title)} × ${x.qty}</span><span>${money(p.price*x.qty)}</span></div>`}).join('')}<hr style="border:0;border-top:1px solid #eee"><div style="display:flex;justify-content:space-between;font-weight:800;margin:12px 0"><span>Total</span><span>${money(total)}</span></div><button class="view-all" style="width:100%;padding:13px" onclick="confirmPayment()">PAY ${money(total)}</button><p class="muted" style="margin-top:9px">Demo front-end payment confirmation. Connect Razorpay/Stripe server-side webhooks for live payment verification.</p></div></div></div></div></main>`);
+      document.getElementById('app').insertAdjacentHTML('beforeend',footerHtml());
+    }
+    function confirmPayment(){
+      if(!user)return openLogin();
+      const method=[...document.querySelectorAll('input[name="pay"]')].find(x=>x.checked)?.value||'UPI';
+      const total=cartTotal()+(cartTotal()>999?0:40); const first=cart[0];
+      orders.unshift({orderId:'SRP'+Date.now().toString().slice(-10),productId:first.id,total,status:'Paid · '+method,createdAt:new Date().toISOString()});
+      save('srp_orders',orders);cart=[];save('srp_cart',cart);showToast('Payment confirmed and order placed');setTimeout(()=>go('/orders'),450)
+    }
+    function checkPincode(){const p=document.getElementById('productPincode').value.trim();document.getElementById('deliveryMsg').textContent=/^\d{6}$/.test(p)?`Delivery is available for pincode ${p}.`:'Enter a valid 6-digit pincode.'}
+    function setDetailImage(src,btn){document.getElementById('detailMainImg').src=src;document.querySelectorAll('.thumb').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
 
-        function nextSlide() {
-            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-            updateCarousel();
-        }
+    function openLogin(){openAuth(user?'login':'login')}
+    function openAuth(mode='login',after){
+      const box=document.getElementById('authContent');document.getElementById('authOverlay').dataset.after=after||'';document.getElementById('authOverlay').classList.remove('hidden');
+      if(mode==='signup') box.innerHTML=`<h2>Looks like you're new here!</h2><p class="muted">Create your SRP Shopping account once and use it across orders and checkout.</p><div class="form-grid" style="margin-top:15px"><div class="full"><label class="label">Full Name</label><input id="signupName" class="input"></div><div><label class="label">Mobile</label><input id="signupPhone" class="input" maxlength="10"></div><div><label class="label">Email</label><input id="signupEmail" class="input"></div><div class="full"><label class="label">Password</label><input id="signupPass" class="input" type="password"></div></div><div class="modal-actions"><button class="small-action" onclick="openAuth('login')">Already have an account?</button><button class="big-btn cart" onclick="signup()">CREATE ACCOUNT</button></div>`;
+      else box.innerHTML=`<h2>${user?'Account Login':'Login'}</h2><p class="muted">Get access to orders, wishlist and checkout.</p><div style="margin-top:15px"><label class="label">Mobile or Email</label><input id="loginId" class="input"></div><div style="margin-top:10px"><label class="label">Password</label><input id="loginPass" class="input" type="password"></div><div class="modal-actions"><button class="small-action" onclick="openAuth('signup')">New here? Sign Up</button><button class="big-btn cart" onclick="login()">LOGIN</button></div><p class="muted" style="margin-top:12px">For this standalone demo, credentials are stored locally in your browser.</p>`;
+    }
+    function signup(){const name=document.getElementById('signupName').value.trim();const phone=document.getElementById('signupPhone').value.trim();const email=document.getElementById('signupEmail').value.trim();const pass=document.getElementById('signupPass').value;if(name.length<2||!/^\d{10}$/.test(phone)||pass.length<4)return showToast('Enter valid signup details');const u={name,phone,email,password:pass};save('srp_user',u);user=u;closeAuth();showToast('Account created successfully');const after=document.getElementById('authOverlay').dataset.after;if(after==='checkout')go('/payment');else render()}
+    function login(){const id=document.getElementById('loginId').value.trim();const pass=document.getElementById('loginPass').value;const stored=load('srp_user',null);if(!stored||stored.password!==pass||(stored.phone!==id&&stored.email!==id))return showToast('Invalid login details');user=stored;closeAuth();showToast('Logged in successfully');const after=document.getElementById('authOverlay').dataset.after;if(after==='checkout')go('/payment');else render()}
+    function logout(){user=null;localStorage.removeItem('srp_user');showToast('Logged out');render()}
+    function closeAuth(){document.getElementById('authOverlay').classList.add('hidden')}
+    function showSimple(title,html){document.getElementById('simpleContent').innerHTML=`<h2>${esc(title)}</h2>${html}`;document.getElementById('simpleOverlay').classList.remove('hidden')}
+    function closeSimpleModal(){document.getElementById('simpleOverlay').classList.add('hidden')}
+    function updateLocation(){const pin=prompt('Enter your delivery pincode (6 digits):',localStorage.getItem('srp_location')||'');if(pin===null)return;if(/^\d{6}$/.test(pin.trim())){localStorage.setItem('srp_location',pin.trim());render();showToast('Delivery location updated')}else showToast('Please enter a valid 6-digit pincode')}
+    function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>t.classList.remove('show'),2600)}
 
-        function prevSlide() {
-            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
-            updateCarousel();
-        }
-
-        function startCarouselAutoPlay() {
-            setInterval(() => {
-                nextSlide();
-            }, 4000);
-        }
-
-        function scrollToProducts() {
-            document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Cart Actions
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existing = cart.find(item => item.id === productId);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            updateCartUI();
-            showToast(`Added "${product.title}" to cart!`);
-        }
-
-        function updateCartUI() {
-            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById('cartCountBadge').innerText = totalCount;
-            document.getElementById('drawerCartCount').innerText = totalCount;
-
-            const cartItemsList = document.getElementById('cartItemsList');
-            const totalPriceEl = document.getElementById('cartTotalPrice');
-
-            if (cart.length === 0) {
-                cartItemsList.innerHTML = `<div class="text-center py-16 text-gray-400"><i class="fa-solid fa-cart-shopping text-4xl mb-3"></i><p>Your cart is empty!</p></div>`;
-                totalPriceEl.innerText = '₹0';
-                return;
-            }
-
-            let total = 0;
-            cartItemsList.innerHTML = cart.map(item => {
-                total += item.price * item.qty;
-                return `
-                    <div class="flex items-center justify-between gap-4 border-b border-gray-100 pb-3">
-                        <img src="${item.image}" alt="${item.title}" class="w-16 h-16 object-contain">
-                        <div class="flex-1">
-                            <h4 class="text-sm font-medium text-gray-800 line-clamp-1">${item.title}</h4>
-                            <p class="text-sm font-bold text-gray-900">₹${item.price.toLocaleString()}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <button onclick="decrementQty(${item.id})" class="px-2 py-0.5 bg-gray-200 rounded text-xs font-bold">-</button>
-                                <span class="text-xs font-semibold">${item.qty}</span>
-                                <button onclick="incrementQty(${item.id})" class="px-2 py-0.5 bg-gray-200 rounded text-xs font-bold">+</button>
-                            </div>
-                        </div>
-                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-sm"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            }).join('');
-
-            totalPriceEl.innerText = `₹${total.toLocaleString()}`;
-        }
-
-        function incrementQty(id) {
-            const item = cart.find(p => p.id === id);
-            if (item) item.qty += 1;
-            updateCartUI();
-        }
-
-        function decrementQty(id) {
-            const item = cart.find(p => p.id === id);
-            if (item && item.qty > 1) {
-                item.qty -= 1;
-            } else {
-                cart = cart.filter(p => p.id !== id);
-            }
-            updateCartUI();
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(p => p.id !== id);
-            updateCartUI();
-            showToast('Item removed from cart');
-        }
-
-        function toggleCartDrawer() {
-            const drawer = document.getElementById('cartDrawer');
-            drawer.classList.toggle('hidden');
-            updateCartUI();
-        }
-
-        function checkoutCart() {
-            if (cart.length === 0) {
-                showToast('Your cart is empty!');
-                return;
-            }
-            showToast('Order placed successfully! Thank you for shopping on Flipkart.');
-            cart = [];
-            updateCartUI();
-            toggleCartDrawer();
-        }
-
-        function addToWishlist(id) {
-            const product = products.find(p => p.id === id);
-            showToast(`Added "${product.title}" to wishlist!`);
-        }
-
-        // Modal Popups for "More" and "Login" options
-        const modal = document.getElementById('appModal');
-        const modalContent = document.getElementById('modalContent');
-
-        function openAuthModal(type) {
-            document.getElementById('loginMenu').classList.add('hidden');
-            modal.classList.remove('hidden');
-            if (type === 'login') {
-                modalContent.innerHTML = `
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Login</h3>
-                    <p class="text-xs text-gray-500 mb-6">Get access to your Orders, Wishlist and Recommendations</p>
-                    <div class="space-y-4">
-                        <input type="text" placeholder="Enter Email/Mobile number" class="w-full px-4 py-3 border border-gray-300 rounded text-sm focus:border-flipkartBlue outline-none">
-                        <button onclick="closeAppModal(); showToast('OTP sent successfully!');" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded text-sm shadow">Request OTP</button>
-                    </div>
-                `;
-            } else {
-                modalContent.innerHTML = `
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Looks like you're new here!</h3>
-                    <p class="text-xs text-gray-500 mb-6">Sign up with your mobile number to get started</p>
-                    <div class="space-y-4">
-                        <input type="text" placeholder="Enter Mobile number" class="w-full px-4 py-3 border border-gray-300 rounded text-sm focus:border-flipkartBlue outline-none">
-                        <button onclick="closeAppModal(); showToast('Registration initiated!');" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded text-sm shadow">Continue</button>
-                    </div>
-                `;
-            }
-        }
-
-        function openSellerModal() {
-            document.getElementById('moreMenu').classList.add('hidden');
-            modal.classList.remove('hidden');
-            modalContent.innerHTML = `
-                <div class="text-center space-y-4 py-2">
-                    <div class="w-16 h-16 bg-blue-50 text-flipkartBlue rounded-full flex items-center justify-center mx-auto text-2xl">
-                        <i class="fa-solid fa-store"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900">Sell Online with Flipkart</h3>
-                    <p class="text-xs text-gray-600 leading-relaxed">Reach over 500+ million customers across India. Grow your business with 0% Commission on key categories.</p>
-                    <button onclick="closeAppModal(); showToast('Redirecting to Seller Registration portal...');" class="w-full bg-flipkartBlue text-white font-bold py-3 rounded text-sm shadow">Start Selling</button>
-                </div>
-            `;
-        }
-
-        function showNotificationSettings() {
-            document.getElementById('moreMenu').classList.add('hidden');
-            modal.classList.remove('hidden');
-            modalContent.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Notification Preferences</h3>
-                <p class="text-xs text-gray-500 mb-4">Manage how you receive alerts from Flipkart.</p>
-                <div class="space-y-3 text-sm">
-                    <label class="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer">
-                        <span>Order updates & shipping</span>
-                        <input type="checkbox" checked class="w-4 h-4 accent-flipkartBlue">
-                    </label>
-                    <label class="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer">
-                        <span>Promotions & offers</span>
-                        <input type="checkbox" checked class="w-4 h-4 accent-flipkartBlue">
-                    </label>
-                </div>
-                <button onclick="closeAppModal(); showToast('Preferences updated!');" class="mt-6 w-full bg-flipkartBlue text-white font-bold py-2.5 rounded text-sm">Save Preferences</button>
-            `;
-        }
-
-        function showCustomerCare() {
-            document.getElementById('moreMenu').classList.add('hidden');
-            modal.classList.remove('hidden');
-            modalContent.innerHTML = `
-                <div class="text-center space-y-3 py-2">
-                    <div class="w-16 h-16 bg-blue-50 text-flipkartBlue rounded-full flex items-center justify-center mx-auto text-2xl">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900">24x7 Customer Care</h3>
-                    <p class="text-xs text-gray-600">We are here to help you with your orders, returns, and queries anytime.</p>
-                    <div class="bg-gray-50 p-3 rounded border border-gray-100 text-sm font-semibold text-gray-800">
-                        Toll-Free Helpline: 1800-208-9898
-                    </div>
-                    <button onclick="closeAppModal(); showToast('Connecting to support executive...');" class="w-full bg-flipkartBlue text-white font-bold py-2.5 rounded text-sm">Start Live Chat</button>
-                </div>
-            `;
-        }
-
-        function showAdvertise() {
-            document.getElementById('moreMenu').classList.add('hidden');
-            modal.classList.remove('hidden');
-            modalContent.innerHTML = `
-                <div class="text-center space-y-3 py-2">
-                    <div class="w-16 h-16 bg-blue-50 text-flipkartBlue rounded-full flex items-center justify-center mx-auto text-2xl">
-                        <i class="fa-solid fa-bullhorn"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900">Advertise on Flipkart</h3>
-                    <p class="text-xs text-gray-600">Boost your product visibility and reach targeted shoppers with Flipkart Ads.</p>
-                    <button onclick="closeAppModal(); showToast('Redirecting to Ads portal...');" class="w-full bg-flipkartBlue text-white font-bold py-2.5 rounded text-sm">Create Ad Campaign</button>
-                </div>
-            `;
-        }
-
-        function showDownloadApp() {
-            document.getElementById('moreMenu').classList.add('hidden');
-            modal.classList.remove('hidden');
-            modalContent.innerHTML = `
-                <div class="text-center space-y-3 py-2">
-                    <div class="w-16 h-16 bg-blue-50 text-flipkartBlue rounded-full flex items-center justify-center mx-auto text-2xl">
-                        <i class="fa-solid fa-mobile-screen"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900">Experience Flipkart App</h3>
-                    <p class="text-xs text-gray-600">Scan QR code or download directly from Play Store / App Store.</p>
-                    <div class="flex justify-center gap-4 pt-2">
-                        <div class="bg-black text-white px-4 py-2 rounded text-xs font-semibold flex items-center gap-2 cursor-pointer"><i class="fa-brands fa-google-play text-base"></i> Google Play</div>
-                        <div class="bg-black text-white px-4 py-2 rounded text-xs font-semibold flex items-center gap-2 cursor-pointer"><i class="fa-brands fa-apple text-base"></i> App Store</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateLocation() {
-            const pincode = prompt('Enter your delivery Pincode (e.g. 110001, 560103):', '560103');
-            if (pincode && pincode.trim().length === 6) {
-                document.getElementById('deliveryLocationText').innerText = `Delivery to Pincode - ${pincode.trim()}`;
-                showToast(`Delivery location updated to ${pincode.trim()}`);
-            } else if (pincode) {
-                showToast('Please enter a valid 6-digit pincode');
-            }
-        }
-
-        function closeAppModal() {
-            modal.classList.add('hidden');
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toastNotification');
-            toast.innerText = message;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-    </script>
+    window.addEventListener('hashchange',render);
+    document.addEventListener('DOMContentLoaded',render);
+  </script>
 </body>
 </html>
