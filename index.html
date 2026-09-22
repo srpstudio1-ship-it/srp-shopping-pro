@@ -8729,5 +8729,182 @@ body.srp-fk #mainHeader{position:sticky!important;top:0!important;z-index:999!im
   renderHome();
 })();
 </script>
+<style id="srp-final-home-css">
+:root{
+  --sf-blue:#2874f0;
+  --sf-blue-dark:#1767d8;
+  --sf-yellow:#ffd814;
+  --sf-bg:#f1f3f6;
+  --sf-white:#fff;
+  --sf-text:#212121;
+  --sf-muted:#878787;
+  --sf-line:#e0e0e0;
+  --sf-green:#388e3c;
+  --sf-shadow:0 1px 2px rgba(0,0,0,.07),0 2px 6px rgba(0,0,0,.05);
+  --sf-max:1500px;
+}
+body.srp-final{margin:0!important;background:var(--sf-bg)!important;color:var(--sf-text)!important;font-family:Arial,Helvetica,sans-serif!important}
+body.srp-final #mainHeader{position:sticky!important;top:0!important;z-index:1200!important;background:#fff!important;border:0!important;box-shadow:0 1px 3px rgba(0,0,0,.14)!important;padding:0!important}
+body.srp-final .page{padding:0!important}
+.sf-topline{height:62px;background:#fff;display:flex;align-items:center;max-width:var(--sf-max);margin:auto;padding:0 20px;gap:16px}
+.sf-brand{width:174px;height:50px;background:var(--sf-yellow);border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto}
+.sf-brand-main{font-weight:900;font-style:italic;font-size:28px;letter-spacing:-1.6px;line-height:1}.sf-brand-sub{font-size:9px;font-weight:700;letter-spacing:2.5px;margin-top:3px;text-align:center;display:block}
+.sf-wallet{height:50px;border:0;background:#fff;display:flex;align-items:center;gap:9px;padding:0 12px;cursor:pointer;border-left:1px solid #eee;min-width:118px}.sf-wallet:hover{background:#fafafa}.sf-wallet-icon{font-size:24px;color:var(--sf-blue)}.sf-wallet small{display:block;color:var(--sf-muted);font-size:10px;text-align:left}.sf-wallet strong{font-size:14px;display:block;margin-top:2px}
+.sf-location{margin-left:auto;border:0;background:#fff;display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;text-align:left}.sf-location:hover{color:var(--sf-blue)}.sf-location-icon{font-size:20px}.sf-location small{display:block;font-size:10px;color:var(--sf-muted)}.sf-location strong{display:block;font-size:12px;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sf-location .arr{color:var(--sf-blue);margin-left:2px}
+.sf-mainbar{background:#fff;max-width:var(--sf-max);margin:auto;display:flex;align-items:center;gap:14px;padding:8px 20px 12px}.sf-search-wrap{position:relative;flex:1;min-width:320px}.sf-search{height:48px;border:2px solid var(--sf-blue);border-radius:7px;display:flex;align-items:center;overflow:hidden;background:#fff}.sf-search-icon{width:46px;text-align:center;font-size:23px;color:#6f6f6f}.sf-search input{flex:1;border:0;outline:0;height:100%;font-size:15px;color:#212121}.sf-search button{height:100%;width:58px;border:0;background:#fff;color:var(--sf-blue);font-size:24px;cursor:pointer}.sf-search button:hover{background:#f7faff}.sf-suggestions{position:absolute;left:0;right:0;top:53px;background:#fff;border:1px solid #ddd;box-shadow:0 4px 16px rgba(0,0,0,.18);z-index:1500;max-height:430px;overflow:auto}.sf-suggestions.hidden{display:none}.sf-suggestions button{display:flex;align-items:center;width:100%;gap:10px;padding:11px 14px;border:0;border-bottom:1px solid #f2f2f2;background:#fff;text-align:left;cursor:pointer}.sf-suggestions button:hover{background:#f8f8f8}
+.sf-login-wrap,.sf-more-wrap{position:relative}.sf-navbtn{height:42px;border:0;background:#fff;display:flex;align-items:center;gap:5px;padding:0 12px;font-size:14px;cursor:pointer;white-space:nowrap}.sf-navbtn:hover{color:var(--sf-blue)}.sf-navbtn strong{font-size:13px}.sf-navbtn small{color:var(--sf-muted);font-size:10px;display:block}.sf-more-dots{font-size:20px;line-height:1;letter-spacing:2px}
+.sf-drop{position:absolute;right:0;top:46px;width:315px;background:#fff;border-radius:4px;border:1px solid #ddd;box-shadow:0 5px 20px rgba(0,0,0,.2);display:none;overflow:hidden;z-index:1600}.sf-drop.open{display:block}.sf-drop-head{padding:14px 16px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;font-size:14px}.sf-drop-head a{color:var(--sf-blue);font-weight:700;text-decoration:none;cursor:pointer}.sf-drop-item{width:100%;border:0;background:#fff;display:flex;align-items:center;gap:12px;padding:12px 16px;text-align:left;font-size:14px;cursor:pointer}.sf-drop-item:hover{background:#f7f7f7}.sf-drop-item .i{width:20px;text-align:center;color:#555;font-size:16px}.sf-drop-sep{height:1px;background:#eee}
+.sf-cart{font-weight:700}.sf-cart-icon{font-size:25px}.sf-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--sf-blue);color:#fff;border-radius:10px;min-width:18px;height:18px;padding:0 4px;font-size:9px;margin-left:-5px;margin-top:-14px}
+.sf-categories{background:#fff;border-top:1px solid #f0f0f0;border-bottom:1px solid #ddd;overflow:hidden}.sf-cat-inner{max-width:var(--sf-max);margin:auto;display:flex;overflow:auto;scrollbar-width:none}.sf-cat-inner::-webkit-scrollbar{display:none}.sf-cat{width:100px;min-width:100px;height:88px;background:#fff;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;position:relative;color:#212121;font-size:12px}.sf-cat:hover,.sf-cat.active{color:var(--sf-blue)}.sf-cat.active:after{content:"";position:absolute;bottom:0;left:14px;right:14px;height:3px;background:var(--sf-blue)}.sf-cat-icon{font-size:29px;line-height:1}
+.sf-home{max-width:var(--sf-max);margin:auto;padding:12px 20px 36px}.sf-card{background:#fff;box-shadow:var(--sf-shadow);margin-bottom:12px;border:1px solid #ececec}.sf-hero{position:relative;overflow:hidden}.sf-hero-track{display:flex;transition:transform .45s ease}.sf-slide{min-width:100%;height:385px;display:grid;grid-template-columns:52% 48%;background:#fff}.sf-slide-copy{padding:42px 52px;display:flex;flex-direction:column;justify-content:center}.sf-slide-kicker{font-size:12px;font-weight:800;letter-spacing:1px;color:#666;text-transform:uppercase}.sf-slide h1{font-size:38px;line-height:1.1;margin:8px 0 12px;max-width:580px}.sf-slide p{font-size:16px;line-height:1.45;color:#666;max-width:590px;margin:0}.sf-slide-price{font-size:24px;font-weight:800;margin-top:18px}.sf-slide-price .mrp{font-size:13px;color:#878787;text-decoration:line-through;font-weight:500;margin-left:7px}.sf-slide-cta{display:flex;gap:10px;margin-top:18px}.sf-btn{border:0;border-radius:3px;padding:11px 18px;cursor:pointer;font-weight:800;font-size:12px}.sf-btn-blue{background:var(--sf-blue);color:#fff}.sf-btn-yellow{background:var(--sf-yellow);color:#212121}.sf-slide-art{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#f6faff,#eaf2ff)}.sf-slide-art:before{content:"";position:absolute;width:570px;height:570px;border-radius:50%;background:rgba(40,116,240,.10);right:-150px;top:-100px}.sf-slide-art img{position:relative;z-index:2;width:78%;height:82%;object-fit:contain;filter:drop-shadow(0 18px 24px rgba(0,0,0,.16));cursor:pointer}.sf-ad-mark{position:absolute;right:12px;bottom:10px;color:#888;font-size:9px;z-index:3}.sf-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:82px;background:#fff;border:0;box-shadow:0 1px 8px rgba(0,0,0,.16);font-size:28px;cursor:pointer;z-index:8}.sf-arrow.prev{left:0}.sf-arrow.next{right:0}.sf-dots{height:32px;display:flex;align-items:center;justify-content:center;gap:6px;background:#fff}.sf-dot{width:8px;height:8px;border:0;border-radius:50%;background:#cfcfcf;cursor:pointer;padding:0}.sf-dot.active{background:#111;width:22px;border-radius:6px}
+.sf-mini-links{display:grid;grid-template-columns:repeat(5,1fr);background:#fff}.sf-mini-link{min-height:72px;padding:10px 12px;display:flex;align-items:center;gap:10px;border-right:1px solid #eee;background:#fff;border-top:0;border-bottom:0;border-left:0;cursor:pointer;text-align:left}.sf-mini-link:last-child{border-right:0}.sf-mini-link:hover{background:#fafafa}.sf-mini-ico{width:34px;height:34px;border-radius:50%;background:#eef4ff;color:var(--sf-blue);display:grid;place-items:center;font-size:17px;flex:0 0 auto}.sf-mini-link b{font-size:12px;display:block}.sf-mini-link span{font-size:10px;color:#777;display:block;margin-top:3px}
+.sf-section-head{height:55px;padding:0 17px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between}.sf-section-head h2{margin:0;font-size:22px}.sf-view{border:0;background:var(--sf-blue);color:#fff;padding:10px 17px;font-size:11px;font-weight:800;cursor:pointer;border-radius:2px}.sf-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;padding:13px}.sf-product{min-width:0;border-right:1px solid #eee;padding:8px 12px;position:relative;cursor:pointer}.sf-product:last-child{border-right:0}.sf-product:hover .sf-product-name{color:var(--sf-blue)}.sf-heart{position:absolute;right:11px;top:8px;border:0;background:#fff;font-size:20px;cursor:pointer;color:#777;z-index:3}.sf-heart.active{color:#e53935}.sf-product-img{height:210px;display:flex;align-items:center;justify-content:center}.sf-product-img img{width:100%;height:100%;object-fit:contain}.sf-product-brand{font-size:11px;color:#878787;margin-top:6px}.sf-product-name{font-size:13px;line-height:1.35;height:36px;overflow:hidden;margin-top:3px}.sf-rating{display:inline-flex;align-items:center;gap:4px;background:#388e3c;color:#fff;font-size:10px;padding:3px 5px;border-radius:2px;margin-top:7px}.sf-price{font-size:16px;font-weight:800;margin-top:7px}.sf-price .mrp{text-decoration:line-through;color:#878787;font-size:11px;margin-left:5px;font-weight:500}.sf-price .off{color:#388e3c;font-size:10px;margin-left:5px;font-weight:700}.sf-delivery{font-size:10px;color:#666;margin-top:6px}.sf-product-actions{display:flex;gap:7px;margin-top:9px}.sf-card-btn{flex:1;border:1px solid #d5d5d5;background:#fff;color:#212121;padding:8px 6px;font-size:10px;font-weight:700;cursor:pointer;border-radius:2px}.sf-card-btn.blue{background:var(--sf-blue);border-color:var(--sf-blue);color:#fff}
+.sf-recent{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:12px}.sf-promo{height:220px;position:relative;overflow:hidden;cursor:pointer}.sf-promo img{width:100%;height:100%;object-fit:cover}.sf-promo-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.67),rgba(0,0,0,.05) 75%)}.sf-promo-text{position:absolute;left:20px;top:22px;color:#fff;width:60%}.sf-promo-text small{font-size:10px;font-weight:800;letter-spacing:1px}.sf-promo-text h3{font-size:23px;line-height:1.12;margin:7px 0}.sf-promo-text p{font-size:11px;margin:0}.sf-promo-tag{position:absolute;right:8px;top:8px;background:rgba(255,255,255,.78);font-size:9px;padding:4px 6px;color:#777;border-radius:3px}
+.sf-empty{padding:36px;text-align:center;color:#777}.sf-empty strong{display:block;color:#212121;margin-bottom:6px}
+.sf-footer{background:#172337;color:#fff;margin-top:8px}.sf-footer-inner{max-width:var(--sf-max);margin:auto;padding:34px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:30px}.sf-footer h4{font-size:11px;color:#878787;margin:0 0 13px;letter-spacing:.4px}.sf-footer button{display:block;background:none;border:0;color:#fff;padding:0;margin:0 0 9px;text-align:left;font-size:11px;cursor:pointer}.sf-footer button:hover{text-decoration:underline}.sf-footer-bottom{border-top:1px solid rgba(255,255,255,.15);padding:14px 20px;text-align:center;color:#ddd;font-size:10px}
+.sf-mobile-only{display:none}
+@media(max-width:1100px){.sf-navbtn{padding:0 8px}.sf-wallet{display:none}.sf-topline{padding:0 12px}.sf-mainbar{padding:8px 12px 12px}.sf-home{padding:10px 12px 30px}.sf-slide{height:340px}.sf-slide h1{font-size:31px}.sf-row{grid-template-columns:repeat(4,minmax(0,1fr))}.sf-row .sf-product:nth-child(5){display:none}.sf-recent{grid-template-columns:1fr 1fr}.sf-recent .sf-promo:last-child{display:none}}
+@media(max-width:760px){.sf-topline{height:54px}.sf-brand{width:120px;height:42px}.sf-brand-main{font-size:21px}.sf-brand-sub{font-size:7px;letter-spacing:1.6px}.sf-location{max-width:200px}.sf-location strong{max-width:120px}.sf-mainbar{flex-wrap:wrap;gap:7px}.sf-search-wrap{order:1;flex-basis:100%;min-width:0}.sf-login-wrap,.sf-more-wrap,.sf-cart{order:2}.sf-slide{grid-template-columns:1fr;height:470px}.sf-slide-copy{padding:24px 26px}.sf-slide-art{height:215px;order:-1}.sf-slide h1{font-size:28px}.sf-slide p{font-size:13px}.sf-arrow{height:62px;width:36px}.sf-mini-links{grid-template-columns:repeat(2,1fr)}.sf-mini-link{border-bottom:1px solid #eee}.sf-row{grid-template-columns:repeat(2,minmax(0,1fr))}.sf-row .sf-product:nth-child(n+5){display:none}.sf-product:nth-child(2n){border-right:0}.sf-recent{grid-template-columns:1fr}.sf-recent .sf-promo{display:block!important}.sf-footer-inner{grid-template-columns:repeat(2,1fr);gap:20px}}
+@media(max-width:470px){.sf-cat{width:82px;min-width:82px}.sf-cat-icon{font-size:25px}.sf-mainbar{padding-left:8px;padding-right:8px}.sf-home{padding-left:8px;padding-right:8px}.sf-navbtn{font-size:12px;padding:0 6px}.sf-navbtn strong{font-size:11px}.sf-navbtn small{display:none}.sf-login-wrap,.sf-more-wrap{flex:1}.sf-navbtn{justify-content:center;width:100%}.sf-cart{padding:0 5px}.sf-slide h1{font-size:24px}.sf-slide-copy{padding:22px}.sf-slide-art img{width:67%;height:85%}.sf-section-head h2{font-size:18px}.sf-section-head{padding:0 12px}.sf-product-img{height:155px}.sf-product-actions{flex-direction:column}}
+</style>
+
+<script id="srp-final-home-js">
+(function(){
+  "use strict";
+  const FINAL={slide:0,timer:null,loginOpen:false,moreOpen:false};
+  const esc=v=>escapeHtml(v==null?"":String(v));
+  const attr=v=>escapeAttr(v==null?"":String(v));
+  const activeProducts=()=>((state.db&&state.db.products)||[]).filter(p=>p.status==='active');
+  const balance=()=>{try{return user&&typeof srpWallet==='function'?Number(srpWallet().balance||0):0}catch(_){return 0}};
+  function homeProducts(){
+    let list=activeProducts();
+    const q=String(state.query||'').trim().toLowerCase();
+    if(q) list=list.filter(p=>[p.name,p.brand,p.category,p.sku,p.description].some(v=>String(v||'').toLowerCase().includes(q)));
+    if(state.category) list=list.filter(p=>p.category===state.category||p.categoryId===state.category);
+    if(state.sellerFilter) list=list.filter(p=>p.sellerId===state.sellerFilter);
+    if(state.minPrice!=='') list=list.filter(p=>Number(p.price)>=Number(state.minPrice||0));
+    if(state.maxPrice!=='') list=list.filter(p=>Number(p.price)<=Number(state.maxPrice||Infinity));
+    if(Number(state.minRating||0)) list=list.filter(p=>Number(p.rating||0)>=Number(state.minRating));
+    if(state.sort==='discount') list.sort((a,b)=>productDiscount(b)-productDiscount(a));
+    else if(state.sort==='priceLow') list.sort((a,b)=>Number(a.price)-Number(b.price));
+    else if(state.sort==='priceHigh') list.sort((a,b)=>Number(b.price)-Number(a.price));
+    return list;
+  }
+  function productTile(p){
+    const wl=user?(state.db.wishlists[user.id]||[]):[];
+    const liked=wl.includes(p.id);
+    return `<article class="sf-product" onclick="store.openProduct('${attr(p.id)}')">
+      <button class="sf-heart ${liked?'active':''}" onclick="event.stopPropagation();store.toggleWishlist('${attr(p.id)}')" aria-label="Wishlist">${liked?'♥':'♡'}</button>
+      <div class="sf-product-img"><img loading="lazy" src="${attr(p.images&&p.images[0]||'')}" alt="${attr(p.name)}"></div>
+      <div class="sf-product-brand">${esc(p.brand||'SRP')}</div>
+      <div class="sf-product-name" title="${attr(p.name)}">${esc(p.name)}</div>
+      <span class="sf-rating">${Number(p.rating||0).toFixed(1)} ★</span>
+      <div class="sf-price">${money(p.price)} <span class="mrp">${money(p.mrp)}</span><span class="off">${productDiscount(p)}% off</span></div>
+      <div class="sf-delivery">Free delivery on eligible orders</div>
+      <div class="sf-product-actions"><button class="sf-card-btn" onclick="event.stopPropagation();store.openProduct('${attr(p.id)}')">VIEW</button><button class="sf-card-btn blue" onclick="event.stopPropagation();store.addToCart('${attr(p.id)}')">ADD TO CART</button></div>
+    </article>`;
+  }
+  function productSection(title,items){
+    const arr=items.slice(0,5);
+    return `<section class="sf-card"><div class="sf-section-head"><h2>${esc(title)}</h2><button class="sf-view" onclick="srpFinalDeals()">VIEW ALL</button></div>${arr.length?`<div class="sf-row">${arr.map(productTile).join('')}</div>`:`<div class="sf-empty"><strong>No products found</strong><span>Try another search, category or filter.</span></div>`}</section>`;
+  }
+  function promoCard(p,index){
+    const names=['Top Selection','Value Deals','Best of SRP'];
+    const subtitles=['Popular picks from the marketplace','Great prices on useful products','Smart shopping starts here'];
+    return `<article class="sf-promo" onclick="store.openProduct('${attr(p?.id||'')}')"><img src="${attr(p?.images?.[0]||'')}" alt="${attr(p?.name||'SRP Shopping')}" loading="lazy"><div class="sf-promo-overlay"></div><div class="sf-promo-text"><small>${esc(names[index])}</small><h3>${esc(p?.brand||'SRP')} ${esc(p?.name||'Shopping')}</h3><p>${esc(subtitles[index])}</p></div><span class="sf-promo-tag">AD</span></article>`;
+  }
+  function heroSlides(){
+    const ps=activeProducts().slice(0,5);
+    return ps.length?ps:[];
+  }
+  function hero(){
+    const ps=heroSlides();
+    if(!ps.length)return `<section class="sf-card sf-empty"><strong>SRP Shopping is ready</strong><span>Add active products from Seller/Admin to populate the home marketplace.</span></section>`;
+    return `<section class="sf-card sf-hero"><div class="sf-hero-track" id="sfHeroTrack">${ps.map(p=>`<article class="sf-slide"><div class="sf-slide-copy"><span class="sf-slide-kicker">SRP SHOPPING · SPECIAL OFFER</span><h1>${esc(p.name)}</h1><p>${esc(p.description||'Discover this product from the SRP Shopping marketplace.')}</p><div class="sf-slide-price">${money(p.price)} <span class="mrp">${money(p.mrp)}</span></div><div class="sf-slide-cta"><button class="sf-btn sf-btn-blue" onclick="store.openProduct('${attr(p.id)}')">VIEW PRODUCT</button><button class="sf-btn sf-btn-yellow" onclick="store.addToCart('${attr(p.id)}')">ADD TO CART</button></div></div><div class="sf-slide-art"><img src="${attr(p.images?.[0]||'')}" alt="${attr(p.name)}" onclick="store.openProduct('${attr(p.id)}')"><span class="sf-ad-mark">SRP marketplace</span></div></article>`).join('')}</div><button class="sf-arrow prev" onclick="srpFinalPrev()">‹</button><button class="sf-arrow next" onclick="srpFinalNext()">›</button><div class="sf-dots">${ps.map((_,i)=>`<button class="sf-dot ${i===0?'active':''}" onclick="srpFinalSlide(${i})"></button>`).join('')}</div></section>`;
+  }
+  function loginMenu(){
+    const label=user?esc(user.name):'Login';
+    return `<div class="sf-drop" id="sfLoginDrop"><div class="sf-drop-head"><span>${user?'Welcome back':'New customer?'}</span><a onclick="${user?"openAccountSection('profile')":"account.login()"}">${user?'My Account':'Sign Up'}</a></div>
+      ${user?`<button class="sf-drop-item" onclick="openAccountSection('profile')"><span class="i">◉</span>My Profile</button><button class="sf-drop-item" onclick="openAccountSection('orders')"><span class="i">▣</span>Orders</button><button class="sf-drop-item" onclick="openAccountSection('wishlist')"><span class="i">♡</span>Wishlist</button><button class="sf-drop-item" onclick="openAccountSection('wallet')"><span class="i">₹</span>SRP Wallet</button><div class="sf-drop-sep"></div>`:''}
+      <button class="sf-drop-item" onclick="user?seller.startApplication():account.login()"><span class="i">▤</span>Become a Seller</button><button class="sf-drop-item" onclick="openAccountSection('giftcards')"><span class="i">🎁</span>Gift Cards</button><button class="sf-drop-item" onclick="openAccountSection('notifications')"><span class="i">♧</span>Notification Preferences</button><button class="sf-drop-item" onclick="openAccountSection('support')"><span class="i">◔</span>24x7 Customer Care</button>
+    </div>`;
+  }
+  function moreMenu(){
+    return `<div class="sf-drop" id="sfMoreDrop"><div class="sf-drop-head"><strong>More</strong><span class="sf-more-dots">•••</span></div><button class="sf-drop-item" onclick="user?seller.startApplication():account.login()"><span class="i">▤</span>Become a Seller</button><button class="sf-drop-item" onclick="openAccountSection('notifications')"><span class="i">♧</span>Notification Settings</button><button class="sf-drop-item" onclick="openAccountSection('support')"><span class="i">◔</span>24x7 Customer Care</button><button class="sf-drop-item" onclick="srpFinalWallet()"><span class="i">₹</span>Wallet</button><button class="sf-drop-item" onclick="router.go('admin')"><span class="i">⚙</span>Admin Console</button><button class="sf-drop-item" onclick="openModal('<div class=\"modal-head\"><h2 class=\"modal-title\">SRP Shopping App</h2><button class=\"close\" onclick=\"closeModal()\">×</button></div><div class=\"modal-body\"><p class=\"section-copy\">The SRP Shopping web app is ready for responsive desktop and mobile shopping.</p></div>')"><span class="i">⌄</span>Download App</button></div>`;
+  }
+  function categoryRow(){
+    const cats=state.db.categories||[];
+    const special=[{id:'__for_you',name:'For You',icon:'✨'},{id:'__wallet',name:'Wallet',icon:'👛'}];
+    const all=special.concat(cats.map(c=>({id:c.id,name:c.name,icon:c.icon||'◉'})));
+    return all.slice(0,14).map(c=>{const active=c.id==='__for_you'?!state.category:state.category===c.id;const action=c.id==='__wallet'?'srpFinalWallet()':c.id==='__for_you'?'srpFinalCategory(\'\')':`srpFinalCategory('${attr(c.id)}')`;return `<button class="sf-cat ${active?'active':''}" onclick="${action}"><span class="sf-cat-icon">${esc(c.icon)}</span><span>${esc(c.name)}</span></button>`}).join('');
+  }
+  function renderHeader(){
+    const h=document.getElementById('mainHeader');
+    if(!h)return;
+    const count=typeof cart!=='undefined'&&cart.count?cart.count():0;
+    const pin=localStorage.getItem(PIN_KEY)||'Select delivery location';
+    const b=balance();
+    h.innerHTML=`<div class="sf-topline"><button class="sf-brand" onclick="router.go('home')"><span><span class="sf-brand-main">SRP</span><span class="sf-brand-sub">SHOPPING</span></span></button><button class="sf-wallet" onclick="srpFinalWallet()"><span class="sf-wallet-icon">👛</span><span><small>SRP Wallet</small><strong>₹${b.toLocaleString('en-IN')}</strong></span></button><button class="sf-location" id="locationButton" onclick="account.location()"><span class="sf-location-icon">📍</span><span><small>Location</small><strong id="pinHeader">${esc(pin)}</strong></span><span class="arr">›</span></button></div><div class="sf-mainbar"><div class="sf-search-wrap"><div class="sf-search"><span class="sf-search-icon">⌕</span><input id="globalSearch" type="search" value="${attr(state.query||'')}" placeholder="Search for Products, Brands and More" autocomplete="off"><button onclick="srpFinalSearch()">⌕</button></div><div id="suggestions" class="sf-suggestions hidden"></div></div><div class="sf-login-wrap"><button class="sf-navbtn" id="accountButton" onclick="srpFinalToggleLogin()"><span><small>${user?'Hello,':'New customer?'}</small><strong>${esc(user?user.name:'Login')}⌄</strong></span></button>${loginMenu()}</div><div class="sf-more-wrap"><button class="sf-navbtn" onclick="srpFinalToggleMore()"><span class="sf-more-dots">⋮</span><strong>More⌄</strong></button>${moreMenu()}</div><button class="sf-navbtn sf-cart" id="cartButton" onclick="router.go('cart')"><span class="sf-cart-icon">🛒</span><strong>Cart</strong><span id="cartBadge" class="sf-badge">${count}</span></button><span id="wishlistBadge" style="display:none">0</span><span id="compareBadge" style="display:none">0</span><span id="notificationBadge" style="display:none">0</span><span id="accountTitle" style="display:none">${esc(user?.name||'Login')}</span><span id="accountSubtitle" style="display:none">${esc(user?.role||'customer')}</span><button id="themeButton" style="display:none" aria-hidden="true"></button></div><nav class="sf-categories"><div class="sf-cat-inner">${categoryRow()}</div></nav>`;
+    const input=document.getElementById('globalSearch');
+    if(input){input.addEventListener('input',store.suggestions);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();srpFinalSearch()}if(e.key==='Escape')document.getElementById('suggestions')?.classList.add('hidden')});}
+  }
+  function quickLinks(){
+    const links=[
+      ['⌕','Smart Search','Search products',()=>document.getElementById('globalSearch')?.focus()],
+      ['▦','Categories','Shop by category',()=>document.querySelector('.sf-categories')?.scrollIntoView({behavior:'smooth'})],
+      ['⚡','Best Deals','See highest discounts',()=>srpFinalDeals()],
+      ['☷','Smart Filters','Price and rating',()=>window.srpV5OpenFilters&&window.srpV5OpenFilters()],
+      ['♡','Wishlist','Saved products',()=>user?account.wishlist():account.login()],
+      ['⇄','Compare','Compare items',()=>account.openCompare()],
+      ['▣','Orders','Track purchases',()=>user?account.orders():account.login()],
+      ['₹','Wallet','Balance and payments',()=>srpFinalWallet()],
+      ['▤','Seller','Sell from More menu',()=>user?seller.startApplication():account.login()],
+      ['🛒','Cart','Review and checkout',()=>router.go('cart')]
+    ];
+    return `<section class="sf-card sf-mini-links">${links.map(([i,t,d,fn])=>`<button class="sf-mini-link" onclick="(${fn.toString()})()"><span class="sf-mini-ico">${i}</span><span><b>${esc(t)}</b><span>${esc(d)}</span></span></button>`).join('')}</section>`;
+  }
+  function renderHome(){
+    document.body.classList.add('srp-final');
+    document.body.classList.remove('srp-fk','srp-admin');
+    state.route='home';
+    FINAL.loginOpen=false;FINAL.moreOpen=false;
+    renderHeader();
+    const list=homeProducts();
+    const hero=heroSlides();
+    const promos=hero.slice(0,3);
+    const title=state.query?`Results for “${state.query.replace(/"/g,'&quot;')}”`:state.category?`Deals in ${state.category}`:state.sellerFilter?`Products from ${sellerById(state.sellerFilter)?.store||'seller'}`:'Top Selection';
+    document.getElementById('app').innerHTML=`<main class="sf-home">${hero()}${quickLinks()}${promos.length?`<section class="sf-card sf-recent">${promos.map(promoCard).join('')}</section>`:''}${productSection(title,list)}${list.length>5?productSection('Suggested for You',list.slice(5)):''}${!state.query&&!state.category&&!state.sellerFilter?productSection('Upcoming Deals',activeProducts().slice().reverse()):''}</main><footer class="sf-footer"><div class="sf-footer-inner"><div><h4>ABOUT SRP SHOPPING</h4><button onclick="openAccountSection('support')">About & Help</button><button onclick="openAccountSection('feedback')">Give Feedback</button></div><div><h4>CUSTOMER HELP</h4><button onclick="openAccountSection('orders')">Orders & Tracking</button><button onclick="openAccountSection('returns')">Returns & Refunds</button><button onclick="openAccountSection('support')">Customer Care</button></div><div><h4>ACCOUNT</h4><button onclick="openAccountSection('profile')">My Profile</button><button onclick="openAccountSection('wishlist')">Wishlist</button><button onclick="srpFinalWallet()">Wallet</button></div><div><h4>POLICIES</h4><button onclick="openAccountSection('privacy')">Privacy</button><button onclick="openAccountSection('communications')">Notification Preferences</button></div></div><div class="sf-footer-bottom">SRP Shopping · Online marketplace · Payment verification required before an order is finalised.</div></footer>`;
+    srpFinalSlide(FINAL.slide);
+    clearInterval(FINAL.timer);FINAL.timer=setInterval(()=>srpFinalNext(),6000);
+  }
+  function patchSearch(){
+    const oldSearch=store.search.bind(store),oldSelect=store.selectCategory.bind(store),oldSeller=store.filterSeller.bind(store),oldDeals=store.loadDeals.bind(store);
+    store.search=function(){if(state.route==='home'){srpFinalSearch();return;}return oldSearch()};
+    store.selectCategory=function(id){if(state.route==='home'){srpFinalCategory(id);return;}return oldSelect(id)};
+    store.filterSeller=function(id){if(state.route==='home'){state.sellerFilter=id;state.page=1;renderHome();return;}return oldSeller(id)};
+    store.loadDeals=function(){if(state.route==='home'){srpFinalDeals();return;}return oldDeals()};
+  }
+  window.srpFinalSlide=function(i){const total=heroSlides().length||1;FINAL.slide=(i+total)%total;const t=document.getElementById('sfHeroTrack');if(t)t.style.transform=`translateX(-${FINAL.slide*100}%)`;document.querySelectorAll('.sf-dot').forEach((d,n)=>d.classList.toggle('active',n===FINAL.slide))};
+  window.srpFinalPrev=function(){srpFinalSlide(FINAL.slide-1)};
+  window.srpFinalNext=function(){srpFinalSlide(FINAL.slide+1)};
+  window.srpFinalSearch=function(){const input=document.getElementById('globalSearch');state.query=(input?.value||'').trim();state.page=1;renderHome()};
+  window.srpFinalCategory=function(id){state.category=id||'';state.sellerFilter='';state.query='';state.page=1;renderHome()};
+  window.srpFinalDeals=function(){state.sort='discount';state.query='';state.page=1;renderHome()};
+  window.srpFinalWallet=function(){if(!user){account.login();return}document.body.classList.remove('srp-final');state.accountSection='wallet';account.render()};
+  window.srpFinalToggleLogin=function(){FINAL.loginOpen=!FINAL.loginOpen;FINAL.moreOpen=false;document.getElementById('sfLoginDrop')?.classList.toggle('open',FINAL.loginOpen);document.getElementById('sfMoreDrop')?.classList.remove('open')};
+  window.srpFinalToggleMore=function(){FINAL.moreOpen=!FINAL.moreOpen;FINAL.loginOpen=false;document.getElementById('sfMoreDrop')?.classList.toggle('open',FINAL.moreOpen);document.getElementById('sfLoginDrop')?.classList.remove('open')};
+  window.openAccountSection=window.openAccountSection||function(key){if(!user){account.login();return;}document.body.classList.remove('srp-final');state.accountSection=key;account.render()};
+  const originalAccountRender=account.render.bind(account);account.render=function(){document.body.classList.remove('srp-final');return originalAccountRender()};
+  const originalSellerRender=seller.render.bind(seller);seller.render=function(){document.body.classList.remove('srp-final');return originalSellerRender()};
+  const originalAdminRender=admin.render.bind(admin);admin.render=function(){document.body.classList.remove('srp-final');return originalAdminRender()};
+  const previousRouterGo=router.go.bind(router);router.go=function(route){if(route==='home'){if(location.hash!=='#home')history.pushState({route:'home'},'','#home');renderHome();window.scrollTo({top:0,behavior:'smooth'});return;}return previousRouterGo(route)};
+  document.addEventListener('click',e=>{if(!e.target.closest('.sf-login-wrap')){document.getElementById('sfLoginDrop')?.classList.remove('open');FINAL.loginOpen=false}if(!e.target.closest('.sf-more-wrap')){document.getElementById('sfMoreDrop')?.classList.remove('open');FINAL.moreOpen=false}});
+  patchSearch();
+  window.renderHome=renderHome;
+  window.SRP_FINAL_UI={version:'2026.09.22.flipkart-inspired',counts:{home:10,account:40,seller:30,admin:50},render:renderHome};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderHome,{once:true});else renderHome();
+})();
+</script>
+
 </body>
 </html>
